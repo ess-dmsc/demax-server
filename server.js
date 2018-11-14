@@ -35,8 +35,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage});
 
-var distDir = __dirname + "/dist/";
-app.use(express.static(distDir));
+app.use(express.static('public'));
 
 var db;
 
@@ -143,7 +142,7 @@ app.get("/api/users", function(req, res) {
 	});
 });
 
-app.post("/api/users", function(req, res) {
+app.post("/api/register", function(req, res) {
 	const newUser = req.body;
 	newUser.createDate = new Date();
 
@@ -230,3 +229,5 @@ app.get('/word/attachment', function(req, res, next) {
 	res.setHeader('Content-Disposition', 'attachment; filename=quote.docx');
 	file.pipe(res);
 });
+
+module.exports = { app }
