@@ -11,6 +11,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('./models/user.js');
 
 const PROPOSALS_COLLECTION = "proposals";
 
@@ -63,6 +64,17 @@ function handleError(res, reason, message, code) {
 	res.status(code || 500).json({"error": message});
 }
 
+app.post('/login', (req, res) => {
+	User.findOne({email: req.body.email}, (err, user) => {
+		if(!user) { return res.sendStatus(403); }
+		user.comparePassword(req.body.password, (error, isMatch) => {
+			if(!isMatch) { return res.sendStatus(403); }
+			const token = jwt.sign({user: user}, 'hushshushuhshus'); // , { expiresIn: 10 } seconds
+			res.status(200).json({token: token});
+		});
+	});
+});
+
 app.get("/api/proposals", function(req, res) {
 	db.collection(PROPOSALS_COLLECTION).find({}).toArray(function(err, docs) {
 		if(err) {
@@ -114,6 +126,64 @@ app.delete("/api/proposals/:id", function(req, res) {
 	db.collection(PROPOSALS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
 		if(err) {
 			handleError(res, err.message, "Failed to delete proposal");
+		} else {
+			res.status(200).json(req.params.id);
+		}
+	});
+});
+
+
+app.get("/api/users", function(req, res) {
+	User.find({}).toArray(function(err, docs) {
+		if(err) {
+			handleError(res, err.message, "Failed to get users.");
+		} else {
+			res.status(200).json(docs);
+		}
+	});
+});
+
+app.post("/api/users", function(req, res) {
+	const newUser = req.body;
+	newUser.createDate = new Date();
+
+	User.insertOne(newUser, function(err, doc) {
+		if(err) {
+			handleError(res, err.message, "Failed to create new user.");
+		} else {
+			res.status(201).json(doc.ops[ 0 ]);
+		}
+	});
+});
+
+app.get("/api/users/:id", function(req, res) {
+	User.findOne({_id: new ObjectID(req.params.id)}, function(err, doc) {
+		if(err) {
+			handleError(res, err.message, "Failed to get user");
+		} else {
+			res.status(200).json(doc);
+		}
+	});
+});
+
+app.put("/api/users/:id", function(req, res) {
+	const updateDoc = req.body;
+	delete updateDoc._id;
+
+	User.updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+		if(err) {
+			handleError(res, err.message, "Failed to update user");
+		} else {
+			updateDoc._id = req.params.id;
+			res.status(200).json(updateDoc);
+		}
+	});
+});
+
+app.delete("/api/users/:id", function(req, res) {
+	User.deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+		if(err) {
+			handleError(res, err.message, "Failed to delete user");
 		} else {
 			res.status(200).json(req.params.id);
 		}
