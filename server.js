@@ -34,7 +34,7 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(cookieParser());
 app.use(session({
-	secret: "sshh",
+	secret: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNaf706263ff144468af269d8ec3745b2fa9f615f19e8368da99a4d7b4379fc5885",
 	resave: true,
 	saveUninitialized: false
 }));
