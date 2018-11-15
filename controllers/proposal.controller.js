@@ -23,8 +23,8 @@ exports.count = function (request, response) {
 };
 
 exports.insert = function (request, response) {
-	const objectDocumentModel = new Proposal(request.body);
-	objectDocumentModel.save((error, item) => {
+	const newProposal = new Proposal(request.body);
+	newProposal.save((error, item) => {
 		// 11000 is the code for duplicate key error
 		if (error && error.code === 11000) {
 			response.sendStatus(400);

@@ -19,7 +19,7 @@ const app = express();
 app.use('/proposals', proposal);
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test", {useNewUrlParser: true}, function(err, client) {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/ess", {useNewUrlParser: true}, function(err, client) {
 	if(err) {
 		console.log(err);
 		process.exit(1);
@@ -91,16 +91,6 @@ app.post('/register', (request, response) => {
 	});
 });
 
-function handleError(res, reason, message, code) {
-	console.log("ERROR: " + reason);
-	res.status(code || 500).json({"error": message});
-}
-
-/*  "/api/proposals"
- *    GET: finds all proposals
- *    POST: creates a new proposal
- */
-
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {
 		callback(null, './uploads');
@@ -118,47 +108,6 @@ app.use(express.static('public'));
 /* app.get('/', function(request, response){
  response.sendFile('index.html');
  }) */
-
-app.get('/proposals', function(request, response) {
-	Proposal.find({ })
-		.then((documents) => {
-			response.json(documents);
-		})
-});
-
-app.post('/api/proposals', function (request, response) {
-	const newProposal = new Proposal({ title: request.body.title, completed: false});
-	newProposal.save()
-		.then(document => {
-			response.json(document);
-		})
-});
-
-app.get('/proposals/:id', function (request, response) {
-	const proposalId = request.params.id.toString();
-	Proposal.find({ experiment_title: proposalId })
-	.then((document) => {
-		response.json(document);
-	})
-});
-
-app.delete('/proposals/:id', function (request, response) {
-
-	const proposalId = request.params.id.toString();
-	Proposal.findOneAndDelete({ experiment_title: proposalId })
-	.then((document) => {
-		response.json(document);
-	})
-});
-
-app.patch('/proposals/:id', function (request, response) {
-	const proposalId = request.params.id.toString();
-	const query = { experiment_title: proposalId };
-	Proposal.findOneAndUpdate(query, { title: request.body.title })
-	.then((document) => {
-		response.json(document);
-	})
-});
 
 const paths = {
 	pdf: path.join(__dirname, '../demax-server/', 'word.pdf'),
