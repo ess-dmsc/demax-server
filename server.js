@@ -56,7 +56,7 @@ app.post('/users/login', function(request, response) {
 			return response.sendStatus(401);
 		}
 		else {
-			const token = jwt.sign({email: user.email}, 'todo-app-super-shared-secret', {expiresIn: '2h'});
+			const token = jwt.sign({email: user.email}, '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa62e907b15cbf27d5425399ebf6f0fb50ebb88f18', {expiresIn: '2h'});
 			response.send({token});
 		}
 	});
