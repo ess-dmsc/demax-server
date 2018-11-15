@@ -4,7 +4,7 @@ const Proposal = require('../models/proposal.js');
 
 describe('proposal', function() {
 	it('should have an experiment title', function(done) {
-		const testProposal = new Proposal({experiment_title: 'Test proposal', brief_summary: 'Short summary'});
+		const testProposal = new Proposal({experiment_title: 'Test proposal',  brief_summary: 'Short summary'});
 
 		testProposal.validate(function(err) {
 			expect(testProposal.experiment_title).to.exist;

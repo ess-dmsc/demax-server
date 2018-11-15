@@ -1,4 +1,5 @@
 const Proposal = require('../models/proposal.js');
+const express = require('express');
 
 exports.test = function (req, res) {
 	res.send('Greetings from the Test controller!');

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const User = require('../models/user.js');
 
 const proposalSchema = new mongoose.Schema({
 	experiment_title: String,
