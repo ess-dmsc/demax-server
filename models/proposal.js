@@ -1,27 +1,31 @@
 const mongoose = require('mongoose');
-import User from './user';
+const User = require('../models/user.js');
 
 const proposalSchema = new mongoose.Schema({
-	reference: String,
-	title: {type: String, unique: true, lowercase: true, trim: true},
-	summary: String,
-	mainProposer: {type: mongoose.Schema.Types.ObjectId, ref: User, required: true},
-	coProposers: [
+	experiment_title: String,
+	brief_summary: String,
+	main_proposer: String,
+	co_proposers: [
 		{
-			user: {
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'User'
-			}
+			co_proposer: String
 		}
 	],
-	researchArea: String,
-	societalIndicators: Array,
-	typeOfProposal: String,
-	needByDate: Date,
-	dateMotivation: String,
-	dateCreated: {type: Date, default: Date.now()},
-	beamTimeProposalPDF: String,
-	deuterationMethods: [
+	need_by_date: {
+		motivation: String,
+		attachment: String,
+	}
+	,
+	resources: {
+		lab: String,
+		instrument: String,
+		service: String
+	},
+	date_created: {
+		type: Date,
+		default:
+			Date.now()
+	},
+	deuteration_methods: [
 		{
 			crystallization: {
 				molecule_name: String,
@@ -114,14 +118,7 @@ const proposalSchema = new mongoose.Schema({
 
 		}
 	]
-});
+})
+;
 
-proposalSchema.pre('save', function(next) {
-	const proposal = this;
-	proposal.reference = proposal._created + proposal.mainProposer.email + proposal.title;
-	next();
-});
-
-const Proposal = mongoose.model('Proposal', proposalSchema);
-
-export default Proposal;
+module.exports = mongoose.model('Proposal', proposalSchema);

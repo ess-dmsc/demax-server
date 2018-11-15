@@ -5,15 +5,23 @@ const fs = require('fs');
 const IncomingForm = require('formidable').IncomingForm;
 const multer = require('multer');
 const mongodb = require("mongodb");
-const ObjectID = mongodb.ObjectID;
 const morgan = require('morgan');
 const path = require('path');
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('./models/user.js');
+const passport = require('passport');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const passportLocalMongoose = require('passport-local-mongoose');
 
-const PROPOSALS_COLLECTION = "proposals";
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test", {useNewUrlParser: true}, function(err, client) {
+	if(err) {
+		console.log(err);
+		process.exit(1);
+	}
+	console.log("\n" + Date.now() + "\nDB_CONN:SUCCESS\nHOST: 127.0.0.1\nPORT: 27017\n");
+});
+
 
 const app = express();
 
@@ -24,6 +32,61 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+app.use(cookieParser());
+app.use(session({
+	secret: "sshh",
+	resave: true,
+	saveUninitialized: false
+}));
+
+const UserSchema = new mongoose.Schema({
+	username: String,
+	password: String,
+	firstname: String,
+	lastname:  String,
+	phone:  String,
+	email:  String,
+	role:  String,
+	employerSector:  String,
+	employerName:  String,
+	employerStreet:  String,
+	employerZipcode:  String,
+	employerCity:  String,
+	employerCountry:  String,
+	employerPhone:  String
+});
+
+UserSchema.plugin(passportLocalMongoose);
+const User = mongoose.model('User', UserSchema);
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+function isLoggedIn(request, response, next){
+	if (request.isAuthenticated()) {
+		return next(); //next() means -> continue and forward request
+	}
+	response.json('Unauthorized');
+}
+
+app.post('/login', passport.authenticate('local'), (request, response) => {
+	response.json(request.user.username);
+});
+
+
+app.post('/register', (request, response) => {
+	User.register(new User({ username: request.body.username }), request.body.password, (err, user) => {
+		if (err) {
+			response.json(err);
+		}
+		passport.authenticate('local')(request, response, () => {
+			response.json('User registered');
+		});
+	});
+});
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {
 		callback(null, './uploads');
@@ -37,174 +100,166 @@ const upload = multer({storage: storage});
 
 app.use(express.static('public'));
 
-var db;
-
-mongodb.Promise = global.Promise;
-mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test", {useNewUrlParser: true}, function(err, client) {
-	if(err) {
-		console.log(err);
-		process.exit(1);
-	}
-
-	// Save database object from the callback for reuse.
-	db = client.db();
-	console.log("\n" + Date.now() + "\nDB_CONN:SUCCESS\nHOST: 127.0.0.1\nPORT: 27017\n");
-
-	// Initialize the app.
-	var server = app.listen(process.env.PORT || 8080, function() {
-		var port = server.address().port;
-		console.log(Date.now() + "\nSERVICE_START:SUCCESS\nHOST: 127.0.0.1\nPORT: " + port + "\n");
-	});
-});
-
-
-function handleError(res, reason, message, code) {
-	console.log("ERROR: " + reason);
-	res.status(code || 500).json({"error": message});
-}
-
-app.post('/login', (req, res) => {
-	User.findOne({email: req.body.email}, (err, user) => {
-		if(!user) { return res.sendStatus(403); }
-		user.comparePassword(req.body.password, (error, isMatch) => {
-			if(!isMatch) { return res.sendStatus(403); }
-			const token = jwt.sign({user: user}, 'hushshushuhshus'); // , { expiresIn: 10 } seconds
-			res.status(200).json({token: token});
-		});
-	});
-});
-
-app.get("/api/proposals", function(req, res) {
-	db.collection(PROPOSALS_COLLECTION).find({}).toArray(function(err, docs) {
-		if(err) {
-			handleError(res, err.message, "Failed to get proposals.");
-		} else {
-			res.status(200).json(docs);
+const Proposal = mongoose.model('Proposal', {
+	experiment_title: String,
+	brief_summary: {type: String, unique: true, lowercase: true, trim: true},
+	main_Proposer: {type: mongoose.Schema.Types.ObjectId, ref: User, required: true},
+	co_proposers: [
+		{
+			user: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'User'
+			}
 		}
-	});
-});
+	],
+	need_by_date: {
+		motivation: String,
+		attachment: String
+	},
+	resources: {
+		lab: String,
+		instrument: String,
+		service: String
+	},
+	date_created: {type: Date, default: Date.now()},
+	deuteration_methods: [
+		{
+			crystallization: {
+				molecule_name: String,
+				molecule_identifier: String,
+				oligomerization_state: String,
+				crystalStructure_reference_PDF: {
+					proposal_attachment: {
+						type: mongoose.Schema.Types.ObjectId,
+						ref: 'ProposalAttachment'
+					}
+				},
+				crystallization_requirements: String,
+				crystallization_precipitant_composition: String,
+				previous_crystallization_experience: String,
+				estimated_crystallization_productionTime: String,
+				typical_crystalSize: String,
+				typical_yield_mg_per_liter: String,
+				storage_conditions: String,
+				stability: String,
+				buffer: String,
+				level_of_deuteration: String,
+				typical_protein_concentration_used: String
+			},
+			biologic: {
+				biomass: {
+					organism_provided_by_user: String,
+					organism_details: String,
+					organism_reference_PDF: {
+						proposal_attachment: {
+							type: mongoose.Schema.Types.ObjectId,
+							ref: 'ProposalAttachment'
+						}
+					},
+					amount_needed: String,
+					state_of_material: String,
+					amount_of_material_motivation: String,
+					deuteration_level_required: String,
+					deuteration_level_motivation: String,
+				},
+				protein: {
+					molecule_name: String,
+					molecule_identifier: String,
+					weight: String,
+					oligomerization_state: String,
+					expression_requirements: String,
+					molecule_origin: String,
+					expression_plasmid_provided_by_user: String,
+					details: String,
+					amount_needed: String,
+					amount_needed_motivation: String,
+					deuteration_level_required: String,
+					deuteration_level_motivation: String,
+					needs_purification_support: String,
+					purification_experience_reference_PDF: {
+						proposal_attachment: {
+							type: mongoose.Schema.Types.ObjectId,
+							ref: 'ProposalAttachment'
+						}
+					},
+					has_done_unlabeled_protein_expression: String,
+					has_protein_purification_experience: String,
+					protein_purification_experience_reference_PDF: {
+						proposal_attachment: {
+							type: mongoose.Schema.Types.ObjectId,
+							ref: 'ProposalAttachment'
+						}
+					},
 
-app.post("/api/proposals", function(req, res) {
-	const newProposal = req.body;
-	newProposal.createDate = new Date();
+				},
+			},
+			chemical: {
+				molecule_name: String,
+				amount: String,
+				amount_motivation: String,
+				deuteration_location_and_percentege: String,
+				deuteration_level_motivation: String,
+				chemical_structure: {
+					proposal_attachment: {
+						type: mongoose.Schema.Types.ObjectId,
+						ref: 'ProposalAttachment'
+					}
+				},
+				has_previous_production_experience: {
+					proposal_attachment: {
+						type: mongoose.Schema.Types.ObjectId,
+						ref: 'ProposalAttachment'
+					}
+				},
+			}
 
-	db.collection(PROPOSALS_COLLECTION).insertOne(newProposal, function(err, doc) {
-		if(err) {
-			handleError(res, err.message, "Failed to create new proposal.");
-		} else {
-			res.status(201).json(doc.ops[ 0 ]);
 		}
-	});
+	]
 });
 
-app.get("/api/proposals/:id", function(req, res) {
-	db.collection(PROPOSALS_COLLECTION).findOne({_id: new ObjectID(req.params.id)}, function(err, doc) {
-		if(err) {
-			handleError(res, err.message, "Failed to get proposal");
-		} else {
-			res.status(200).json(doc);
-		}
-	});
+/* app.get('/', function(request, response){
+ response.sendFile('index.html');
+ }) */
+
+app.get('/proposals', function(request, response) {
+	Proposal.find({ })
+		.then((documents) => {
+			response.json(documents);
+		})
 });
 
-app.put("/api/proposals/:id", function(req, res) {
-	const updateDoc = req.body;
-	delete updateDoc._id;
-
-	db.collection(PROPOSALS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
-		if(err) {
-			handleError(res, err.message, "Failed to update proposal");
-		} else {
-			updateDoc._id = req.params.id;
-			res.status(200).json(updateDoc);
-		}
-	});
+app.post('/proposals', function (request, response) {
+	const newProposal = new Proposal({ title: request.body.title, completed: false});
+	newProposal.save()
+		.then(document => {
+			response.json(document);
+		})
 });
 
-app.delete("/api/proposals/:id", function(req, res) {
-	db.collection(PROPOSALS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
-		if(err) {
-			handleError(res, err.message, "Failed to delete proposal");
-		} else {
-			res.status(200).json(req.params.id);
-		}
-	});
+app.get('/proposals/:id', function (request, response) {
+	const proposalId = request.params.id.toString();
+	Proposal.find({ experiment_title: proposalId })
+	.then((document) => {
+		response.json(document);
+	})
 });
 
+app.delete('/proposals/:id', function (request, response) {
 
-app.get("/api/users", function(req, res) {
-	User.find({}).toArray(function(err, docs) {
-		if(err) {
-			handleError(res, err.message, "Failed to get users.");
-		} else {
-			res.status(200).json(docs);
-		}
-	});
+	const proposalId = request.params.id.toString();
+	Proposal.findOneAndDelete({ experiment_title: proposalId })
+	.then((document) => {
+		response.json(document);
+	})
 });
 
-app.post("/api/register", function(req, res) {
-	const newUser = req.body;
-	newUser.createDate = new Date();
-
-	User.insertOne(newUser, function(err, doc) {
-		if(err) {
-			handleError(res, err.message, "Failed to create new user.");
-		} else {
-			res.status(201).json(doc.ops[ 0 ]);
-		}
-	});
-});
-
-app.get("/api/users/:id", function(req, res) {
-	User.findOne({_id: new ObjectID(req.params.id)}, function(err, doc) {
-		if(err) {
-			handleError(res, err.message, "Failed to get user");
-		} else {
-			res.status(200).json(doc);
-		}
-	});
-});
-
-app.put("/api/users/:id", function(req, res) {
-	const updateDoc = req.body;
-	delete updateDoc._id;
-
-	User.updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
-		if(err) {
-			handleError(res, err.message, "Failed to update user");
-		} else {
-			updateDoc._id = req.params.id;
-			res.status(200).json(updateDoc);
-		}
-	});
-});
-
-app.delete("/api/users/:id", function(req, res) {
-	User.deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
-		if(err) {
-			handleError(res, err.message, "Failed to delete user");
-		} else {
-			res.status(200).json(req.params.id);
-		}
-	});
-});
-
-app.post('/api/upload', upload.single('file'), (req, res) => {
-	return res.send({"status": "success"});
-});
-
-app.post('/api/upload-form', (req, res) => {
-	const form = new IncomingForm();
-	let readStream;
-	form.on('file', (field, file) => {
-
-		console.log('file', file.name);
-		readStream = fs.createReadStream(file.path);
-	});
-	form.on('end', () => {
-		res.json();
-	});
-	form.parse(req);
+app.patch('/proposals/:id', function (request, response) {
+	const proposalId = request.params.id.toString();
+	const query = { experiment_title: proposalId };
+	Proposal.findOneAndUpdate(query, { title: request.body.title })
+	.then((document) => {
+		response.json(document);
+	})
 });
 
 const paths = {
@@ -230,4 +285,9 @@ app.get('/word/attachment', function(req, res, next) {
 	file.pipe(res);
 });
 
-module.exports = { app }
+const server = app.listen(process.env.PORT || 8080, function() {
+	const port = server.address().port;
+	console.log(Date.now() + "\nSERVICE_START:SUCCESS\nHOST: 127.0.0.1\nPORT: " + port + "\n");
+});
+
+module.exports = {app};
