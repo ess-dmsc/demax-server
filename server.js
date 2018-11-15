@@ -13,9 +13,10 @@ const passport = require('passport');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passportLocalMongoose = require('passport-local-mongoose');
+const proposal = require('./routes/proposal.routes.js');
 const app = express();
 
-const PROPOSALS_COLLECTION = "proposals";
+app.use('/proposals', proposal);
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test", {useNewUrlParser: true}, function(err, client) {
@@ -100,73 +101,6 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new proposal
  */
 
-app.get("/api/proposals", function(req, res) {
-	db.collection(PROPOSALS_COLLECTION).find({}).toArray(function(err, docs) {
-		if (err) {
-			handleError(res, err.message, "Failed to get proposals.");
-		} else {
-			res.status(200).json(docs);
-		}
-	});
-});
-
-app.post("/api/proposals", function(req, res) {
-	var newProposal = req.body;
-	newProposal.createDate = new Date();
-
-	if (!req.body.name) {
-		handleError(res, "Invalid user input", "Must provide a name.", 400);
-	} else {
-		db.collection(PROPOSALS_COLLECTION).insertOne(newProposal, function(err, doc) {
-			if (err) {
-				handleError(res, err.message, "Failed to create new proposal.");
-			} else {
-				res.status(201).json(doc.ops[0]);
-			}
-		});
-	}
-});
-
-/*  "/api/proposals/:id"
- *    GET: find proposal by id
- *    PUT: update proposal by id
- *    DELETE: deletes proposal by id
- */
-
-app.get("/api/proposals/:id", function(req, res) {
-	db.collection(PROPOSALS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
-		if (err) {
-			handleError(res, err.message, "Failed to get proposal");
-		} else {
-			res.status(200).json(doc);
-		}
-	});
-});
-
-app.put("/api/proposals/:id", function(req, res) {
-	var updateDoc = req.body;
-	delete updateDoc._id;
-
-	db.collection(PROPOSALS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
-		if (err) {
-			handleError(res, err.message, "Failed to update proposal");
-		} else {
-			updateDoc._id = req.params.id;
-			res.status(200).json(updateDoc);
-		}
-	});
-});
-
-app.delete("/api/proposals/:id", function(req, res) {
-	db.collection(PROPOSALS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
-		if (err) {
-			handleError(res, err.message, "Failed to delete proposal");
-		} else {
-			res.status(200).json(req.params.id);
-		}
-	});
-});
-
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {
 		callback(null, './uploads');
@@ -180,122 +114,6 @@ const upload = multer({storage: storage});
 
 app.use(express.static('public'));
 
-const Proposal = mongoose.model('Proposal', {
-	experiment_title: String,
-	brief_summary: {type: String, unique: true, lowercase: true, trim: true},
-	main_Proposer: {type: mongoose.Schema.Types.ObjectId, ref: User, required: true},
-	co_proposers: [
-		{
-			user: {
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'User'
-			}
-		}
-	],
-	need_by_date: {
-		motivation: String,
-		attachment: String
-	},
-	resources: {
-		lab: String,
-		instrument: String,
-		service: String
-	},
-	date_created: {type: Date, default: Date.now()},
-	deuteration_methods: [
-		{
-			crystallization: {
-				molecule_name: String,
-				molecule_identifier: String,
-				oligomerization_state: String,
-				crystalStructure_reference_PDF: {
-					proposal_attachment: {
-						type: mongoose.Schema.Types.ObjectId,
-						ref: 'ProposalAttachment'
-					}
-				},
-				crystallization_requirements: String,
-				crystallization_precipitant_composition: String,
-				previous_crystallization_experience: String,
-				estimated_crystallization_productionTime: String,
-				typical_crystalSize: String,
-				typical_yield_mg_per_liter: String,
-				storage_conditions: String,
-				stability: String,
-				buffer: String,
-				level_of_deuteration: String,
-				typical_protein_concentration_used: String
-			},
-			biologic: {
-				biomass: {
-					organism_provided_by_user: String,
-					organism_details: String,
-					organism_reference_PDF: {
-						proposal_attachment: {
-							type: mongoose.Schema.Types.ObjectId,
-							ref: 'ProposalAttachment'
-						}
-					},
-					amount_needed: String,
-					state_of_material: String,
-					amount_of_material_motivation: String,
-					deuteration_level_required: String,
-					deuteration_level_motivation: String,
-				},
-				protein: {
-					molecule_name: String,
-					molecule_identifier: String,
-					weight: String,
-					oligomerization_state: String,
-					expression_requirements: String,
-					molecule_origin: String,
-					expression_plasmid_provided_by_user: String,
-					details: String,
-					amount_needed: String,
-					amount_needed_motivation: String,
-					deuteration_level_required: String,
-					deuteration_level_motivation: String,
-					needs_purification_support: String,
-					purification_experience_reference_PDF: {
-						proposal_attachment: {
-							type: mongoose.Schema.Types.ObjectId,
-							ref: 'ProposalAttachment'
-						}
-					},
-					has_done_unlabeled_protein_expression: String,
-					has_protein_purification_experience: String,
-					protein_purification_experience_reference_PDF: {
-						proposal_attachment: {
-							type: mongoose.Schema.Types.ObjectId,
-							ref: 'ProposalAttachment'
-						}
-					},
-
-				},
-			},
-			chemical: {
-				molecule_name: String,
-				amount: String,
-				amount_motivation: String,
-				deuteration_location_and_percentege: String,
-				deuteration_level_motivation: String,
-				chemical_structure: {
-					proposal_attachment: {
-						type: mongoose.Schema.Types.ObjectId,
-						ref: 'ProposalAttachment'
-					}
-				},
-				has_previous_production_experience: {
-					proposal_attachment: {
-						type: mongoose.Schema.Types.ObjectId,
-						ref: 'ProposalAttachment'
-					}
-				},
-			}
-
-		}
-	]
-});
 
 /* app.get('/', function(request, response){
  response.sendFile('index.html');

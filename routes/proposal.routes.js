@@ -1,10 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-// Require the controllers WHICH WE DID NOT CREATE YET!!
 const proposal_controller = require('../controllers/proposal.controller');
 
 
-// a simple test url to check that all of our files are communicating correctly.
 router.get('/test', proposal_controller.test);
+router.get('/', proposal_controller.getAll);
+router.get('/count', proposal_controller.count);
+router.post('/', proposal_controller.insert);
+router.get('/:id', proposal_controller.get);
+router.put('/:id', proposal_controller.update);
+router.delete('/:id', proposal_controller.delete);
+
 module.exports = router;
