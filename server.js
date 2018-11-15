@@ -5,6 +5,7 @@ const fs = require('fs');
 const IncomingForm = require('formidable').IncomingForm;
 const multer = require('multer');
 const mongodb = require("mongodb");
+const ObjectID = mongodb.ObjectID;
 const morgan = require('morgan');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -12,6 +13,9 @@ const passport = require('passport');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passportLocalMongoose = require('passport-local-mongoose');
+const app = express();
+
+const PROPOSALS_COLLECTION = "proposals";
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test", {useNewUrlParser: true}, function(err, client) {
@@ -22,8 +26,6 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/test", {u
 	console.log("\n" + Date.now() + "\nDB_CONN:SUCCESS\nHOST: 127.0.0.1\nPORT: 27017\n");
 });
 
-
-const app = express();
 
 app.use(morgan('dev'));
 app.use(cors({origin: '*', optionsSuccessStatus: 200}));
@@ -87,6 +89,84 @@ app.post('/register', (request, response) => {
 		});
 	});
 });
+
+function handleError(res, reason, message, code) {
+	console.log("ERROR: " + reason);
+	res.status(code || 500).json({"error": message});
+}
+
+/*  "/api/proposals"
+ *    GET: finds all proposals
+ *    POST: creates a new proposal
+ */
+
+app.get("/api/proposals", function(req, res) {
+	db.collection(PROPOSALS_COLLECTION).find({}).toArray(function(err, docs) {
+		if (err) {
+			handleError(res, err.message, "Failed to get proposals.");
+		} else {
+			res.status(200).json(docs);
+		}
+	});
+});
+
+app.post("/api/proposals", function(req, res) {
+	var newProposal = req.body;
+	newProposal.createDate = new Date();
+
+	if (!req.body.name) {
+		handleError(res, "Invalid user input", "Must provide a name.", 400);
+	} else {
+		db.collection(PROPOSALS_COLLECTION).insertOne(newProposal, function(err, doc) {
+			if (err) {
+				handleError(res, err.message, "Failed to create new proposal.");
+			} else {
+				res.status(201).json(doc.ops[0]);
+			}
+		});
+	}
+});
+
+/*  "/api/proposals/:id"
+ *    GET: find proposal by id
+ *    PUT: update proposal by id
+ *    DELETE: deletes proposal by id
+ */
+
+app.get("/api/proposals/:id", function(req, res) {
+	db.collection(PROPOSALS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
+		if (err) {
+			handleError(res, err.message, "Failed to get proposal");
+		} else {
+			res.status(200).json(doc);
+		}
+	});
+});
+
+app.put("/api/proposals/:id", function(req, res) {
+	var updateDoc = req.body;
+	delete updateDoc._id;
+
+	db.collection(PROPOSALS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+		if (err) {
+			handleError(res, err.message, "Failed to update proposal");
+		} else {
+			updateDoc._id = req.params.id;
+			res.status(200).json(updateDoc);
+		}
+	});
+});
+
+app.delete("/api/proposals/:id", function(req, res) {
+	db.collection(PROPOSALS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+		if (err) {
+			handleError(res, err.message, "Failed to delete proposal");
+		} else {
+			res.status(200).json(req.params.id);
+		}
+	});
+});
+
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {
 		callback(null, './uploads');
@@ -228,7 +308,7 @@ app.get('/proposals', function(request, response) {
 		})
 });
 
-app.post('/proposals', function (request, response) {
+app.post('/api/proposals', function (request, response) {
 	const newProposal = new Proposal({ title: request.body.title, completed: false});
 	newProposal.save()
 		.then(document => {
