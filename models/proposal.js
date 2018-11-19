@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
 const proposalSchema = new mongoose.Schema({
-	experiment_title: String,
-	brief_summary: String,
-	main_proposer: String,
-	co_proposers: [
+	experimentTitle: String,
+	briefSummary: String,
+	mainProposer: String,
+	coProposers: [
 		{
-			co_proposer: String
+			coProposers: String
 		}
 	],
-	need_by_date: {
+	needByDate: {
 		motivation: String,
 		attachment: String,
 	}
@@ -19,75 +19,75 @@ const proposalSchema = new mongoose.Schema({
 		instrument: String,
 		service: String
 	},
-	date_created: {
+	dateCreated: {
 		type: Date,
 		default:
 			Date.now()
 	},
-	deuteration_methods: [
+	deuterationMethods: [
 		{
 			crystallization: {
-				molecule_name: String,
-				molecule_identifier: String,
-				oligomerization_state: String,
-				crystalStructure_reference_PDF: {
-					proposal_attachment: {
+				moleculeName: String,
+				moleculeIdentifier: String,
+				oligomerizationState: String,
+				crystalStructureReferencePDF: {
+					proposalAttachment: {
 						type: mongoose.Schema.Types.ObjectId,
 						ref: 'ProposalAttachment'
 					}
 				},
-				crystallization_requirements: String,
-				crystallization_precipitant_composition: String,
-				previous_crystallization_experience: String,
-				estimated_crystallization_productionTime: String,
-				typical_crystalSize: String,
-				typical_yield_mg_per_liter: String,
-				storage_conditions: String,
+				crystallizationRequirements: String,
+				crystallizationPrecipitant_composition: String,
+				previousCrystallizationExperience: String,
+				estimatedCrystallizationProductionTime: String,
+				typicalCrystalSize: String,
+				typicalYieldMgPerLiter: String,
+				storageConditions: String,
 				stability: String,
 				buffer: String,
-				level_of_deuteration: String,
-				typical_protein_concentration_used: String
+				levelOfDeuteration: String,
+				typicalProteinConcentrationUsed: String
 			},
 			biologic: {
 				biomass: {
-					organism_provided_by_user: String,
-					organism_details: String,
-					organism_reference_PDF: {
-						proposal_attachment: {
+					organismProvidedByUser: String,
+					organismDetails: String,
+					organismReferencePDF: {
+						proposalAttachment: {
 							type: mongoose.Schema.Types.ObjectId,
 							ref: 'ProposalAttachment'
 						}
 					},
-					amount_needed: String,
-					state_of_material: String,
-					amount_of_material_motivation: String,
-					deuteration_level_required: String,
-					deuteration_level_motivation: String,
+					amountNeeded: String,
+					stateOfMaterial: String,
+					amountOfMaterialMotivation: String,
+					deuterationLevelRequired: String,
+					deuterationLevelMotivation: String,
 				},
 				protein: {
-					molecule_name: String,
-					molecule_identifier: String,
+					moleculeName: String,
+					moleculeIdentifier: String,
 					weight: String,
-					oligomerization_state: String,
-					expression_requirements: String,
-					molecule_origin: String,
-					expression_plasmid_provided_by_user: String,
+					oligomerizationState: String,
+					expressionRequirements: String,
+					moleculeOrigin: String,
+					expressionPlasmidProvidedByUser: String,
 					details: String,
-					amount_needed: String,
-					amount_needed_motivation: String,
-					deuteration_level_required: String,
-					deuteration_level_motivation: String,
-					needs_purification_support: String,
-					purification_experience_reference_PDF: {
-						proposal_attachment: {
+					amountNeeded: String,
+					amountNeededMotivation: String,
+					deuterationLevelRequired: String,
+					deuterationLevelMotivation: String,
+					needsPurificationSupport: String,
+					purificationExperienceReference_PDF: {
+						proposalAttachment: {
 							type: mongoose.Schema.Types.ObjectId,
 							ref: 'ProposalAttachment'
 						}
 					},
-					has_done_unlabeled_protein_expression: String,
-					has_protein_purification_experience: String,
-					protein_purification_experience_reference_PDF: {
-						proposal_attachment: {
+					hasDoneUnlabeledProteinExpression: String,
+					hasProteinPurificationExperience: String,
+					proteinPurificationExperienceReferencePDF: {
+						proposalAttachment: {
 							type: mongoose.Schema.Types.ObjectId,
 							ref: 'ProposalAttachment'
 						}
@@ -96,19 +96,19 @@ const proposalSchema = new mongoose.Schema({
 				},
 			},
 			chemical: {
-				molecule_name: String,
+				moleculeName: String,
 				amount: String,
-				amount_motivation: String,
-				deuteration_location_and_percentege: String,
-				deuteration_level_motivation: String,
-				chemical_structure: {
-					proposal_attachment: {
+				amountMotivation: String,
+				deuterationLocationAndPercentege: String,
+				deuterationLevelMotivation: String,
+				chemicalStructure: {
+					proposalAttachment: {
 						type: mongoose.Schema.Types.ObjectId,
 						ref: 'ProposalAttachment'
 					}
 				},
-				has_previous_production_experience: {
-					proposal_attachment: {
+				hasPreviousProductionExperience: {
+					proposalAttachment: {
 						type: mongoose.Schema.Types.ObjectId,
 						ref: 'ProposalAttachment'
 					}

@@ -11,6 +11,8 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const Proposal = require('./models/proposal.js');
 const app = express();
+const PDFDocument = require('pdfkit');
+const merge = require('easy-pdf-merge');
 
 const userSchema = new mongoose.Schema({
 	email: {type: String, unique: true, lowercase: true, trim: true},
@@ -116,59 +118,59 @@ app.delete('/users:id', function(request, response) {
 		response.sendStatus(200);
 	});
 });
-app.get('/proposals',getAll = function (request, response) {
+app.get('/proposals', getAll = function(request, response) {
 	Proposal.find({}, (error, docs) => {
-		if (error) {
+		if(error) {
 			return console.error(error);
 		}
 		response.status(200).json(docs);
 	});
 });
 
-app.get('/proposals', function (request, response) {
+app.get('/proposals', function(request, response) {
 	Proposal.count((error, count) => {
-		if (error) {
+		if(error) {
 			return console.error(error);
 		}
 		response.status(200).json(count);
 	});
 });
 
-app.post('/proposals', function (request, response) {
+app.post('/proposals', function(request, response) {
 	const newProposal = new Proposal(request.body);
 	newProposal.save((error, item) => {
 		// 11000 is the code for duplicate key error
-		if (error && error.code === 11000) {
+		if(error && error.code === 11000) {
 			response.sendStatus(400);
 		}
-		if (error) {
+		if(error) {
 			return console.error(error);
 		}
 		response.status(200).json(item);
 	});
 });
 
-app.get('/proposals:id', function (request, response) {
+app.get('/proposals:id', function(request, response) {
 	Proposal.findOne({_id: request.params.id}, (error, item) => {
-		if (error) {
+		if(error) {
 			return console.error(error);
 		}
 		response.status(200).json(item);
 	});
 });
 
-app.put('/proposals:id', function (request, response) {
+app.put('/proposals:id', function(request, response) {
 	Proposal.findOneAndUpdate({_id: request.params.id}, request.body, (error) => {
-		if (error) {
+		if(error) {
 			return console.error(error);
 		}
 		response.sendStatus(200);
 	});
 });
 
-app.delete('/proposals:id', function (request, response) {
+app.delete('/proposals:id', function(request, response) {
 	Proposal.findOneAndRemove({_id: request.params.id}, (error) => {
-		if (error) {
+		if(error) {
 			return console.error(error);
 		}
 		response.sendStatus(200);
@@ -193,6 +195,68 @@ app.use(express.static('public'));
 app.post('/upload', upload.single('file'), function(request, response) {
 	response.status(200).json('Upload works');
 });
+app.get('/generate-pdf', (req, res) => {
+	res.send(`<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
+</head>
+
+<body>
+
+<div class="row" style="margin: 3rem auto;">
+<header>
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/ESS_Logo_Frugal_Blue_cmyk.png" width="200" alt="logo">
+</header>
+    <div class="col-md-8" style="margin: 2rem auto;">
+        <h1>Generate PDF</h1>
+        <form class="form-horizontal well" method="post" action="/pdf">
+            <div class="form-group"><label class="col-md-2 control-label">request.body.filename</label>
+                <div class="col-md-10">
+                    <div class="input-group"><input class="form-control" type="text" name="filename" placeholder="Will this text appear as the file name?">
+                        <div class="input-group-addon">.pdf</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group"><label class="col-md-2 control-label">request.body.content</label>
+                <div class="col-md-10"><textarea class="form-control" name="content" placeholder="Will this text appear in the PDF?"></textarea></div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                <input class="btn btn-danger" id="actionButton" type="submit" value="Generate PDF"></div>
+                <label for="actionButton">HTTP.POST('http://127.0.0.1:8080/pdf', {request.body})</label>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>`);
+});
+
+/*
+const ImageSchema = mongoose.Schema({
+	type: String,
+	data: Buffer
+});
+
+const image = new Image({
+	type: 'image/png',
+	data: imageData
+});
+
+image.save()
+.then(img => {
+	Image.findById(img, (err, findOutImage) => {
+		if (err) throw err;
+		try{
+			fs.writeFileSync('/path/to/file', findOutImage.data);
+		}catch(e){
+			console.log(e);
+		}
+	});
+});
+*/
 
 const paths = {
 	pdf: path.join(__dirname, '../demax-server/', 'word.pdf'),
@@ -216,6 +280,54 @@ app.get('/word/attachment', function(req, res, next) {
 	res.setHeader('Content-Disposition', 'attachment; filename=quote.docx');
 	file.pipe(res);
 });
+
+app.post('/pdf', (req, res) => {
+	const doc = new PDFDocument();
+	let filename = req.body.filename;
+	filename = encodeURIComponent(filename) + '.pdf';
+	console.log(req.body);
+	res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
+	res.setHeader('Content-type', 'application/pdf');
+	doc.fontSize(25)
+	.text(req.body.filename, 100, 80);
+	doc.save()
+
+	doc.circle(280, 200, 50)
+	.fill("#0094CA");
+	doc.scale(0.6)
+	.translate(470, 130)
+	.restore();
+
+	doc.text('This is the file name: ' + req.body.filename, 100, 300)
+	.font('Times-Roman', 13)
+	.moveDown()
+	.text(req.body.content, {
+		width: 412,
+		align: 'justify',
+		indent: 30,
+		columns: 2,
+		height: 300,
+		ellipsis: true
+	});
+	doc.y = 300;
+	doc.pipe(res);
+	doc.end();
+});
+
+app.get('/pdf/merge', (req,res)=>{
+	merge(['./uploads/file-1542185972868..pdf', './uploads/file-1542205573137..pdf'],
+		'./merges/merged-pdf.pdf',function(err){
+
+			if(err)
+				return console.log(err);
+
+			console.log('Success');
+
+		});
+	res.send('Success');
+
+});
+
 
 const server = app.listen(process.env.PORT || 8080, function() {
 	const port = server.address().port;

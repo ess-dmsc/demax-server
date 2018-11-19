@@ -4,10 +4,10 @@ const Proposal = require('../models/proposal.js');
 
 describe('proposal', function() {
 	it('should have an experiment title', function(done) {
-		const testProposal = new Proposal({experiment_title: 'Test proposal',  brief_summary: 'Short summary'});
+		const testProposal = new Proposal({experimentTitle: 'Test proposal',  briefSummary: 'Short summary'});
 
 		testProposal.validate(function(err) {
-			expect(testProposal.experiment_title).to.exist;
+			expect(testProposal.experimentTitle).to.exist;
 			done();
 		});
 	});
@@ -19,10 +19,10 @@ describe('proposal', function() {
 		});
 	});
 	it('should have an brief summary', function(done) {
-		const testProposal = new Proposal({experiment_title: 'Test proposal', brief_summary: 'Short summary'});
+		const testProposal = new Proposal({experimentTitle: 'Test proposal', briefSummary: 'Short summary'});
 
 		testProposal.validate(function(err) {
-			expect(testProposal.brief_summary).to.exist;
+			expect(testProposal.briefSummary).to.exist;
 			done();
 		});
 	});
