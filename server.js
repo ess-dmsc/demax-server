@@ -310,6 +310,9 @@ app.post('/pdf', (req, res) => {
 		ellipsis: true
 	});
 	doc.y = 300;
+	const content = req.body.content;
+	doc.y = 300;
+	doc.text(content, 50, 50);
 	doc.pipe(res);
 	doc.end();
 });
@@ -327,7 +330,6 @@ app.get('/pdf/merge', (req,res)=>{
 	res.send('Success');
 
 });
-
 
 const server = app.listen(process.env.PORT || 8080, function() {
 	const port = server.address().port;
