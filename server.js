@@ -56,7 +56,7 @@ connection.once('open', () => {
 		const writestream = gfs.createWriteStream({
 			filename: filename
 		});
-		fs.createReadStream(__dirname + "/uploads/" + filename).pipe(writestream);
+		fs.createReadStream(__dirname + "/_root/uploads/" + filename).pipe(writestream);
 		writestream.on('close', (file) => {
 			res.send('Stored File: ' + file.filename);
 		});
@@ -286,7 +286,7 @@ connection.once('open', () => {
 
 	const storage = multer.diskStorage({
 		destination: (request, file, callback) => {
-			callback(null, './uploads');
+			callback(null, './_root/uploads');
 		},
 		filename: (request, file, callback) => {
 			callback(null, Date.now() + '.' + request.body.user + path.extname(file.originalname));
@@ -427,7 +427,7 @@ connection.once('open', () => {
 	});
 
 	app.get('/pdf/merge', (req, res) => {
-		merge([ './uploads/file-1542185972868..pdf', './uploads/file-1542205573137..pdf' ],
+		merge([ './_root/uploads/file-1542185972868..pdf', './_root/uploads/file-1542205573137..pdf' ],
 			'./merges/merged-pdf.pdf',
 			function(err) {
 
