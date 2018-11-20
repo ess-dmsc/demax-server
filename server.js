@@ -174,8 +174,14 @@ const upload = multer({storage: storage});
 app.use(express.static('public/browser'));
 
 
-app.post('/upload', upload.single('file'), function(request, response) {
+app.post('/upload-multiple', upload.array("uploads[]", 12), function (req, res) {
+	console.log('files', req.files);
+	res.send(req.files);
+});
+
+app.post('/upload', upload.array('file'), function(request, response) {
 	response.status(200).json('Upload works');
+	console.log('files', request.files);
 });
 app.get('/generate-pdf', (req, res) => {
 	res.send(`<!DOCTYPE html>
