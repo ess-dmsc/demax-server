@@ -17,10 +17,9 @@ const merge = require('easy-pdf-merge');
 const userSchema = new mongoose.Schema({
 	email: {type: String, unique: true, lowercase: true, trim: true},
 	password: String,
-	username: String,
-	role: String,
-	firstname: String,
-	lastname: String,
+	firstName: String,
+	lastName: String,
+	phone: String,
 	employerSector: String,
 	employerName: String,
 	employerStreet: String,
@@ -47,149 +46,132 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-//app.use(expressJwt({secret: 'f706263ff144468af269d8ec3745b2fa9f615f19e8368da99a4d7b4379fc5885'}).unless({path: [ '/users/login' ]}));
 
 app.post('/users/login', function(request, response) {
-	User.findOne({email: request.body.email}, (error, user) => {
-		if(!user) {
-			return response.sendStatus(401);
-		}
-		if(request.body.password !== user.password) {
-			return response.sendStatus(401);
-		}
-		else {
-			const token = jwt.sign({email: user.email}, 'todo-app-super-shared-secret', {expiresIn: '2h'});
-			response.send({token});
-		}
+	User.findOne({email: request.body.email}, (err, user) => {
+		if(!user) { return response.sendStatus(403); }
+		user.comparePassword(request.body.password, (error, isMatch) => {
+			if(!isMatch) { return response.sendStatus(403); }
+			const token = jwt.sign({user: user}, {expiresIn: 10}, process.env.SECRET_TOKEN);
+			response.status(200).json({token: token});
+		});
 	});
 });
 
-app.get('/users/all', function(request, response) {
-	User.find({}, (error, docs) => {
-		if(error) {
-			return console.error(error);
-		}
+app.get('/users/all', async function(request, response) {
+	try {
+		const docs = await User.find({});
 		response.status(200).json(docs);
-	});
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 });
-app.get('/users/count', function(request, response) {
-	User.count((error, count) => {
-		if(error) {
-			return console.error(error);
-		}
+app.get('/users/count', async function(request, response) {
+	try {
+		const count = await User.count();
 		response.status(200).json(count);
-	});
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 });
-app.post('/users/register', function(request, response) {
-	const newUser = new User({email: request.body.email, password: request.body.password});
-	newUser.save((error, item) => {
-		if(error && error.code === 11000) {
-			response.sendStatus(400);
-		}
-		if(error) {
-			return console.error(error);
-		}
-		response.status(200).json(item);
-	});
+app.post('/users/register', async function(request, response) {
+	try {
+		const obj = await new User(request.body).save();
+		response.status(201).json(obj);
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 });
 
-app.get('/users:id', function(request, response) {
+app.get('/users:id', async function(request, response) {
+	try {
+		const obj = await User.findOne({_id: request.params.id});
+		response.status(200).json(obj);
+	} catch(err) {
+		return response.status(500).json({error: err.message});
+	}
+});
+app.put('/users:id', async function(request, response) {
+	try {
+		await User.findOneAndUpdate({_id: request.params.id}, request.body);
+		response.sendStatus(200);
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 
-	User.findOne({_id: request.params.id}, (error, item) => {
-		if(error) {
-			return console.error(error);
-		}
-		response.status(200).json(item);
-	});
 });
-app.put('/users:id', function(request, response) {
-	User.findOneAndUpdate({_id: request.params.id}, request.body, (error) => {
-		if(error) {
-			return console.error(error);
-		}
+app.delete('/users/:id', async function(request, response) {
+	try {
+		await User.findOneAndRemove({_id: request.params.id});
 		response.sendStatus(200);
-	});
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 });
-app.delete('/users:id', function(request, response) {
-	User.findOneAndRemove({_id: request.params.id}, (error) => {
-		if(error) {
-			return console.error(error);
-		}
-		response.sendStatus(200);
-	});
-});
-app.get('/proposals', getAll = function(request, response) {
-	Proposal.find({}, (error, docs) => {
-		if(error) {
-			return console.error(error);
-		}
+
+app.get('/proposals', async function(request, response) {
+	try {
+		const docs = await Proposal.find({});
 		response.status(200).json(docs);
-	});
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 });
-
-app.get('/proposals', function(request, response) {
-	Proposal.count((error, count) => {
-		if(error) {
-			return console.error(error);
-		}
+app.get('/proposals/count', async function(request, response) {
+	try {
+		const count = await Proposal.count();
 		response.status(200).json(count);
-	});
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
+});
+app.post('/proposals', async function(request, response) {
+	try {
+		const obj = await new Proposal(request.body).save();
+		response.status(201).json(obj);
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 });
 
-app.post('/proposals', function(request, response) {
-	const newProposal = new Proposal(request.body);
-	newProposal.save((error, item) => {
-		// 11000 is the code for duplicate key error
-		if(error && error.code === 11000) {
-			response.sendStatus(400);
-		}
-		if(error) {
-			return console.error(error);
-		}
-		response.status(200).json(item);
-	});
+app.get('/proposals/:id', async function(request, response) {
+	try {
+		const obj = await Proposal.findOne({_id: request.params.id});
+		response.status(200).json(obj);
+	} catch(err) {
+		return response.status(500).json({error: err.message});
+	}
 });
-
-app.get('/proposals:id', function(request, response) {
-	Proposal.findOne({_id: request.params.id}, (error, item) => {
-		if(error) {
-			return console.error(error);
-		}
-		response.status(200).json(item);
-	});
-});
-
-app.put('/proposals:id', function(request, response) {
-	Proposal.findOneAndUpdate({_id: request.params.id}, request.body, (error) => {
-		if(error) {
-			return console.error(error);
-		}
+app.put('/proposals/:id', async function(request, response) {
+	try {
+		await Proposal.findOneAndUpdate({_id: request.params.id}, request.body);
 		response.sendStatus(200);
-	});
-});
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 
-app.delete('/proposals:id', function(request, response) {
-	Proposal.findOneAndRemove({_id: request.params.id}, (error) => {
-		if(error) {
-			return console.error(error);
-		}
+});
+app.delete('/proposals/:id', async function(request, response) {
+	try {
+		await Proposal.findOneAndRemove({_id: request.params.id});
 		response.sendStatus(200);
-	});
+	} catch(err) {
+		return response.status(400).json({error: err.message});
+	}
 });
-
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {
 		callback(null, './uploads');
 	},
 	filename: (request, file, callback) => {
-		callback(null, file.fieldname + '-' + Date.now() + '.' + request.body.user + path.extname(file.originalname));
+		callback(null, Date.now() + '.' + request.body.user + path.extname(file.originalname));
 	}
 });
 
 const upload = multer({storage: storage});
 
-app.use(express.static('public'));
+app.use(express.static('public/browser'));
 
 
 app.post('/upload', upload.single('file'), function(request, response) {
@@ -210,6 +192,7 @@ app.get('/generate-pdf', (req, res) => {
 <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/ESS_Logo_Frugal_Blue_cmyk.png" width="200" alt="logo">
 </header>
     <div class="col-md-8" style="margin: 2rem auto;">
+        <h1>Merge multiple PDF's</h1>
         <h1>Generate PDF</h1>
         <form class="form-horizontal well" method="post" action="/pdf">
             <div class="form-group"><label class="col-md-2 control-label">request.body.filename</label>
@@ -235,28 +218,28 @@ app.get('/generate-pdf', (req, res) => {
 });
 
 /*
-const ImageSchema = mongoose.Schema({
-	type: String,
-	data: Buffer
-});
+ const ImageSchema = mongoose.Schema({
+ type: String,
+ data: Buffer
+ });
 
-const image = new Image({
-	type: 'image/png',
-	data: imageData
-});
+ const image = new Image({
+ type: 'image/png',
+ data: imageData
+ });
 
-image.save()
-.then(img => {
-	Image.findById(img, (err, findOutImage) => {
-		if (err) throw err;
-		try{
-			fs.writeFileSync('/path/to/file', findOutImage.data);
-		}catch(e){
-			console.log(e);
-		}
-	});
-});
-*/
+ image.save()
+ .then(img => {
+ Image.findById(img, (err, findOutImage) => {
+ if (err) throw err;
+ try{
+ fs.writeFileSync('/path/to/file', findOutImage.data);
+ }catch(e){
+ console.log(e);
+ }
+ });
+ });
+ */
 
 const paths = {
 	pdf: path.join(__dirname, '../demax-server/', 'word.pdf'),
@@ -288,20 +271,13 @@ app.post('/pdf', (req, res) => {
 	console.log(req.body);
 	res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
 	res.setHeader('Content-type', 'application/pdf');
-	doc.fontSize(25)
-	.text(req.body.filename, 100, 80);
-	doc.save()
+	doc.fontSize(25).text(req.body.filename, 100, 80);
+	doc.save();
 
-	doc.circle(280, 200, 50)
-	.fill("#0094CA");
-	doc.scale(0.6)
-	.translate(470, 130)
-	.restore();
+	doc.circle(280, 200, 50).fill("#0094CA");
+	doc.scale(0.6).translate(470, 130).restore();
 
-	doc.text('This is the file name: ' + req.body.filename, 100, 300)
-	.font('Times-Roman', 13)
-	.moveDown()
-	.text(req.body.content, {
+	doc.text('This is the file name: ' + req.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(req.body.content, {
 		width: 412,
 		align: 'justify',
 		indent: 30,
@@ -317,9 +293,9 @@ app.post('/pdf', (req, res) => {
 	doc.end();
 });
 
-app.get('/pdf/merge', (req,res)=>{
-	merge(['./uploads/file-1542185972868..pdf', './uploads/file-1542205573137..pdf'],
-		'./merges/merged-pdf.pdf',function(err){
+app.get('/pdf/merge', (req, res) => {
+	merge([ './uploads/file-1542185972868..pdf', './uploads/file-1542205573137..pdf' ],
+		'./merges/merged-pdf.pdf', function(err) {
 
 			if(err)
 				return console.log(err);
