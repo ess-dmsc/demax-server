@@ -49,77 +49,77 @@ connection.once('open', () => {
 	console.log('successful db connection');
 	const gfs = gridfs(connection.db);
 
-	app.get('/api/file/upload', (req, res) => {
+	app.get('/api/file/upload', (request, response) => {
 
-		const filename = req.query.filename;
+		const filename = request.query.filename;
 
 		const writestream = gfs.createWriteStream({
 			filename: filename
 		});
 		fs.createReadStream(__dirname + "/_root/uploads/" + filename).pipe(writestream);
 		writestream.on('close', (file) => {
-			res.send('Stored File: ' + file.filename);
+			response.send('Stored File: ' + file.filename);
 		});
 	});
 
 
-	app.get('/api/file/download', (req, res) => {
+	app.get('/api/file/download', (request, response) => {
 
-		const filename = req.query.filename;
+		const filename = request.query.filename;
 
 		gfs.exist({
 			filename: filename
 		}, (err, file) => {
 			if(err || !file) {
-				res.status(404).send('File Not Found');
+				response.status(404).send('File Not Found');
 				return;
 			}
 
 			const readstream = gfs.createReadStream({
 				filename: filename
 			});
-			readstream.pipe(res);
+			readstream.pipe(response);
 		});
 	});
 
-	app.get('/api/file/delete', (req, res) => {
+	app.get('/api/file/delete', (request, response) => {
 
-		const filename = req.query.filename;
+		const filename = request.query.filename;
 
 		gfs.exist({
 			filename: filename
 		}, (err, file) => {
 			if(err || !file) {
-				res.status(404).send('File Not Found');
+				response.status(404).send('File Not Found');
 				return;
 			}
 
 			gfs.remove({
 				filename: filename
 			}, (err) => {
-				if(err) res.status(500).send(err);
-				res.send('File Deleted');
+				if(err) response.status(500).send(err);
+				response.send('File Deleted');
 			});
 		});
 	});
 
-	app.get('/api/file/meta', (req, res) => {
+	app.get('/api/file/meta', (request, response) => {
 
-		const filename = req.query.filename;
+		const filename = request.query.filename;
 
 		gfs.exist({
 			filename: filename
 		}, (err, file) => {
 			if(err || !file) {
-				res.send('File Not Found');
+				response.send('File Not Found');
 				return;
 			}
 
 			gfs.files.find({
 				filename: filename
 			}).toArray((err, files) => {
-				if(err) res.send(err);
-				res.json(files);
+				if(err) response.send(err);
+				response.json(files);
 			});
 		});
 	});
@@ -289,7 +289,7 @@ connection.once('open', () => {
 			callback(null, './_root/uploads');
 		},
 		filename: (request, file, callback) => {
-			callback(null, Date.now() + '.' + request.body.user + path.extname(file.originalname));
+			callback(null, Date.now() + '.' + request.user + path.extname(file.originalname));
 		}
 	});
 
@@ -300,17 +300,17 @@ connection.once('open', () => {
 	app.use(express.static('public/browser'));
 
 
-	app.post('/upload-multiple', upload.array("uploads[]", 12), function(req, res) {
-		console.log('files', req.files);
-		res.send(req.files);
+	app.post('/upload-multiple', upload.array("uploads[]", 12), function(request, response) {
+		console.log('files', request.files);
+		response.send(request.files);
 	});
 
-	app.post('/upload', upload.array('file'), function(request, response) {
+	app.post('/upload', upload.single('file'), function(request, response) {
 		response.status(200).json('Upload works');
 		console.log('files', request.files);
 	});
-	app.get('/generate-pdf', (req, res) => {
-		res.send(`<!DOCTYPE html>
+	app.get('/generate-pdf', (request, response) => {
+		response.send(`<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -375,42 +375,42 @@ connection.once('open', () => {
 	 */
 
 	const paths = {
-		pdf: path.join(__dirname, '../demax-server/', 'word.pdf'),
-		word: path.join(__dirname, '../demax-server/', 'DEMAX_proposal_template.docx')
+		pdf: path.join(__dirname, '../demax-server/_root/', 'word.pdf'),
+		word: path.join(__dirname, '../demax-server/_root/', 'DEMAX_proposal_template.docx')
 	};
 	const fileWord = fs.readFileSync(paths.word);
 	const filePDF = fs.readFileSync(paths.pdf);
-	app.get('/pdf/attachment', function(req, res, next) {
+	app.get('/pdf/attachment', function(request, response, next) {
 		const file = fs.createReadStream(paths.pdf);
 		const stat = fs.statSync(paths.pdf);
-		res.setHeader('Content-Length', stat.size);
-		res.setHeader('Content-Type', 'application/pdf');
-		res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
-		file.pipe(res);
+		response.setHeader('Content-Length', stat.size);
+		response.setHeader('Content-Type', 'application/pdf');
+		response.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+		file.pipe(response);
 	});
-	app.get('/word/attachment', function(req, res, next) {
+	app.get('/word/attachment', function(request, response, next) {
 		const file = fs.createReadStream(paths.word);
 		const stat = fs.statSync(paths.word);
-		res.setHeader('Content-Length', stat.size);
-		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-		res.setHeader('Content-Disposition', 'attachment; filename=quote.docx');
+		response.setHeader('Content-Length', stat.size);
+		response.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+		response.setHeader('Content-Disposition', 'attachment; filename=quote.docx');
 		file.pipe(res);
 	});
 
-	app.post('/pdf', (req, res) => {
+	app.post('/pdf', (request, response) => {
 		const doc = new PDFDocument();
-		let filename = req.body.filename;
+		let filename = request.body.filename;
 		filename = encodeURIComponent(filename) + '.pdf';
-		console.log(req.body);
-		res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
-		res.setHeader('Content-type', 'application/pdf');
-		doc.fontSize(25).text(req.body.filename, 100, 80);
+		console.log(request.body);
+		response.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
+		response.setHeader('Content-type', 'application/pdf');
+		doc.fontSize(25).text(request.body.filename, 100, 80);
 		doc.save();
 
 		doc.circle(280, 200, 50).fill("#0094CA");
 		doc.scale(0.6).translate(470, 130).restore();
 
-		doc.text('This is the file name: ' + req.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(req.body.content, {
+		doc.text('This is the file name: ' + request.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(request.body.content, {
 			width: 412,
 			align: 'justify',
 			indent: 30,
@@ -419,14 +419,14 @@ connection.once('open', () => {
 			ellipsis: true
 		});
 		doc.y = 300;
-		const content = req.body;
+		const content = request.body;
 		doc.y = 300;
 		doc.text(content, 50, 50);
-		doc.pipe(res);
+		doc.pipe(response);
 		doc.end();
 	});
 
-	app.get('/pdf/merge', (req, res) => {
+	app.get('/pdf/merge', (request, response) => {
 		merge([ './_root/uploads/file-1542185972868..pdf', './_root/uploads/file-1542205573137..pdf' ],
 			'./merges/merged-pdf.pdf',
 			function(err) {
@@ -437,7 +437,7 @@ connection.once('open', () => {
 				console.log('Success');
 
 			});
-		res.send('Success');
+		response.send('Success');
 
 	});
 
