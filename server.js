@@ -1,3 +1,4 @@
+'use strict';
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require('cors');
@@ -58,7 +59,7 @@ connection.once('open', () => {
 		});
 		fs.createReadStream(__dirname + "/_root/uploads/" + filename).pipe(writestream);
 		writestream.on('close', (file) => {
-			response.send('Stored File: ' + file.filename);
+			response.send('Stored File: ' + file.filename + '<br><br>       File ID: ' + file._id);
 		});
 	});
 
@@ -289,7 +290,7 @@ connection.once('open', () => {
 			callback(null, './_root/uploads');
 		},
 		filename: (request, file, callback) => {
-			callback(null, Date.now() + '.' + request.user + path.extname(file.originalname));
+			callback(null, file.originalname);
 		}
 	});
 
@@ -385,7 +386,7 @@ connection.once('open', () => {
 		const stat = fs.statSync(paths.pdf);
 		response.setHeader('Content-Length', stat.size);
 		response.setHeader('Content-Type', 'application/pdf');
-		response.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+		response.setHeader('Content-Disposition', 'attachment; filename=word.pdf');
 		file.pipe(response);
 	});
 	app.get('/word/attachment', function(request, response, next) {
@@ -393,8 +394,8 @@ connection.once('open', () => {
 		const stat = fs.statSync(paths.word);
 		response.setHeader('Content-Length', stat.size);
 		response.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-		response.setHeader('Content-Disposition', 'attachment; filename=quote.docx');
-		file.pipe(res);
+		response.setHeader('Content-Disposition', 'attachment; filename=DEMAX_proposal_template.docx');
+		file.pipe(response);
 	});
 
 	app.post('/pdf', (request, response) => {
@@ -404,13 +405,14 @@ connection.once('open', () => {
 		console.log(request.body);
 		response.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
 		response.setHeader('Content-type', 'application/pdf');
-		doc.fontSize(25).text(request.body.filename, 100, 80);
+		doc.fontSize(25).text(request.body.filename);
 		doc.save();
 
 		doc.circle(280, 200, 50).fill("#0094CA");
 		doc.scale(0.6).translate(470, 130).restore();
 
-		doc.text('This is the file name: ' + request.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(request.body.content, {
+		doc.text('This is the file name: ' +
+			request.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(request.body.content, {
 			width: 412,
 			align: 'justify',
 			indent: 30,
