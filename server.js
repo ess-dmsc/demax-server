@@ -32,8 +32,8 @@ app.use(express.urlencoded({
 	extended: true
 }));
 
-app.get('/tests', function(req, res) {
-	res.sendfile('./public/tests.html')
+app.get('/test', function(req, res) {
+	res.sendfile('./public/test.html')
 });
 
 
@@ -73,7 +73,7 @@ connection.once('open', () => {
 
 		form.parse(req);
 
-		form.on('fileBegin', function(name, file, error) {
+		form.on('fileBegin', async function(name, file, error) {
 			if(error || !file) {
 				res.status(404).send('File Not Found');
 				return;
@@ -81,15 +81,20 @@ connection.once('open', () => {
 			file.path = __dirname + '/uploads/' + file.name;
 			const filename = file.name;
 
-			const writestream = gfs.createWriteStream({
+			const writestream = await gfs.createWriteStream({
 				filename: filename
 			});
-			fs.createReadStream(__dirname + "/uploads/" + filename).pipe(writestream);
-			writestream.on('close', (file) => {
-				res.send('Stored File: ' + file.filename + '<br><br>       File ID: ' + file._id);
-			});
-			fs.on('error')
-
+			try {
+				fs.createReadStream(__dirname + "/uploads/" + filename).pipe(writestream);
+				writestream.on('close', (file) => {
+					console.log(file._id);
+					res.json(file._id);
+				});
+			}catch(error){
+				return response.status(400).json({
+					error: err.message
+				});
+			}
 		});
 
 		form.on('file', function(name, file, error) {
@@ -133,7 +138,7 @@ connection.once('open', () => {
 				return;
 			}
 
-			gfs.findOneAndDelete({
+			gfs.remove({
 				filename: filename
 			}, (err) => {
 				if(err) response.status(500).send(err);
