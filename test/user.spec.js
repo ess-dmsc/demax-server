@@ -2,7 +2,6 @@ const expect = require('chai').expect;
 const chai = require('chai');
 const describe = require('mocha').describe;
 const it = require('mocha').it;
-const mongoose = require('mongoose');
 const app = require('../server');
 
 const User = require('../models/user.js');
