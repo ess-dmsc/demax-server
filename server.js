@@ -32,49 +32,61 @@ app.use(express.urlencoded({
 	extended: true
 }));
 
-app.get('/test', function (req, res){
+app.get('/test', function(req, res) {
 	res.send(`<!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+<style>
+div fieldset{
+padding: 1rem;
+}
+</style>
+    <title>TestComponent</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
 </head>
 
 <body>
-
-<div class="row" style="margin: 3rem auto;">
 <header>
 <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/ESS_Logo_Frugal_Blue_cmyk.png" width="200" alt="logo">
 </header>
-    <div class="col-md-8" style="margin: 2rem auto;">
-        <h1>Merge multiple PDF's</h1>
-        <h1>Generate PDF</h1>
-        <h1>Upload files</h1>
-        <form class="form-horizontal well" method="post" action="/pdf">
-            <div class="form-group"><label class="col-md-2 control-label">request.body.filename</label>
-                <div class="col-md-10">
-                    <div class="input-group">
-                    <input class="form-control" type="text" name="filename" placeholder="Will this text appear as the file name?">
-                        <div class="input-group-addon">.pdf</div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group"><label class="col-md-2 control-label">request.body.content</label>
-                <div class="col-md-10"><textarea class="form-control" name="content" placeholder="Will this text appear in the PDF?"></textarea></div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                <input class="btn btn-danger" id="actionButton" type="submit" value="Generate PDF"></div>
-                <label for="actionButton">HTTP.POST('http://127.0.0.1:8080/pdf', {request.body})</label>
-            </div>
-        </form>
-    </div>
-</div>
-<div>
+<div style="display:flex; flex-wrap: wrap; justify-content: space-around;">
+<div style="width: 300px;">
+<h1>Upload files</h1>
 <form action="/upload" enctype="multipart/form-data" method="post">
-    <input type="file" name="upload" multiple>
-    <input type="submit" value="Upload">
+<fieldset>
+<input class="form-control" type="file" name="upload" multiple>
+</fieldset>
+<fieldset>
+<input class="btn btn-danger" type="submit" value="Upload file">
+</fieldset>
 </form>
+</div>
+
+<div style="width: 300px;">
+<h1>Generate PDF</h1>
+<form method="post" action="/pdf">
+<fieldset>
+<input class="form-control" type="text" name="filename" placeholder="Will this text appear as the file name?">
+</fieldset>
+<fieldset>
+<textarea class="form-control" name="content" placeholder="Will this text appear in the PDF?"></textarea>
+</fieldset>
+<fieldset>
+<input class="btn btn-danger" type="submit" value="Generate PDF">
+</fieldset>
+</form>
+</div>
+<div style="width: 300px;">
+<h1>Merge multiple PDF's</h1>
+<fieldset>
+<input class="form-control" type="file" name="upload" multiple>
+</fieldset>
+<fieldset>
+<input class="form-control" type="file" name="upload" multiple>
+</fieldset>
+<fieldset>
+<input class="btn btn-danger" type="submit" value="Merge files">
+</fieldset>
 </div>
 </body>
 </html>`);
@@ -112,12 +124,16 @@ connection.once('open', () => {
 		});
 	});
 
-	app.post('/upload', function (req, res){
+	app.post('/upload', function(req, res) {
 		var form = new formidable.IncomingForm();
 
 		form.parse(req);
 
-		form.on('fileBegin', function (name, file){
+		form.on('fileBegin', function(name, file, error) {
+			if(error || !file) {
+				res.status(404).send('File Not Found');
+				return;
+			}
 			file.path = __dirname + '/uploads/' + file.name;
 			const filename = file.name;
 
@@ -128,9 +144,14 @@ connection.once('open', () => {
 			writestream.on('close', (file) => {
 				res.send('Stored File: ' + file.filename + '<br><br>       File ID: ' + file._id);
 			});
+
 		});
 
-		form.on('file', function (name, file){
+		form.on('file', function(name, file, error) {
+			if(error || !file) {
+				res.status(404).send('File Not Found');
+				return;
+			}
 			console.log('Uploaded ' + file.name);
 		});
 	});
@@ -366,73 +387,7 @@ connection.once('open', () => {
 		}
 	});
 
-	app.use(express.static('public/browser'));
-
-
-	app.get('/generate-pdf', (request, response) => {
-		response.send(`<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
-</head>
-
-<body>
-
-<div class="row" style="margin: 3rem auto;">
-<header>
-<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/ESS_Logo_Frugal_Blue_cmyk.png" width="200" alt="logo">
-</header>
-    <div class="col-md-8" style="margin: 2rem auto;">
-        <h1>Merge multiple PDF's</h1>
-        <h1>Generate PDF</h1>
-        <form class="form-horizontal well" method="post" action="/pdf">
-            <div class="form-group"><label class="col-md-2 control-label">request.body.filename</label>
-                <div class="col-md-10">
-                    <div class="input-group">
-                    <input class="form-control" type="text" name="filename" placeholder="Will this text appear as the file name?">
-                        <div class="input-group-addon">.pdf</div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group"><label class="col-md-2 control-label">request.body.content</label>
-                <div class="col-md-10"><textarea class="form-control" name="content" placeholder="Will this text appear in the PDF?"></textarea></div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                <input class="btn btn-danger" id="actionButton" type="submit" value="Generate PDF"></div>
-                <label for="actionButton">HTTP.POST('http://127.0.0.1:8080/pdf', {request.body})</label>
-            </div>
-        </form>
-    </div>
-</div>
-</body>
-</html>`);
-	});
-
-	/*
-	 const ImageSchema = mongoose.Schema({
-	 type: String,
-	 data: Buffer
-	 });
-
-	 const image = new Image({
-	 type: 'image/png',
-	 data: imageData
-	 });
-
-	 image.save()
-	 .then(img => {
-	 Image.findById(img, (err, findOutImage) => {
-	 if (err) throw err;
-	 try{
-	 fs.writeFileSync('/path/to/file', findOutImage.data);
-	 }catch(e){
-	 console.log(e);
-	 }
-	 });
-	 });
-	 */
+	app.use(express.static('public'));
 
 	const paths = {
 		pdf: path.join(__dirname, '../demax-server/', 'word.pdf'),

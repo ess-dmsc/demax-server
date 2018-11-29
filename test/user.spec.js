@@ -18,7 +18,7 @@ describe('user', function() {
 			done();
 		});
 	});
-	it('should have an brief summary', function(done) {
+	it('should have a firstName', function(done) {
 		const testUser = new User({email: 'firstname.lastname@mail.com', firstName: 'Joe'});
 
 		testUser.validate(function(err) {

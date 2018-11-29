@@ -14,14 +14,14 @@ function startsWith (str, start) {
 	return (str.substring(0, start.length) === start)
 }
 
-describe('Functionality', function () {
+describe('Upload', function () {
 	var cleanup = [];
 
 	function makeStandardEnv (cb) {
 		temp.mkdir(function (err, uploadDir) {
-			if (err) return cb(err)
+			if (err) return cb(err);
 
-			cleanup.push(uploadDir)
+			cleanup.push(uploadDir);
 
 			var storage = multer.diskStorage({
 				destination: uploadDir,
