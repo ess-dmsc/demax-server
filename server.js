@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const path = require('path');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
 const Proposal = require('./models/proposal.js');
 const User = require('./models/user.js');
 const PDFDocument = require('pdfkit');
@@ -18,19 +19,27 @@ let gridfs = require('gridfs-stream');
 const app = express();
 
 app.use(morgan('dev'));
-app.use(cors({origin: '*', optionsSuccessStatus: 200}));
+app.use(cors({
+	origin: '*',
+	optionsSuccessStatus: 200
+}));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({
+	extended: true
+}));
 
-app.get('/test', function(request, response) {
-	response.send(`<!DOCTYPE html>
+app.get('/test', function (req, res){
+	res.send(`<!DOCTYPE html>
 <html>
 <head>
-<title>Test site</title>
+    <title></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
 </head>
+
 <body>
 
 <div class="row" style="margin: 3rem auto;">
@@ -62,7 +71,7 @@ app.get('/test', function(request, response) {
     </div>
 </div>
 <div>
-<form action="http://localhost:8080/upload" enctype="multipart/form-data" method="post">
+<form action="/upload" enctype="multipart/form-data" method="post">
     <input type="file" name="upload" multiple>
     <input type="submit" value="Upload">
 </form>
@@ -76,8 +85,13 @@ mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 gridfs.mongo = mongoose.mongo;
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/ess", {useNewUrlParser: true}, function(err, client) {
-	if(err) {console.log(err); process.exit(1);}
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/ess", {
+	useNewUrlParser: true
+}, function(err, client) {
+	if(err) {
+		console.log(err);
+		process.exit(1);
+	}
 	console.log("\n" + Date.now() + "\nDB_CONN:SUCCESS\nHOST: 127.0.0.1\nPORT: 27017\n");
 });
 connection.on('error', console.error.bind(console, 'connection error:'));
@@ -85,17 +99,39 @@ connection.once('open', () => {
 	console.log('successful db connection');
 	const gfs = gridfs(connection.db);
 
-	app.post('/upload', function(request, response) {
-		const form = new formidable.IncomingForm();
-		form.parse(request);
-		form.on('fileBegin', function(name, file) {
-			file.path = __dirname + '/_root/uploads/' + file.name;
-			const filename = file.name;
-			const writestream = gfs.createWriteStream({filename: filename});
-			fs.createReadStream(__dirname + "/_root/uploads/" + filename).pipe(writestream);
-			writestream.on('close', (file) => {response.send('Stored File: ' + file.filename + '<br><br>       File ID: ' + file._id);});
+	app.get('/api/file/upload', (request, response) => {
+
+		const filename = request.query.filename;
+
+		const writestream = gfs.createWriteStream({
+			filename: filename
 		});
-		form.on('file', function(name, file) {console.log('Uploaded ' + file.name);
+		fs.createReadStream(__dirname + "/uploads/" + filename).pipe(writestream);
+		writestream.on('close', (file) => {
+			response.send('Stored File: ' + file.filename + '<br><br>       File ID: ' + file._id);
+		});
+	});
+
+	app.post('/upload', function (req, res){
+		var form = new formidable.IncomingForm();
+
+		form.parse(req);
+
+		form.on('fileBegin', function (name, file){
+			file.path = __dirname + '/uploads/' + file.name;
+			const filename = file.name;
+
+			const writestream = gfs.createWriteStream({
+				filename: filename
+			});
+			fs.createReadStream(__dirname + "/uploads/" + filename).pipe(writestream);
+			writestream.on('close', (file) => {
+				res.send('Stored File: ' + file.filename + '<br><br>       File ID: ' + file._id);
+			});
+		});
+
+		form.on('file', function (name, file){
+			console.log('Uploaded ' + file.name);
 		});
 	});
 
@@ -103,6 +139,7 @@ connection.once('open', () => {
 	app.get('/api/file/download', (request, response) => {
 
 		const filename = request.query.filename;
+
 		gfs.exist({
 			filename: filename
 		}, (err, file) => {
@@ -322,22 +359,95 @@ connection.once('open', () => {
 
 	const storage = multer.diskStorage({
 		destination: (request, file, callback) => {
-			callback(null, './_root/uploads');
+			callback(null, './uploads');
 		},
 		filename: (request, file, callback) => {
 			callback(null, file.originalname);
 		}
 	});
 
-	app.use(express.static('public'));
+	app.use(express.static('public/browser'));
+
+
+	app.get('/generate-pdf', (request, response) => {
+		response.send(`<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
+</head>
+
+<body>
+
+<div class="row" style="margin: 3rem auto;">
+<header>
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/ESS_Logo_Frugal_Blue_cmyk.png" width="200" alt="logo">
+</header>
+    <div class="col-md-8" style="margin: 2rem auto;">
+        <h1>Merge multiple PDF's</h1>
+        <h1>Generate PDF</h1>
+        <form class="form-horizontal well" method="post" action="/pdf">
+            <div class="form-group"><label class="col-md-2 control-label">request.body.filename</label>
+                <div class="col-md-10">
+                    <div class="input-group">
+                    <input class="form-control" type="text" name="filename" placeholder="Will this text appear as the file name?">
+                        <div class="input-group-addon">.pdf</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group"><label class="col-md-2 control-label">request.body.content</label>
+                <div class="col-md-10"><textarea class="form-control" name="content" placeholder="Will this text appear in the PDF?"></textarea></div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                <input class="btn btn-danger" id="actionButton" type="submit" value="Generate PDF"></div>
+                <label for="actionButton">HTTP.POST('http://127.0.0.1:8080/pdf', {request.body})</label>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>`);
+	});
+
+	/*
+	 const ImageSchema = mongoose.Schema({
+	 type: String,
+	 data: Buffer
+	 });
+
+	 const image = new Image({
+	 type: 'image/png',
+	 data: imageData
+	 });
+
+	 image.save()
+	 .then(img => {
+	 Image.findById(img, (err, findOutImage) => {
+	 if (err) throw err;
+	 try{
+	 fs.writeFileSync('/path/to/file', findOutImage.data);
+	 }catch(e){
+	 console.log(e);
+	 }
+	 });
+	 });
+	 */
 
 	const paths = {
-		pdf: path.join(__dirname, '../demax-server/_root/', 'word.pdf'),
-		word: path.join(__dirname, '../demax-server/_root/', 'DEMAX_proposal_template.docx')
+		pdf: path.join(__dirname, '../demax-server/', 'word.pdf'),
+		word: path.join(__dirname, '../demax-server/', 'DEMAX_proposal_template.docx')
 	};
 	const fileWord = fs.readFileSync(paths.word);
 	const filePDF = fs.readFileSync(paths.pdf);
-
+	app.get('/pdf/attachment', function(request, response, next) {
+		const file = fs.createReadStream(paths.pdf);
+		const stat = fs.statSync(paths.pdf);
+		response.setHeader('Content-Length', stat.size);
+		response.setHeader('Content-Type', 'application/pdf');
+		response.setHeader('Content-Disposition', 'attachment; filename=word.pdf');
+		file.pipe(response);
+	});
 	app.get('/word/attachment', function(request, response, next) {
 		const file = fs.createReadStream(paths.word);
 		const stat = fs.statSync(paths.word);
@@ -378,7 +488,7 @@ connection.once('open', () => {
 	});
 
 	app.get('/pdf/merge', (request, response) => {
-		merge([ './_root/uploads/file-1542185972868..pdf', './_root/uploads/file-1542205573137..pdf' ],
+		merge([ './uploads/file-1542185972868..pdf', './uploads/file-1542205573137..pdf' ],
 			'./merges/merged-pdf.pdf',
 			function(err) {
 
