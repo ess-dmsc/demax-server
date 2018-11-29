@@ -10,7 +10,7 @@ chai.use(require('chai-http')).should();
 describe('Proposals', () => {
 
 	beforeEach(done => {
-		Proposal.findOneAndDelete({}, error => {
+		Proposal.findOneAndRemove({}, error => {
 			done();
 		});
 	});
@@ -42,7 +42,7 @@ describe('Proposals', () => {
 	});
 
 	it('should get all the proposals', done => {
-		chai.request(app).get('/proposals').end((error, response) => {
+		chai.request(app).get('/proposals/').end((error, response) => {
 			response.should.have.status(200);
 			response.body.should.be.a('array');
 			response.body.length.should.be.eql(0);

@@ -33,86 +33,7 @@ app.use(express.urlencoded({
 }));
 
 app.get('/tests', function(req, res) {
-	res.send(`<!DOCTYPE html>
-<html>
-<head>
-<style>
-div fieldset{
-padding: 1rem;
-}
-nav{
-background-color: #0094CA;
-width: 100%;
-padding: 1rem;
-text-align: right;
-}
-header{
-padding: 3rem;
-border-bottom: 1px solid #0094CA;
-}
-nav button{
-border: none;
-background-color: #0094CA;
-color: white;
-}
-h1{
-margin-bottom: 2rem;
-}
-img{margin-left: 4rem;}
-</style>
-    <title>TestComponent</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
-</head>
-
-<body>
-<nav>
-<button>Account settings</button>
-<button>Logout</button>
-</nav>
-<header>
-<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/ESS_Logo_Frugal_Blue_cmyk.png" width="200" alt="logo">
-</header>
-<div style="display:flex; flex-wrap: wrap; justify-content: space-around;">
-<div style="width: 300px;">
-<h1>Upload PDF</h1>
-<form action="/upload" enctype="multipart/form-data" method="post">
-<fieldset>
-<input class="form-control" type="file" name="upload" multiple>
-</fieldset>
-<fieldset>
-<input class="btn btn-danger" type="submit" value="Upload PDF">
-</fieldset>
-</form>
-</div>
-
-<div style="width: 300px;">
-<h1>Generate PDF</h1>
-<form method="post" action="/pdf">
-<fieldset>
-<input class="form-control" type="text" name="filename" placeholder="Will this text appear as the file name?">
-</fieldset>
-<fieldset>
-<textarea class="form-control" name="content" placeholder="Will this text appear in the PDF?"></textarea>
-</fieldset>
-<fieldset>
-<input class="btn btn-danger" type="submit" value="Generate PDF">
-</fieldset>
-</form>
-</div>
-<div style="width: 300px;">
-<h1>Merge PDF's</h1>
-<fieldset>
-<input class="form-control" type="file" name="upload" multiple>
-</fieldset>
-<fieldset>
-<input class="form-control" type="file" name="upload" multiple>
-</fieldset>
-<fieldset>
-<input class="btn btn-danger" type="submit" value="Merge PDF's">
-</fieldset>
-</div>
-</body>
-</html>`);
+	res.sendfile('./public/tests.html')
 });
 
 
@@ -295,6 +216,18 @@ connection.once('open', () => {
 			});
 		}
 	});
+
+	app.post('/users', async function(request, response) {
+		try {
+			const obj = await new User(request.body).save();
+			response.status(201).json(obj);
+		} catch(err) {
+			return response.status(400).json({
+				error: err.message
+			});
+		}
+	});
+
 
 	app.get('/users/:id', async function(request, response) {
 		try {

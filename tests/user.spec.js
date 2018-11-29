@@ -10,7 +10,7 @@ chai.use(require('chai-http')).should();
 describe('Users', () => {
 
 	beforeEach(done => {
-		User.findOneAndDelete({}, error => {
+		User.remove({}, error => {
 			done();
 		});
 	});
