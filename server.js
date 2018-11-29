@@ -40,24 +40,47 @@ app.get('/test', function(req, res) {
 div fieldset{
 padding: 1rem;
 }
+nav{
+background-color: #0094CA;
+width: 100%;
+padding: 1rem;
+text-align: right;
+}
+header{
+padding: 3rem;
+border-bottom: 1px solid #0094CA;
+}
+nav button{
+border: none;
+background-color: #0094CA;
+color: white;
+}
+h1{
+margin-bottom: 2rem;
+}
+img{margin-left: 4rem;}
 </style>
     <title>TestComponent</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
 </head>
 
 <body>
+<nav>
+<button>Account settings</button>
+<button>Logout</button>
+</nav>
 <header>
 <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/ESS_Logo_Frugal_Blue_cmyk.png" width="200" alt="logo">
 </header>
 <div style="display:flex; flex-wrap: wrap; justify-content: space-around;">
 <div style="width: 300px;">
-<h1>Upload files</h1>
+<h1>Upload PDF</h1>
 <form action="/upload" enctype="multipart/form-data" method="post">
 <fieldset>
 <input class="form-control" type="file" name="upload" multiple>
 </fieldset>
 <fieldset>
-<input class="btn btn-danger" type="submit" value="Upload file">
+<input class="btn btn-danger" type="submit" value="Upload PDF">
 </fieldset>
 </form>
 </div>
@@ -77,7 +100,7 @@ padding: 1rem;
 </form>
 </div>
 <div style="width: 300px;">
-<h1>Merge multiple PDF's</h1>
+<h1>Merge PDF's</h1>
 <fieldset>
 <input class="form-control" type="file" name="upload" multiple>
 </fieldset>
@@ -85,7 +108,7 @@ padding: 1rem;
 <input class="form-control" type="file" name="upload" multiple>
 </fieldset>
 <fieldset>
-<input class="btn btn-danger" type="submit" value="Merge files">
+<input class="btn btn-danger" type="submit" value="Merge PDF's">
 </fieldset>
 </div>
 </body>
@@ -99,12 +122,12 @@ gridfs.mongo = mongoose.mongo;
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/ess", {
 	useNewUrlParser: true
-}, function(err, client) {
-	if(err) {
-		console.log(err);
+}, function(error, client) {
+	if(error) {
+		console.log(error);
 		process.exit(1);
 	}
-	console.log("\n" + Date.now() + "\nDB_CONN:SUCCESS\nHOST: 127.0.0.1\nPORT: 27017\n");
+	console.log("Connected to database");
 });
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.once('open', () => {
@@ -144,6 +167,7 @@ connection.once('open', () => {
 			writestream.on('close', (file) => {
 				res.send('Stored File: ' + file.filename + '<br><br>       File ID: ' + file._id);
 			});
+			fs.on('error')
 
 		});
 
@@ -188,7 +212,7 @@ connection.once('open', () => {
 				return;
 			}
 
-			gfs.remove({
+			gfs.findOneAndDelete({
 				filename: filename
 			}, (err) => {
 				if(err) response.status(500).send(err);
@@ -252,7 +276,7 @@ connection.once('open', () => {
 	});
 	app.get('/users/count', async function(request, response) {
 		try {
-			const count = await User.count();
+			const count = await User.countDocuments();
 			response.status(200).json(count);
 		} catch(err) {
 			return response.status(400).json({
@@ -260,6 +284,7 @@ connection.once('open', () => {
 			});
 		}
 	});
+
 	app.post('/register', async function(request, response) {
 		try {
 			const obj = await new User(request.body).save();
@@ -271,7 +296,7 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/users:id', async function(request, response) {
+	app.get('/users/:id', async function(request, response) {
 		try {
 			const obj = await User.findOne({
 				_id: request.params.id
@@ -283,7 +308,7 @@ connection.once('open', () => {
 			});
 		}
 	});
-	app.put('/users:id', async function(request, response) {
+	app.put('/users/:id', async function(request, response) {
 		try {
 			await User.findOneAndUpdate({
 				_id: request.params.id
@@ -298,7 +323,7 @@ connection.once('open', () => {
 	});
 	app.delete('/users/:id', async function(request, response) {
 		try {
-			await User.findOneAndRemove({
+			await User.findOneAndDelete({
 				_id: request.params.id
 			});
 			response.sendStatus(200);
@@ -311,7 +336,7 @@ connection.once('open', () => {
 
 	app.get('/proposals', async function(request, response) {
 		try {
-			const docs = await Proposal.find({});
+			const docs = await Proposal.findOne({});
 			response.status(200).json(docs);
 		} catch(err) {
 			return response.status(400).json({
@@ -321,7 +346,7 @@ connection.once('open', () => {
 	});
 	app.get('/proposals/count', async function(request, response) {
 		try {
-			const count = await Proposal.count();
+			const count = await Proposal.countDocuments();
 			response.status(200).json(count);
 		} catch(err) {
 			return response.status(400).json({
@@ -367,7 +392,7 @@ connection.once('open', () => {
 	});
 	app.delete('/proposals/:id', async function(request, response) {
 		try {
-			await Proposal.findOneAndRemove({
+			await Proposal.findOneAndDelete({
 				_id: request.params.id
 			});
 			response.sendStatus(200);
@@ -462,6 +487,5 @@ connection.once('open', () => {
 		console.log(Date.now() + "\nSERVICE_START:SUCCESS\nHOST: 127.0.0.1\nPORT: " + port + "\n");
 	});
 });
-module.exports = {
-	app
-};
+
+module.exports = app.listen(3000);
