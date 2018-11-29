@@ -336,7 +336,7 @@ connection.once('open', () => {
 
 	app.get('/proposals', async function(request, response) {
 		try {
-			const docs = await Proposal.findOne({});
+			const docs = await Proposal.find({});
 			response.status(200).json(docs);
 		} catch(err) {
 			return response.status(400).json({
@@ -344,6 +344,7 @@ connection.once('open', () => {
 			});
 		}
 	});
+
 	app.get('/proposals/count', async function(request, response) {
 		try {
 			const count = await Proposal.countDocuments();
