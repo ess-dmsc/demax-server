@@ -372,9 +372,9 @@ connection.once('open', () => {
 				_id: request.params.id
 			});
 			response.status(200).json(obj);
-		} catch(err) {
+		} catch(error) {
 			return response.status(500).json({
-				error: err.message
+				error: error.message
 			});
 		}
 	});
@@ -384,9 +384,9 @@ connection.once('open', () => {
 				_id: request.params.id
 			}, request.body);
 			response.sendStatus(200);
-		} catch(err) {
+		} catch(error) {
 			return response.status(400).json({
-				error: err.message
+				error: error.message
 			});
 		}
 
