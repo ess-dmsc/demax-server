@@ -446,7 +446,7 @@ function updateLink (link, options, obj) {
  *
  * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
  *
- * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+ * A rudimentary tests suite is located at `tests/fixUrls.js` and can be run via the `npm tests` command.
  *
  */
 

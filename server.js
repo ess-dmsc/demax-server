@@ -32,7 +32,7 @@ app.use(express.urlencoded({
 	extended: true
 }));
 
-app.get('/test', function(req, res) {
+app.get('/tests', function(req, res) {
 	res.send(`<!DOCTYPE html>
 <html>
 <head>
