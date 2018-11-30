@@ -328,12 +328,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_loading_loading_component__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./components/loading/loading.component */ "./src/app/components/loading/loading.component.ts");
 /* harmony import */ var _pages_testing_component__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./pages/testing.component */ "./src/app/pages/testing.component.ts");
 /* harmony import */ var _services_message_service__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./services/message.service */ "./src/app/services/message.service.ts");
+/* harmony import */ var _services_http_error_handler_service__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./services/http-error-handler.service */ "./src/app/services/http-error-handler.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -412,6 +414,7 @@ var AppModule = /** @class */ (function () {
                 _services_auth_service__WEBPACK_IMPORTED_MODULE_21__["AuthService"],
                 _services_auth_guard_admin_service__WEBPACK_IMPORTED_MODULE_24__["AuthGuardAdmin"],
                 _services_auth_guard_login_service__WEBPACK_IMPORTED_MODULE_23__["AuthGuardLogin"],
+                _services_http_error_handler_service__WEBPACK_IMPORTED_MODULE_31__["HttpErrorHandler"],
                 _services_message_service__WEBPACK_IMPORTED_MODULE_30__["MessageService"],
                 _services_user_service__WEBPACK_IMPORTED_MODULE_22__["UserService"],
                 _proposal_service__WEBPACK_IMPORTED_MODULE_20__["ProposalService"]
@@ -1410,7 +1413,8 @@ var TestingComponent = /** @class */ (function () {
     TestingComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-testing',
-            template: "\n\t\t<h3>Upload file</h3>\n\t\t<form enctype=\"multipart/form-data\" method=\"post\">\n\t\t\t<div>\n\t\t\t\t<label for=\"picked\">Choose file to upload</label>\n\t\t\t\t<div>\n\t\t\t\t\t<input type=\"file\" id=\"picked\" #picked\n\t\t\t\t\t       (click)=\"message=''\"\n\t\t\t\t\t       (change)=\"onPicked(picked)\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<p *ngIf=\"message\">{{message}}</p>\n\t\t</form>\n\n\t"
+            template: "\n\t\t<h3>Upload file</h3>\n\t\t<form enctype=\"multipart/form-data\" method=\"post\">\n\t\t\t<div>\n\t\t\t\t<label for=\"picked\">Choose file to upload</label>\n\t\t\t\t<div>\n\t\t\t\t\t<input type=\"file\" id=\"picked\" #picked\n\t\t\t\t\t       (click)=\"message=''\"\n\t\t\t\t\t       (change)=\"onPicked(picked)\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<p *ngIf=\"message\">{{message}}</p>\n\t\t</form>\n\n\t",
+            providers: [_services_test_service__WEBPACK_IMPORTED_MODULE_1__["TestService"]]
         }),
         __metadata("design:paramtypes", [_services_test_service__WEBPACK_IMPORTED_MODULE_1__["TestService"]])
     ], TestingComponent);
@@ -2011,6 +2015,86 @@ var AuthService = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/services/http-error-handler.service.ts":
+/*!********************************************************!*\
+  !*** ./src/app/services/http-error-handler.service.ts ***!
+  \********************************************************/
+/*! exports provided: HttpErrorHandler */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HttpErrorHandler", function() { return HttpErrorHandler; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _message_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./message.service */ "./src/app/services/message.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+/** Handles HttpClient errors */
+var HttpErrorHandler = /** @class */ (function () {
+    function HttpErrorHandler(messageService) {
+        var _this = this;
+        this.messageService = messageService;
+        /** Create curried handleError function that already knows the service name */
+        this.createHandleError = function (serviceName) {
+            if (serviceName === void 0) { serviceName = ''; }
+            return function (operation, result) {
+                if (operation === void 0) { operation = 'operation'; }
+                if (result === void 0) { result = {}; }
+                return _this.handleError(serviceName, operation, result);
+            };
+        };
+    }
+    /**
+     * Returns a function that handles Http operation failures.
+     * This error handler lets the app continue to run as if no error occurred.
+     * @param serviceName = name of the data service that attempted the operation
+     * @param operation - name of the operation that failed
+     * @param result - optional value to return as the observable result
+     */
+    HttpErrorHandler.prototype.handleError = function (serviceName, operation, result) {
+        var _this = this;
+        if (serviceName === void 0) { serviceName = ''; }
+        if (operation === void 0) { operation = 'operation'; }
+        if (result === void 0) { result = {}; }
+        return function (error) {
+            // TODO: send the error to remote logging infrastructure
+            console.error(error); // log to console instead
+            var message = (error.error instanceof ErrorEvent) ?
+                error.error.message :
+                "server returned code " + error.status + " with body \"" + error.error + "\"";
+            // TODO: better job of transforming error for user consumption
+            _this.messageService.add(serviceName + ": " + operation + " failed: " + message);
+            // Let the app keep running by returning a safe result.
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["of"])(result);
+        };
+    };
+    HttpErrorHandler = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
+        __metadata("design:paramtypes", [_message_service__WEBPACK_IMPORTED_MODULE_2__["MessageService"]])
+    ], HttpErrorHandler);
+    return HttpErrorHandler;
+}());
+
+/*
+Copyright 2017-2018 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/ 
+
+
+/***/ }),
+
 /***/ "./src/app/services/message.service.ts":
 /*!*********************************************!*\
   !*** ./src/app/services/message.service.ts ***!
@@ -2092,6 +2176,8 @@ var TestService = /** @class */ (function () {
     // }
     TestService.prototype.upload = function (file) {
         var _this = this;
+        var formData = new FormData();
+        formData.append('file', file, file.name);
         if (!file) {
             return;
         }
@@ -2103,7 +2189,7 @@ var TestService = /** @class */ (function () {
         // Create the request object that POSTs the file to an upload endpoint.
         // The `reportProgress` option tells HttpClient to listen and return
         // XHR progress events.
-        var req = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpRequest"]('POST', '/upload', file, {
+        var req = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpRequest"]('POST', '/upload', formData, {
             reportProgress: true
         });
         // The `HttpClient.request` API produces a raw event stream
