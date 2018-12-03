@@ -7,6 +7,34 @@ const app = require('../server');
 const Proposal = require('../models/proposal.js');
 chai.use(require('chai-http')).should();
 
+
+describe('proposal', function() {
+	it('should have an experiment title', function(done) {
+		const testProposal = new Proposal({experimentTitle: 'Test proposal',  briefSummary: 'Short summary'});
+
+		testProposal.validate(function(err) {
+			expect(testProposal.experimentTitle).to.exist;
+			done();
+		});
+	});
+	it('should have a mongodb ID', function(done) {
+		const testProposal = new Proposal({});
+		testProposal.validate(function(err) {
+			expect(testProposal._id).to.exist;
+			done();
+		});
+	});
+	it('should have an brief summary', function(done) {
+		const testProposal = new Proposal({experimentTitle: 'Test proposal', briefSummary: 'Short summary'});
+
+		testProposal.validate(function(err) {
+			expect(testProposal.briefSummary).to.exist;
+			done();
+		});
+	});
+});
+
+/*
 describe('Proposals', () => {
 
 	beforeEach(done => {
@@ -109,3 +137,4 @@ describe('Proposals', () => {
 		});
 	});
 });
+*/

@@ -7,6 +7,33 @@ const app = require('../server');
 const User = require('../models/user.js');
 chai.use(require('chai-http')).should();
 
+
+describe('user', function() {
+	it('should have an email', function(done) {
+		const testUser = new User({email: 'firstname.lastname@mail.com', firstName: 'Joe'});
+
+		testUser.validate(function(error) {
+			expect(testUser.email).to.exist;
+			done();
+		});
+	});
+	it('should have a mongodb ID', function(done) {
+		const testUser = new User({});
+		testUser.validate(function(error) {
+			expect(testUser._id).to.exist;
+			done();
+		});
+	});
+	it('should have a role', function(done) {
+		const testUser = new User({email: 'firstname.lastname@mail.com', firstName: 'Joe', role: 'user'});
+
+		testUser.validate(function(error) {
+			expect(testUser.role).to.exist;
+			done();
+		});
+	});
+});
+/*
 describe('Users', () => {
 
 	beforeEach(done => {
@@ -104,4 +131,4 @@ describe('Users', () => {
 			});
 		});
 	});
-});
+});*/
