@@ -39,7 +39,9 @@ describe('Users', () => {
 				done();
 			});
 		});
-
+	});
+});
+/*
 		it('should get all the users', done => {
 			chai.request(app).get('/users/all').end((err, res) => {
 				res.should.have.status(200);
@@ -104,4 +106,4 @@ describe('Users', () => {
 			});
 		});
 	});
-});
+});*/

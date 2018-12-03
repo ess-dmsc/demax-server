@@ -1385,6 +1385,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TestingComponent", function() { return TestingComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _services_test_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/test.service */ "./src/app/services/test.service.ts");
+/* harmony import */ var _services_auth_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/auth.service */ "./src/app/services/auth.service.ts");
+/* harmony import */ var _proposal_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../proposal.service */ "./src/app/proposal.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1396,13 +1398,18 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
+
 var TestingComponent = /** @class */ (function () {
-    function TestingComponent(uploaderService) {
+    function TestingComponent(uploaderService, auth, proposalService) {
         this.uploaderService = uploaderService;
+        this.auth = auth;
+        this.proposalService = proposalService;
     }
     TestingComponent.prototype.onPicked = function (input) {
         var _this = this;
         var file = input.files[0];
+        console.log(file.name);
         if (file) {
             this.uploaderService.upload(file).subscribe(function (msg) {
                 input.value = null;
@@ -1413,10 +1420,10 @@ var TestingComponent = /** @class */ (function () {
     TestingComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-testing',
-            template: "\n\t\t<h3>Upload file</h3>\n\t\t<form enctype=\"multipart/form-data\" method=\"post\">\n\t\t\t<div>\n\t\t\t\t<label for=\"picked\">Choose file to upload</label>\n\t\t\t\t<div>\n\t\t\t\t\t<input type=\"file\" id=\"picked\" #picked\n\t\t\t\t\t       (click)=\"message=''\"\n\t\t\t\t\t       (change)=\"onPicked(picked)\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<p *ngIf=\"message\">{{message}}</p>\n\t\t</form>\n\n\t",
+            template: "\n\t\t<h3>Upload file</h3>\n\t\t<form enctype=\"multipart/form-data\" method=\"post\">\n\t\t\t<div>\n\t\t\t\t<label for=\"picked\">Choose file to upload</label>\n\t\t\t\t<div>\n\t\t\t\t\t<input type=\"file\" id=\"picked\" #picked name=\"{{proposalService.currentProposal._id + '-' + auth.currentUser._id}}\"\n\t\t\t\t\t       (click)=\"message=''\"\n\t\t\t\t\t       (change)=\"onPicked(picked)\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<p *ngIf=\"message\">{{message}}</p>\n\t\t</form>\n\n\t",
             providers: [_services_test_service__WEBPACK_IMPORTED_MODULE_1__["TestService"]]
         }),
-        __metadata("design:paramtypes", [_services_test_service__WEBPACK_IMPORTED_MODULE_1__["TestService"]])
+        __metadata("design:paramtypes", [_services_test_service__WEBPACK_IMPORTED_MODULE_1__["TestService"], _services_auth_service__WEBPACK_IMPORTED_MODULE_2__["AuthService"], _proposal_service__WEBPACK_IMPORTED_MODULE_3__["ProposalService"]])
     ], TestingComponent);
     return TestingComponent;
 }());
@@ -2167,13 +2174,6 @@ var TestService = /** @class */ (function () {
         this.http = http;
         this.messenger = messenger;
     }
-    // If uploading multiple files, change to:
-    // upload(files: FileList) {
-    //   const formData = new FormData();
-    //   files.forEach(f => formData.append(f.name, f));
-    //   new HttpRequest('POST', '/upload/file', formData, {reportProgress: true});
-    //   ...
-    // }
     TestService.prototype.upload = function (file) {
         var _this = this;
         var formData = new FormData();
@@ -2181,29 +2181,16 @@ var TestService = /** @class */ (function () {
         if (!file) {
             return;
         }
-        // COULD HAVE WRITTEN:
-        // return this.http.post('/upload/file', file, {
-        //   reportProgress: true,
-        //   observe: 'events'
-        // }).pipe(
-        // Create the request object that POSTs the file to an upload endpoint.
-        // The `reportProgress` option tells HttpClient to listen and return
-        // XHR progress events.
         var req = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpRequest"]('POST', '/upload', formData, {
             reportProgress: true
         });
-        // The `HttpClient.request` API produces a raw event stream
-        // which includes start (sent), progress, and response events.
-        return this.http.request(req).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (event) { return _this.getEventMessage(event, file); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (message) { return _this.showProgress(message); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["last"])(), // return last (completed) message to caller
-        Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError(file)));
+        return this.http.request(req).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (event) { return _this.getEventMessage(event, file); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (message) { return _this.showProgress(message); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["last"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError(file)));
     };
-    /** Return distinct message for sent, upload progress, & response events */
     TestService.prototype.getEventMessage = function (event, file) {
         switch (event.type) {
             case _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpEventType"].Sent:
                 return "Uploading file \"" + file.name + "\" of size " + file.size + ".";
             case _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpEventType"].UploadProgress:
-                // Compute and show the % done:
                 var percentDone = Math.round(100 * event.loaded / event.total);
                 return "File \"" + file.name + "\" is " + percentDone + "% uploaded.";
             case _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpEventType"].Response:
@@ -2212,24 +2199,15 @@ var TestService = /** @class */ (function () {
                 return "File \"" + file.name + "\" surprising upload event: " + event.type + ".";
         }
     };
-    /**
-     * Returns a function that handles Http upload failures.
-     * @param file - File object for file being uploaded
-     *
-     * When no `UploadInterceptor` and no server,
-     * you'll end up here in the error handler.
-     */
     TestService.prototype.handleError = function (file) {
         var _this = this;
         var userMessage = file.name + " upload failed.";
         return function (error) {
-            // TODO: send the error to remote logging infrastructure
-            console.error(error); // log to console instead
+            console.error(error);
             var message = (error.error instanceof Error) ?
                 error.error.message :
                 "server returned code " + error.status + " with body \"" + error.error + "\"";
             _this.messenger.add(userMessage + " " + message);
-            // Let app keep running but indicate failure.
             return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(userMessage);
         };
     };
@@ -2244,11 +2222,6 @@ var TestService = /** @class */ (function () {
     return TestService;
 }());
 
-/*
-Copyright 2017-2018 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/ 
 
 
 /***/ }),
