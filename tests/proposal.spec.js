@@ -10,7 +10,7 @@ chai.use(require('chai-http')).should();
 describe('Proposals', () => {
 
 	beforeEach(done => {
-		Proposal.findOneAndRemove({}, error => {
+		Proposal.remove({}, error => {
 			done();
 		});
 	});
@@ -37,7 +37,6 @@ describe('Proposals', () => {
 				firstName: 'Joe',
 				briefSummary: 'proposal'
 			});
-
 			testProposal.validate(function(error) {
 				expect(testProposal.experimentTitle).to.exist;
 				done();

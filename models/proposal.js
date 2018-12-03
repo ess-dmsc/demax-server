@@ -8,9 +8,18 @@ const proposalSchema = new mongoose.Schema({
 	mainProposerAffiliation: String,
 	mainProposerEmail: String,
 	mainProposerPhone: String,
-	coProposer: String,
-	needByDate: {type: Date},
-	needByDateAttachment: {type: String},
+	coProposers: [
+		{
+			coProposerFirstName: String,
+			coProposerLastName: String,
+			coProposerEmail: String,
+			coProposerPhone: String,
+			coProposerAffiliation: String
+		}
+	],
+	needByDate: String,
+	needByDateMotivation: String,
+	needByDateAttachment: String,
 	lab: String,
 	dateCreated: {
 		type: Date,
@@ -20,8 +29,11 @@ const proposalSchema = new mongoose.Schema({
 	crystallization: {
 		moleculeName: String,
 		moleculeIdentifier: String,
+		molecularWeight: String,
 		oligomerizationState: String,
-		crystalStructureReferencePDF: String,
+		pbdId: String,
+		doi: String,
+		referenceAttachment: String,
 		crystallizationRequirements: String,
 		crystallizationPrecipitantComposition: String,
 		previousCrystallizationExperience: String,
@@ -37,29 +49,36 @@ const proposalSchema = new mongoose.Schema({
 	biomassDeuteration: {
 		organismProvidedByUser: String,
 		organismDetails: String,
-		organismReferencePDF: String,
+		organismReferenceAttachment: String,
 		amountNeeded: String,
-		stateOfMaterial: String,
-		amountOfMaterialMotivation: String,
+		amountNeededMotivation,
 		deuterationLevelRequired: String,
 		deuterationLevelMotivation: String
 	},
 	proteinDeuteration: {
+		moleculeName: String,
 		moleculeIdentifier: String,
-		weight: String,
+		molecularWeight: String,
 		oligomerizationState: String,
 		expressionRequirements: String,
 		moleculeOrigin: String,
 		expressionPlasmidProvidedByUser: String,
-		details: String,
+		expressionPlasmidProvidedByUserDetails: String,
 		amountNeeded: String,
 		amountNeededMotivation: String,
 		deuterationLevelRequired: String,
 		deuterationLevelMotivation: String,
 		needsPurificationSupport: String,
-		purificationExperienceReference_PDF: String,
+		needsPurificationSupportAttachment: String,
 		hasDoneUnlabeledProteinExpression: String,
+		hasDonePurification: String,
 		hasProteinPurificationExperience: String,
+		proteinDeuterationResults: String
+	},
+	bioSafety: {
+		bioSafetyContainmentLevel: String,
+		organismRisk: String,
+		organismRiskDetails: String
 	},
 	chemicalDeuteration: {
 		moleculeName: String,
@@ -67,9 +86,11 @@ const proposalSchema = new mongoose.Schema({
 		amountMotivation: String,
 		deuterationLocationAndPercentege: String,
 		deuterationLevelMotivation: String,
-		chemicalStructure: String,
-		hasPreviousProductionExperience: String
-	}
+		chemicalStructureAttachment: String,
+		hasPreparedMolecule: String,
+		hasPreparedMoleculeProtocol: String
+	},
+	proposalTemplate:String
 });
 
 module.exports = mongoose.model('Proposal', proposalSchema);
