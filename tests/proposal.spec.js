@@ -32,11 +32,8 @@ describe('Proposals', () => {
 			});
 		});
 		it('should have a firstName', function(done) {
-			const testProposal = new Proposal({
-				experimentTitle: 'firstname.lastname@mail.com',
-				firstName: 'Joe',
-				briefSummary: 'proposal'
-			});
+			const testProposal = new Proposal({experimentTitle: 'firstname.lastname@mail.com', firstName: 'Joe', briefSummary: 'proposal'});
+
 			testProposal.validate(function(error) {
 				expect(testProposal.experimentTitle).to.exist;
 				done();

@@ -51,7 +51,7 @@ const proposalSchema = new mongoose.Schema({
 		organismDetails: String,
 		organismReferenceAttachment: String,
 		amountNeeded: String,
-		amountNeededMotivation,
+		amountNeededMotivation: String,
 		deuterationLevelRequired: String,
 		deuterationLevelMotivation: String
 	},
