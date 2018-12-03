@@ -40,7 +40,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "nodemon server.js",
-    "test": "mocha tests  --timeout 10000",
+    "test": "mocha tests",
     "dev": "concurrently \"mongod\" \"ng serve --proxy-config proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/app.js\"",
     "prod": "concurrently \"mongod\" \"ng build --aot --prod && tsc -p server && node dist/server/app.js\""
   },
