@@ -376,6 +376,9 @@ connection.once('open', () => {
 		file.pipe(response);
 	});
 
+	app.get('/generate-pdf', function(request, response){
+		response.send(`<!DOCTYPE html`)
+	})
 	app.post('/pdf', (request, response) => {
 		const doc = new PDFDocument();
 		let filename = request.body.filename;
@@ -385,18 +388,8 @@ connection.once('open', () => {
 		response.setHeader('Content-type', 'application/pdf');
 		doc.fontSize(25).text(request.body.filename);
 		doc.save();
-
-		doc.circle(280, 200, 50).fill("#0094CA");
 		doc.scale(0.6).translate(470, 130).restore();
-
-		doc.text('This is the file name: ' +
-			request.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(request.body.content, {
-			width: 412,
-			align: 'justify',
-			indent: 30,
-			columns: 2,
-			height: 300,
-			ellipsis: true
+		doc.text(request.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(request.body.content, {
 		});
 		doc.y = 300;
 		const content = request.body;
