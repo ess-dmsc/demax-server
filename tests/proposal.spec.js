@@ -1,4 +1,4 @@
-const expect = require('chai').expect;
+/*const expect = require('chai').expect;
 const chai = require('chai');
 const describe = require('mocha').describe;
 const it = require('mocha').it;
@@ -34,7 +34,7 @@ describe('proposal', function() {
 	});
 });
 
-/*
+
 describe('Proposals', () => {
 
 	beforeEach(done => {
