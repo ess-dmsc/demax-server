@@ -33,7 +33,7 @@ const proposalSchema = new mongoose.Schema({
 		oligomerizationState: String,
 		pbdId: String,
 		doi: String,
-		referenceAttachment: String,
+		pbdIdReferenceAttachment: String,
 		crystallizationRequirements: String,
 		crystallizationPrecipitantComposition: String,
 		previousCrystallizationExperience: String,
@@ -90,7 +90,9 @@ const proposalSchema = new mongoose.Schema({
 		hasPreparedMolecule: String,
 		hasPreparedMoleculeProtocol: String
 	},
-	proposalTemplate:String
+	proposalTemplate:String,
+	generatedProposal: String
+
 });
 
 module.exports = mongoose.model('Proposal', proposalSchema);

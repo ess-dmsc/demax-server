@@ -1,4 +1,4 @@
-/*const assert = require('assert');
+const assert = require('assert');
 const util = require('./_util');
 const multer = require('multer');
 const temp = require('fs-temp');
@@ -115,4 +115,4 @@ describe('Upload', function () {
 			done()
 		})
 	})
-})*/
+})

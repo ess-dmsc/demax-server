@@ -34,7 +34,7 @@ app.use(express.urlencoded({
 }));
 
 app.get('/test', function(req, res) {
-	res.sendfile('./public/test.html')
+	res.sendfile('./public/test.html');
 });
 
 
@@ -69,7 +69,7 @@ connection.once('open', () => {
 		});
 	});
 
-	app.post('/upload', function(req, res) {
+	app.post('/api/upload', function(req, res) {
 		var form = new formidable.IncomingForm();
 
 		form.parse(req);
@@ -79,11 +79,12 @@ connection.once('open', () => {
 				res.status(404).send('File Not Found');
 				return;
 			}
+
 			file.path = __dirname + '/uploads/' + file.name;
 			const filename = file.name;
 
 			const writestream = await gfs.createWriteStream({
-				filename: filename
+				filename: filename,
 			});
 			try {
 				fs.createReadStream(__dirname + "/uploads/" + filename).pipe(writestream);
@@ -91,7 +92,7 @@ connection.once('open', () => {
 					console.log(file._id);
 					res.json(file._id);
 				});
-			}catch(error){
+			} catch(error) {
 				return response.status(400).json({
 					error: err.message
 				});
@@ -168,7 +169,7 @@ connection.once('open', () => {
 			});
 		});
 	});
-	app.post('/login', function(request, response) {
+	app.post('/api/login', function(request, response) {
 		User.findOne({
 			email: request.body.email
 		}, (err, user) => {
@@ -191,7 +192,7 @@ connection.once('open', () => {
 		});
 	});
 
-	app.get('/users/all', async function(request, response) {
+	app.get('/api/users/all', async function(request, response) {
 		try {
 			const docs = await User.find({});
 			response.status(200).json(docs);
@@ -201,7 +202,7 @@ connection.once('open', () => {
 			});
 		}
 	});
-	app.get('/users/count', async function(request, response) {
+	app.get('/api/users/count', async function(request, response) {
 		try {
 			const count = await User.countDocuments();
 			response.status(200).json(count);
@@ -212,7 +213,7 @@ connection.once('open', () => {
 		}
 	});
 
-	app.post('/register', async function(request, response) {
+	app.post('/api/register', async function(request, response) {
 		try {
 			const obj = await new User(request.body).save();
 			response.status(201).json(obj);
@@ -223,7 +224,7 @@ connection.once('open', () => {
 		}
 	});
 
-	app.post('/users', async function(request, response) {
+	app.post('/api/users', async function(request, response) {
 		try {
 			const obj = await new User(request.body).save();
 			response.status(201).json(obj);
@@ -235,7 +236,7 @@ connection.once('open', () => {
 	});
 
 
-	app.get('/users/:id', async function(request, response) {
+	app.get('/api/users/:id', async function(request, response) {
 		try {
 			const obj = await User.findOne({
 				_id: request.params.id
@@ -247,7 +248,7 @@ connection.once('open', () => {
 			});
 		}
 	});
-	app.put('/users/:id', async function(request, response) {
+	app.put('/api/users/:id', async function(request, response) {
 		try {
 			await User.findOneAndUpdate({
 				_id: request.params.id
@@ -260,7 +261,7 @@ connection.once('open', () => {
 		}
 
 	});
-	app.delete('/users/:id', async function(request, response) {
+	app.delete('/api/users/:id', async function(request, response) {
 		try {
 			await User.findOneAndDelete({
 				_id: request.params.id
@@ -273,7 +274,7 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/proposals', async function(request, response) {
+	app.get('/api/proposals', async function(request, response) {
 		try {
 			const docs = await Proposal.find({});
 			response.status(200).json(docs);
@@ -284,7 +285,7 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/proposals/count', async function(request, response) {
+	app.get('/api/proposals/count', async function(request, response) {
 		try {
 			const count = await Proposal.countDocuments();
 			response.status(200).json(count);
@@ -294,7 +295,7 @@ connection.once('open', () => {
 			});
 		}
 	});
-	app.post('/proposals', async function(request, response) {
+	app.post('/api/proposals', async function(request, response) {
 		try {
 			const obj = await new Proposal(request.body).save();
 			response.status(201).json(obj);
@@ -305,7 +306,7 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/proposals/:id', async function(request, response) {
+	app.get('/api/proposals/:id', async function(request, response) {
 		try {
 			const obj = await Proposal.findOne({
 				_id: request.params.id
@@ -317,7 +318,7 @@ connection.once('open', () => {
 			});
 		}
 	});
-	app.put('/proposals/:id', async function(request, response) {
+	app.put('/api/proposals/:id', async function(request, response) {
 		try {
 			await Proposal.findOneAndUpdate({
 				_id: request.params.id
@@ -330,7 +331,7 @@ connection.once('open', () => {
 		}
 
 	});
-	app.delete('/proposals/:id', async function(request, response) {
+	app.delete('/api/proposals/:id', async function(request, response) {
 		try {
 			await Proposal.findOneAndDelete({
 				_id: request.params.id
@@ -360,7 +361,7 @@ connection.once('open', () => {
 	};
 	const fileWord = fs.readFileSync(paths.word);
 	const filePDF = fs.readFileSync(paths.pdf);
-	app.get('/pdf/attachment', function(request, response, next) {
+	app.get('/api/pdf/attachment', function(request, response, next) {
 		const file = fs.createReadStream(paths.pdf);
 		const stat = fs.statSync(paths.pdf);
 		response.setHeader('Content-Length', stat.size);
@@ -368,7 +369,7 @@ connection.once('open', () => {
 		response.setHeader('Content-Disposition', 'attachment; filename=word.pdf');
 		file.pipe(response);
 	});
-	app.get('/word/attachment', function(request, response, next) {
+	app.get('/api/word/attachment', function(request, response, next) {
 		const file = fs.createReadStream(paths.word);
 		const stat = fs.statSync(paths.word);
 		response.setHeader('Content-Length', stat.size);
@@ -377,10 +378,10 @@ connection.once('open', () => {
 		file.pipe(response);
 	});
 
-	app.get('/generate-pdf', function(request, response){
-		response.send(`<!DOCTYPE html`)
-	})
-	app.post('/pdf', (request, response) => {
+	app.get('/api/generate-pdf', function(request, response) {
+		response.send(`<!DOCTYPE html`);
+	});
+	app.post('/api/pdf', (request, response) => {
 		const doc = new PDFDocument();
 		let filename = request.body.filename;
 		filename = encodeURIComponent(filename) + '.pdf';
@@ -390,8 +391,7 @@ connection.once('open', () => {
 		doc.fontSize(25).text(request.body.filename);
 		doc.save();
 		doc.scale(0.6).translate(470, 130).restore();
-		doc.text(request.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(request.body.content, {
-		});
+		doc.text(request.body.filename, 100, 300).font('Times-Roman', 13).moveDown().text(request.body.content, {});
 		doc.y = 300;
 		const content = request.body;
 		doc.y = 300;
@@ -400,18 +400,22 @@ connection.once('open', () => {
 		doc.end();
 	});
 
-	app.get('/pdf/merge', (request, response) => {
-		merge([ './uploads/file-1542185972868..pdf', './uploads/file-1542205573137..pdf' ],
-			'./merges/merged-pdf.pdf',
-			function(err) {
-
-				if(err)
-					return console.log(err);
-
-				console.log('Success');
-
+	app.get('/api/pdf/merge', (request, response) => {
+		merge([ './tests/files/pdf-merge/proposalTemplate.pdf',
+				'./tests/files/pdf-merge/generatedProposal.pdf',
+				'./tests/files/pdf-merge/needByDateAttachment.pdf',
+				'./tests/files/pdf-merge/pbdIdReferenceAttachment.pdf',
+				'./tests/files/pdf-merge/organismReferenceAttachment.pdf',
+				'./tests/files/pdf-merge/needsPurificationSupportAttachment.pdf',
+				'./tests/files/pdf-merge/chemicalStructureAttachment.pdf' ],
+			'./tests/files/pdf-merge/mergedPdfFile.pdf',
+			function(error) {
+				if(error) {
+					console.log(error);
+					return console.log(error);
+				}
 			});
-		response.send('Success');
+		response.send('./tests/files/pdf-merge/mergedPdfFile.pdf');
 
 	});
 
@@ -420,5 +424,3 @@ connection.once('open', () => {
 		console.log(Date.now() + "\nSERVICE_START:SUCCESS\nHOST: 127.0.0.1\nPORT: " + port + "\n");
 	});
 });
-
-module.exports = app.listen(3000);
