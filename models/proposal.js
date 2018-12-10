@@ -1,6 +1,9 @@
+const shortid = require('shortid');
 const mongoose = require('mongoose');
 
 const proposalSchema = new mongoose.Schema({
+	proposalId: {type: String, unique: true, default: shortid.generate},
+	dateCreated: {type: Date, default: Date.now()},
 	experimentTitle: String,
 	briefSummary: String,
 	mainProposerFirstName: String,
@@ -14,18 +17,16 @@ const proposalSchema = new mongoose.Schema({
 			coProposerLastName: String,
 			coProposerEmail: String,
 			coProposerPhone: String,
-			coProposerAffiliation: String
+			coProposerAffiliation: String,
 		}
 	],
 	needByDate: String,
 	needByDateMotivation: String,
-	needByDateAttachment: String,
 	lab: String,
-	dateCreated: {
-		type: Date,
-		default:
-			Date.now()
-	},
+	wantsCrystallization: Boolean,
+	wantsBiomassDeuteration: Boolean,
+	wantsProteinDeuteration: Boolean,
+	wantsChemicalDeuteration: Boolean,
 	crystallization: {
 		moleculeName: String,
 		moleculeIdentifier: String,
@@ -33,7 +34,6 @@ const proposalSchema = new mongoose.Schema({
 		oligomerizationState: String,
 		pbdId: String,
 		doi: String,
-		pbdIdReferenceAttachment: String,
 		crystallizationRequirements: String,
 		crystallizationPrecipitantComposition: String,
 		previousCrystallizationExperience: String,
@@ -49,7 +49,6 @@ const proposalSchema = new mongoose.Schema({
 	biomassDeuteration: {
 		organismProvidedByUser: String,
 		organismDetails: String,
-		organismReferenceAttachment: String,
 		amountNeeded: String,
 		amountNeededMotivation: String,
 		deuterationLevelRequired: String,
@@ -69,7 +68,6 @@ const proposalSchema = new mongoose.Schema({
 		deuterationLevelRequired: String,
 		deuterationLevelMotivation: String,
 		needsPurificationSupport: String,
-		needsPurificationSupportAttachment: String,
 		hasDoneUnlabeledProteinExpression: String,
 		hasDonePurification: String,
 		hasProteinPurificationExperience: String,
@@ -86,12 +84,17 @@ const proposalSchema = new mongoose.Schema({
 		amountMotivation: String,
 		deuterationLocationAndPercentege: String,
 		deuterationLevelMotivation: String,
-		chemicalStructureAttachment: String,
 		hasPreparedMolecule: String,
 		hasPreparedMoleculeProtocol: String
 	},
-	proposalTemplate:String,
-	generatedProposal: String
+	needByDateAttachment: String,
+	pbdIdReferenceAttachment: String,
+	organismReferenceAttachment: String,
+	needsPurificationSupportAttachment: String,
+	chemicalStructureAttachment: String,
+	proposalTemplate: String,
+	generatedProposal: String,
+	mergedProposal: String
 
 });
 
