@@ -94,7 +94,12 @@ const proposalSchema = new mongoose.Schema({
 	chemicalStructureAttachment: String,
 	proposalTemplate: String,
 	generatedProposal: String,
-	mergedProposal: String
+	mergedProposal: String,
+	attachments: [
+		{
+			filename: String
+		}
+	]
 
 });
 

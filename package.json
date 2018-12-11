@@ -23,6 +23,7 @@
     "fs-temp": "^1.1.2",
     "gridfs-stream": "^1.1.1",
     "jsonwebtoken": "^8.4.0",
+    "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.14",
