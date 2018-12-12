@@ -61,30 +61,79 @@ connection.once('open', () => {
 
 	const upload = multer({storage: storage});
 
-	app.post('/api/file/upload', upload.single("file"), async function(request, response) {
-		console.log(request.body.proposalId + '\n' + request.body.name)
-		let key;
-		if(request.body.name === 'proposalTemplate'){
-			key = proposalTemplate;
+	app.post('/api/file/upload/needByDateAttachment', upload.single("file"), async function(request, response) {
+		try{
+			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{needByDateAttachment: request.file.path});
 		}
-		if(request.body.name === 'needByDateAttachment'){
-			key = needByDateAttachment;
+		catch(error){
+			console.log(error)
 		}
-		if(request.body.name === 'needsPurificationSupportAttachment'){
-			key = needsPurificationSupportAttachment;
-		}
-		if(request.body.name === 'organismReferenceAttachment'){
-			key = organismReferenceAttachment;
-		}
-		if(request.body.name === 'chemicalStructureAttachment'){
-			key = chemicalStructureAttachment;
-		}
-console.log(key)
-		let proposal = Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
-		{key: request.file.path});
-
 		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
 	});
+	app.post('/api/file/upload/pbdIdReferenceAttachment', upload.single("file"), async function(request, response) {
+		try{
+			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{pbdIdReferenceAttachment: request.file.path});
+		}
+		catch(error){
+			console.log(error)
+		}
+		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+	});
+	app.post('/api/file/upload/organismReferenceAttachment', upload.single("file"), async function(request, response) {
+		try{
+			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{organismReferenceAttachment: request.file.path});
+		}
+		catch(error){
+			console.log(error)
+		}
+		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+	});
+	app.post('/api/file/upload/needsPurificationSupportAttachment', upload.single("file"), async function(request, response) {
+		try{
+			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{needsPurificationSupportAttachment: request.file.path});
+		}
+		catch(error){
+			console.log(error)
+		}
+		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+	});
+	app.post('/api/file/upload/chemicalStructureAttachment', upload.single("file"), async function(request, response) {
+		try{
+			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{chemicalStructureAttachment: request.file.path});
+		}
+		catch(error){
+			console.log(error)
+		}
+		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+	});
+	app.post('/api/file/upload/moleculePreparationReferenceArticle', upload.single("file"), async function(request, response) {
+		try{
+			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{moleculePreparationReferenceArticle: request.file.path});
+		}
+		catch(error){
+			console.log(error)
+		}
+		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+	});
+	app.post('/api/file/upload/proposalTemplate', upload.single("file"), async function(request, response) {
+		try{
+			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{proposalTemplate: request.file.path});
+		}
+		catch(error){
+			console.log(error)
+		}
+		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+	});
+
+
+
 	app.get('/api/file/all', function(request, response) {
 		fs.readdir(uploadFolder, (err, files) => {
 			for(let i = 0; i < files.length; ++i) {
@@ -105,31 +154,6 @@ console.log(key)
 			response.send('File successfully deleted');
 		});
 	});
-
-	app.get('/upload', function(request, response) {
-		response.send(`
-<!DOCTYPE html>
-<html>
-<style>
-div{
-padding: 2rem;
-
-}
-</style>
-<body>
-<form action="/api/gridfs/upload" method="post">
-<label>Proposal template</label>
-<input type="file" name="file">
-</div>
-
-
-<button type="submit">Upload</button>
-</form>
-
-</body>
-</html>`);
-	});
-
 
 	app.get('/api/file/upload2', (request, response) => {
 
@@ -320,7 +344,7 @@ padding: 2rem;
 		const doc = new PDFDocument();
 		try {
 			let proposal = await Proposal.findOne({proposalId: request.params.id});
-			let filename = proposal.proposalId + '-generated';
+			let filename = proposal.proposalId + '';
 			filename = encodeURIComponent(filename) + '.pdf';
 
 			response.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
@@ -334,7 +358,6 @@ padding: 2rem;
 			const regular = './demax-client/src/assets/fonts/titillium-regular-webfont.woff';
 			const italic = './demax-client/src/assets/fonts/titillium-regularitalic-webfont.woff';
 			const semibold = './demax-client/src/assets/fonts/titillium-semibold-webfont.woff';
-
 			doc.font(semibold, 25).text(proposal.experimentTitle).moveDown().fontSize(14).text('Brief summary: ').font(regular, 12).text(proposal.briefSummary).moveDown().font(semibold, 14).text('Main proposer:').font(regular, 12).text(proposal.mainProposerFirstName + ' ' + proposal.mainProposerLastName).text(proposal.mainProposerAffiliation).text(proposal.mainProposerEmail).text(proposal.mainProposerPhone).moveDown().font(semibold, 14).text('Co-proposers:').font(semibold, 14).text('Need-by-date: ').font(regular, 12).text(proposal.needByDate).font(regular, 12).text('Motivation: ' + proposal.needByDateMotivation).moveDown();
 			if(proposal.wantsCrystallization) {
 				doc.addPage().font(semibold, 18).text('(A) CRYSTALLIZATION').moveDown().font(italic, 12).text('Required information to include in “Practical Considerations” section of your proposal: SDS-PAGE and chromatogram of protein purification to indicate yield & purity; photo of crystal.').moveDown().font(semibold, 14).text('Name of molecule to be crystallized (e.g. superoxide dismutase): ').font(regular, 12).text(proposal.crystallization.moleculeName).font(semibold, 14).text('FASTA sequence or Uniprot number: ').font(regular, 12).text(proposal.crystallization.moleculeIdentifier).font(semibold, 14).text('Molecular weight (kDA): ').font(regular, 12).text(proposal.crystallization.molecularWeight).font(semibold, 14).text('PDB ID of crystal structure: ').font(regular, 12).text(proposal.crystallization.pbdId).font(semibold, 14).text('DOI: ').font(regular, 12).text(proposal.crystallization.doi).moveDown().font(semibold, 14).text('Does the protein have any co-factors or ligands required for crystallization? Specify: ').font(regular, 12).text(proposal.crystallization.crystallizationRequirements).moveDown().font(semibold, 14).text('Known crystallization precipitant composition (incl. buffer, salt, additives, pH): ').font(regular, 12).text(proposal.crystallization.crystallizationPrecipitantComposition).moveDown().font(semibold, 14).text('What crystallization method, volume, and temperature have you used in the past? (e.g. vapour diffusion, 10 L drops, room temperature): ').font(regular, 12).text(proposal.crystallization.previousCrystallizationExperience).moveDown().font(semibold, 14).text('How long do your crystals take to appear?: ').font(regular, 12).text(proposal.crystallization.estimatedCrystallizationProductionTime).moveDown().font(semibold, 14).text('What is the typical size of your crystal (μm x μm x μm): ').font(regular, 12).text(proposal.crystallization.typicalCrystalSize).moveDown().font(semibold, 16).text('Details from protein preparation').font(semibold, 14).text('Typical yield (mg per liter of culture):').font(regular, 12).text(proposal.crystallization.typicalYieldMgPerLiter).moveDown().font(semibold, 14).text('Storage conditions (e.g. stable at 4 C or frozen at -20 C):').font(regular, 12).text(proposal.crystallization.typicalYieldMgPerLiter).moveDown().font(semibold, 14).text('Stability:').font(regular, 12).text(proposal.crystallization.stability).moveDown().font(semibold, 14).text('What buffer is your protein in?:').font(regular, 12).text(proposal.crystallization.buffer).moveDown().font(semibold, 14).text('Is your protein partially or fully deuterated?:').font(regular, 12).text(proposal.crystallization.levelOfDeuteration).moveDown().font(semibold, 14).text('What protein concentration do you usually use for crystallization: ').font(regular, 12).text(proposal.crystallization.typicalProteinConcentrationUsed).moveDown();
@@ -362,20 +385,38 @@ padding: 2rem;
 	});
 
 
-	app.get('/api/pdf/merge/:id', async function(request, response) {
-		let proposal = Proposal.findOne({proposalId: request.params.id});
-
+	app.get('/api/pdf/merge/:proposalId', async function(request, response) {
 		try {
-			const mergedFile = await merge(proposal.attachments, './merged/' + proposal.proposalId + '.pdf',
+			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+
+//TODO	if(proposal.proposalTemplate === ''){
+//give mock file
+
+			merge(
+				[ 	proposal.proposalTemplate,
+					proposal.generatedProposal,
+					proposal.needByDateAttachment,
+					proposal.pbdIdReferenceAttachment,
+					proposal.organismReferenceAttachment,
+					proposal.needsPurificationSupportAttachment,
+					proposal.chemicalStructureAttachment,
+					proposal.moleculePreparationReferenceArticle,
+				], "./merged/" + proposal.proposalId + '.pdf',
 				function(error) {
 					if(error) {
 						console.log(error);
 						return error;
 					}
-				});
+					const file = fs.createReadStream("./merged/" + proposal.proposalId + '.pdf');
+					const stat = fs.statSync("./merged/" + proposal.proposalId + '.pdf');
+					response.setHeader('Content-Length', stat.size);
+					response.setHeader('Content-Type', 'application/pdf');
+					response.setHeader('Content-Disposition', 'attachment; filename=' + proposal.proposalId + '.pdf');
+					file.pipe(response);
+				})
+		}catch(error){
+			console.log(error)
 		}
-		catch(error) {console.log(error);}
-
 	});
 
 	app.post('/api/users/login', function(request, response) {

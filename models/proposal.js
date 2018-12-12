@@ -87,19 +87,17 @@ const proposalSchema = new mongoose.Schema({
 		hasPreparedMolecule: String,
 		hasPreparedMoleculeProtocol: String
 	},
+	attachments:[],
 	needByDateAttachment: String,
 	pbdIdReferenceAttachment: String,
 	organismReferenceAttachment: String,
 	needsPurificationSupportAttachment: String,
 	chemicalStructureAttachment: String,
+	moleculePreparationReferenceArticle: String,
 	proposalTemplate: String,
+
 	generatedProposal: String,
 	mergedProposal: String,
-	attachments: [
-		{
-			filename: String
-		}
-	]
 
 });
 
