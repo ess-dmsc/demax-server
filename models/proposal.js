@@ -6,23 +6,31 @@ const proposalSchema = new mongoose.Schema({
 	dateCreated: {type: Date, default: Date.now()},
 	experimentTitle: String,
 	briefSummary: String,
-	mainProposerFirstName: String,
-	mainProposerLastName: String,
-	mainProposerAffiliation: String,
-	mainProposerEmail: String,
-	mainProposerPhone: String,
+	mainProposer: {
+		firstName: String,
+		lastName: String,
+		email: String,
+		phone: String,
+		affiliation: {
+			name: String,
+			street: String,
+			zipCode: String,
+			country: String
+		}
+	},
 	coProposers: [
 		{
-			coProposerFirstName: String,
-			coProposerLastName: String,
-			coProposerEmail: String,
-			coProposerPhone: String,
-			coProposerAffiliation: String,
+			firstName: String,
+			lastName: String,
+			email: String,
+			phone: String,
+			affiliation: String
 		}
 	],
 	needByDate: String,
 	needByDateMotivation: String,
 	lab: String,
+	linksWithIndustry: Boolean,
 	wantsCrystallization: Boolean,
 	wantsBiomassDeuteration: Boolean,
 	wantsProteinDeuteration: Boolean,
@@ -43,16 +51,18 @@ const proposalSchema = new mongoose.Schema({
 		storageConditions: String,
 		stability: String,
 		buffer: String,
-		levelOfDeuteration: String,
-		typicalProteinConcentrationUsed: String
+		levelOfDeuteration: Boolean,
+		typicalProteinConcentrationUsed: String,
+		other: String
 	},
 	biomassDeuteration: {
-		organismProvidedByUser: String,
+		organismProvidedByUser: Boolean,
 		organismDetails: String,
 		amountNeeded: String,
 		amountNeededMotivation: String,
-		deuterationLevelRequired: String,
-		deuterationLevelMotivation: String
+		deuterationLevelRequired: Boolean,
+		deuterationLevelMotivation: String,
+		other: String
 	},
 	proteinDeuteration: {
 		moleculeName: String,
@@ -61,22 +71,28 @@ const proposalSchema = new mongoose.Schema({
 		oligomerizationState: String,
 		expressionRequirements: String,
 		moleculeOrigin: String,
-		expressionPlasmidProvidedByUser: String,
+		expressionPlasmidProvidedByUser: Boolean,
 		expressionPlasmidProvidedByUserDetails: String,
 		amountNeeded: String,
 		amountNeededMotivation: String,
 		deuterationLevelRequired: String,
 		deuterationLevelMotivation: String,
-		needsPurificationSupport: String,
-		hasDoneUnlabeledProteinExpression: String,
-		hasDonePurification: String,
-		hasProteinPurificationExperience: String,
-		proteinDeuterationResults: String
+		needsPurificationSupport: Boolean,
+		hasDoneUnlabeledProteinExpression: Boolean,
+		typicalYield: String,
+		hasDonePurification: Boolean,
+		hasProteinPurificationExperience: Boolean,
+		proteinDeuterationResults: String,
+		other: String
 	},
 	bioSafety: {
-		bioSafetyContainmentLevel: String,
-		organismRisk: String,
-		organismRiskDetails: String
+		bioSafetyContainmentLevel: {
+			l1: Boolean,
+			l2: Boolean
+		},
+		organismRisk: Boolean,
+		organismRiskDetails: String,
+		other: String
 	},
 	chemicalDeuteration: {
 		moleculeName: String,
@@ -85,9 +101,11 @@ const proposalSchema = new mongoose.Schema({
 		deuterationLocationAndPercentege: String,
 		deuterationLevelMotivation: String,
 		hasPreparedMolecule: String,
-		hasPreparedMoleculeProtocol: String
+		hasPreparedMoleculeProtocol: String,
+		other: String
 	},
-	attachments:[],
+	submitted: Boolean,
+	other: String,
 	needByDateAttachment: String,
 	pbdIdReferenceAttachment: String,
 	organismReferenceAttachment: String,
@@ -95,7 +113,6 @@ const proposalSchema = new mongoose.Schema({
 	chemicalStructureAttachment: String,
 	moleculePreparationReferenceArticle: String,
 	proposalTemplate: String,
-
 	generatedProposal: String,
 	mergedProposal: String,
 

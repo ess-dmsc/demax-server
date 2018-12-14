@@ -61,6 +61,18 @@ connection.once('open', () => {
 
 	const upload = multer({storage: storage});
 
+	app.post('/api/file/:proposalId/:fileId', upload.single("file"), async function(request, response) {
+		try {
+
+			let proposal = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{needByDateAttachment: `"./${request.file.path}"`});
+		}
+		catch(error) {
+			console.log(error);
+		}
+		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+	});
+
 	app.post('/api/file/upload/needByDateAttachment', upload.single("file"), async function(request, response) {
 		try {
 			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
@@ -325,9 +337,6 @@ connection.once('open', () => {
 		file.pipe(response);
 	});
 
-	app.get('/api/generate-pdf', function(request, response) {
-		response.send(`<!DOCTYPE html`);
-	});
 	app.get('/api/pdf/:id', async function(request, response) {
 		const doc = new PDFDocument();
 		try {
@@ -356,10 +365,36 @@ connection.once('open', () => {
 			doc.save();
 			doc.pipe(fs.createWriteStream('../files/uploads/' + proposal.proposalId + '_generatedProposal.pdf'));
 			let generatedDoc = doc.pipe(fs.createWriteStream('../files/uploads/' + proposal.proposalId + '.pdf'));
-			await Proposal.findOneAndUpdate({proposalId: request.params.id}, {generatedProposal: `"./${generatedDoc.path}"`});
-			doc.pipe(response);
 			doc.end();
-		} catch(error) {
+			console.log(typeof(generatedDoc.path));
+			console.log(generatedDoc.path);
+
+			await proposal.update({generatedProposal: `"${generatedDoc.path}"`})
+			console.log('this is here' + proposal.generatedProposal)
+			//TODO check file exists
+				merge(
+					[ proposal.proposalTemplate,
+						proposal.generatedProposal,
+						proposal.needByDateAttachment,
+						proposal.pbdIdReferenceAttachment,
+						proposal.organismReferenceAttachment,
+						proposal.needsPurificationSupportAttachment,
+						proposal.chemicalStructureAttachment,
+						proposal.moleculePreparationReferenceArticle,
+					], "../files/merged/" + proposal.proposalId + '.pdf',
+					function(error) {
+						if(error) {
+							console.log(error);
+							return error;
+						}
+						const file = fs.createReadStream("../files/merged/" + proposal.proposalId + '.pdf');
+						const stat = fs.statSync("../files/merged/" + proposal.proposalId + '.pdf');
+						response.setHeader('Content-Length', stat.size);
+						response.setHeader('Content-Type', 'application/pdf');
+						response.setHeader('Content-Disposition', 'attachment; filename=' + proposal.proposalId + '.pdf');
+						file.pipe(response);
+					});
+			}catch(error) {
 			console.log(error);
 		}
 	});
