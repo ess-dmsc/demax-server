@@ -51,7 +51,7 @@ const proposalSchema = new mongoose.Schema({
 		storageConditions: String,
 		stability: String,
 		buffer: String,
-		levelOfDeuteration: Boolean,
+		levelOfDeuteration: String,
 		typicalProteinConcentrationUsed: String,
 		other: String
 	},
