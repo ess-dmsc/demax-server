@@ -6,31 +6,28 @@ const proposalSchema = new mongoose.Schema({
 	dateCreated: {type: Date, default: Date.now()},
 	experimentTitle: String,
 	briefSummary: String,
-	mainProposer: {
-		firstName: String,
-		lastName: String,
-		email: String,
-		phone: String,
-		affiliation: {
-			name: String,
-			street: String,
-			zipCode: String,
-			country: String
-		}
-	},
+	mainProposerFirstName: String,
+	mainProposerLastName: String,
+	mainProposerEmail: String,
+	mainProposerPhone: String,
+	mainProposerAffiliationName: String,
+	mainProposerAffiliationStreet: String,
+	mainProposerAffiliationZipCode: String,
+	mainProposerAffiliationCountry: String,
 	coProposers: [
 		{
-			firstName: String,
-			lastName: String,
-			email: String,
-			phone: String,
-			affiliation: String
+			coProposerFirstName: String,
+			coProposerLastName: String,
+			coProposerEmail: String,
+			coProposerPhone: String,
+			coProposerAffiliation: String
 		}
 	],
 	needByDate: String,
 	needByDateMotivation: String,
 	lab: String,
 	linksWithIndustry: Boolean,
+	workTowardsStudentsDegree: Boolean,
 	wantsCrystallization: Boolean,
 	wantsBiomassDeuteration: Boolean,
 	wantsProteinDeuteration: Boolean,
@@ -60,7 +57,7 @@ const proposalSchema = new mongoose.Schema({
 		organismDetails: String,
 		amountNeeded: String,
 		amountNeededMotivation: String,
-		deuterationLevelRequired: Boolean,
+		deuterationLevelRequired: String,
 		deuterationLevelMotivation: String,
 		other: String
 	},
@@ -86,10 +83,7 @@ const proposalSchema = new mongoose.Schema({
 		other: String
 	},
 	bioSafety: {
-		bioSafetyContainmentLevel: {
-			l1: Boolean,
-			l2: Boolean
-		},
+		bioSafetyContainmentLevel: String,
 		organismRisk: Boolean,
 		organismRiskDetails: String,
 		other: String
