@@ -98,7 +98,7 @@ const proposalSchema = new mongoose.Schema({
 		hasPreparedMoleculeProtocol: String,
 		other: String
 	},
-	submitted: Boolean,
+	submitted: String,
 	other: String,
 	needByDateAttachment: String,
 	pbdIdReferenceAttachment: String,

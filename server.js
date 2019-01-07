@@ -15,10 +15,10 @@ const merge = require('easy-pdf-merge');
 let GridFsStorage = require('multer-gridfs-storage');
 let gridfs = require('gridfs-stream');
 const uploadFolder = '../files/uploads/';
-const bold = '../demax-client/src/assets/fonts/titillium-bold-webfont.woff';
-const regular = '../demax-client/src/assets/fonts/titillium-regular-webfont.woff';
-const italic = '../demax-client/src/assets/fonts/titillium-regularitalic-webfont.woff';
-const semibold = '../demax-client/src/assets/fonts/titillium-semibold-webfont.woff';
+const bold = './fonts/titillium-bold-webfont.woff';
+const regular = './fonts/titillium-regular-webfont.woff';
+const italic = './fonts/titillium-regularitalic-webfont.woff';
+const semibold = './fonts/titillium-semibold-webfont.woff';
 const app = express();
 
 app.use(morgan('dev'));
@@ -326,15 +326,17 @@ connection.once('open', () => {
 
 	app.use(express.static('../public'));
 
-	const deuterationTemplate = fs.readFileSync('../files/resources/DEMAX_proposal_template.docx');
-
-	app.get('/api/pdf/attachment', function(request, response, next) {
-		const file = fs.createReadStream(deuterationTemplate);
-		const stat = fs.statSync(deuterationTemplate);
-		response.setHeader('Content-Length', stat.size);
-		response.setHeader('Content-Type', 'application/pdf');
-		response.setHeader('Content-Disposition', 'attachment; filename=word.pdf');
-		file.pipe(response);
+	const paths = {
+		word: path.join(__dirname, '../files/resources/', 'DEMAX_proposal_template.docx')
+	};
+	const fileWord = fs.readFileSync(paths.word);
+	app.get('/word/attachment', function(req, res, next) {
+		const file = fs.createReadStream(paths.word);
+		const stat = fs.statSync(paths.word);
+		res.setHeader('Content-Length', stat.size);
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+		res.setHeader('Content-Disposition', 'attachment; filename=DEMAX_proposal_template.docx');
+		file.pipe(res);
 	});
 
 	app.get('/api/pdf/:id', async function(request, response) {
@@ -351,158 +353,28 @@ connection.once('open', () => {
 			doc.info[ 'Title' ] = proposal.proposalId + '.pdf';
 			doc.info[ 'Author' ] = proposal.mainProposerFirstName + ' ' + proposal.mainProposerLastName;
 
-			doc.font(semibold, 25).text(proposal.experimentTitle).moveDown()
-			.fontSize(14).text('Brief summary: ').font(regular, 12).text(proposal.briefSummary).moveDown()
-			.font(semibold, 14).text('Main proposer:').font(regular, 12).text(proposal.mainProposerFirstName + ' ' + proposal.mainProposerLastName).text(proposal.mainProposerAffiliation)
-			.text(proposal.mainProposerEmail).text(proposal.mainProposerPhone).moveDown()
-			.font(semibold, 14).text('Co-proposers:').font(semibold, 14).text('Need-by-date: ')
-			.font(regular, 12).text(proposal.needByDate).font(regular, 12).text('Motivation: ' + proposal.needByDateMotivation).moveDown();
+			doc.font(semibold, 25).text(proposal.experimentTitle).moveDown().fontSize(14).text('Brief summary: ').font(regular, 12).text(proposal.briefSummary).moveDown().font(semibold, 14).text('Main proposer:').font(regular, 12).text(proposal.mainProposer.firstName + ' ' + proposal.mainProposer.lastname).text(proposal.mainProposer.affiliation).text(proposal.mainProposer.email).text(proposal.mainProposer.phone).moveDown().font(semibold, 14).text('Co-proposers:').font(semibold, 14).text('Need-by-date: ').font(regular, 12).text(proposal.needByDate).font(regular, 12).text('Motivation: ' + proposal.needByDateMotivation).moveDown();
 
-			doc.addPage().font(semibold, 18).text('(A) CRYSTALLIZATION').moveDown()
-			.font(italic, 12).text('Required information to include in “Practical Considerations” section of your proposal: SDS-PAGE and chromatogram of protein purification to indicate yield & purity; photo of crystal.').moveDown()
-			.font(semibold, 14).text('Name of molecule to be crystallized (e.g. superoxide dismutase): ')
-			.font(regular, 12).text(proposal.crystallization.moleculeName)
-			.font(semibold, 14).text('FASTA sequence or Uniprot number: ')
-			.font(regular, 12).text(proposal.crystallization.moleculeIdentifier)
-			.font(semibold, 14).text('Molecular weight (kDA): ')
-			.font(regular, 12).text(proposal.crystallization.molecularWeight)
-			.font(semibold, 14).text('PDB ID of crystal structure: ')
-			.font(regular, 12).text(proposal.crystallization.pbdId)
-			.font(semibold, 14).text('DOI: ')
-			.font(regular, 12).text(proposal.crystallization.doi).moveDown()
-			.font(semibold, 14).text('Does the protein have any co-factors or ligands required for crystallization? Specify: ')
-			.font(regular, 12).text(proposal.crystallization.crystallizationRequirements).moveDown()
-			.font(semibold, 14).text('Known crystallization precipitant composition (incl. buffer, salt, additives, pH): ')
-			.font(regular, 12).text(proposal.crystallization.crystallizationPrecipitantComposition).moveDown()
-			.font(semibold, 14).text('What crystallization method, volume, and temperature have you used in the past? (e.g. vapour diffusion, 10 L drops, room temperature): ')
-			.font(regular, 12).text(proposal.crystallization.previousCrystallizationExperience).moveDown()
-			.font(semibold, 14).text('How long do your crystals take to appear?: ')
-			.font(regular, 12).text(proposal.crystallization.estimatedCrystallizationProductionTime).moveDown()
-			.font(semibold, 14).text('What is the typical size of your crystal (μm x μm x μm): ')
-			.font(regular, 12).text(proposal.crystallization.typicalCrystalSize).moveDown()
-			.font(semibold, 16).text('Details from protein preparation')
-			.font(semibold, 14).text('Typical yield (mg per liter of culture):')
-			.font(regular, 12).text(proposal.crystallization.typicalYieldMgPerLiter).moveDown()
-			.font(semibold, 14).text('Storage conditions (e.g. stable at 4 C or frozen at -20 C):')
-			.font(regular, 12).text(proposal.crystallization.typicalYieldMgPerLiter).moveDown()
-			.font(semibold, 14).text('Stability:')
-			.font(regular, 12).text(proposal.crystallization.stability).moveDown()
-			.font(semibold, 14).text('What buffer is your protein in?:')
-			.font(regular, 12).text(proposal.crystallization.buffer).moveDown()
-			.font(semibold, 14).text('Is your protein partially or fully deuterated?:')
-			.font(regular, 12).text(proposal.crystallization.levelOfDeuteration).moveDown()
-			.font(semibold, 14).text('What protein concentration do you usually use for crystallization: ')
-			.font(regular, 12).text(proposal.crystallization.typicalProteinConcentrationUsed).moveDown();
-			doc.addPage()
-			.font(semibold, 18).text('(B) BIOLOGICAL DEUTERATION').moveDown()
-			.font(italic, 12).text('If the protein is to be purified by us, please remember to include a chromatogram from purification and a picture of SDS-PAGE that indicates MW and purity in your science case.')
-			.font(semibold, 16).text('For biomass').moveDown()
-			.font(semibold, 14).text('Will user provide the organism for us to grow under deuterated conditions?')
-			.font(regular, 12).text(proposal.biomassDeuteration.organismProvidedByUser).moveDown()
-			.font(semibold, 14).text('What is the organism?')
-			.font(regular, 12).text(proposal.biomassDeuteration.organismDetails).moveDown()
-			.font(semibold, 14).text('Please attach a reference or protocol of culture conditions and media composition')
-			.font(regular, 12).text(proposal.biomassDeuteration.organismReferenceAttachment).moveDown()
-			.font(semibold, 14).text('How much material do you need (indicate wet or dry mass)')
-			.font(regular, 12).text(proposal.biomassDeuteration.amountNeeded).moveDown()
-			.font(semibold, 14).text('Justify amount')
-			.font(regular, 12).text(proposal.biomassDeuteration.amountNeededMotivation).moveDown()
-			.font(semibold, 14).text('Level of deuteration required:')
-			.font(regular, 12).text(proposal.biomassDeuteration.deuterationLevelRequired).moveDown()
-			.font(semibold, 14).text('Justify level of D incorporation')
-			.font(regular, 12).text(proposal.biomassDeuteration.deuterationLevelMotivation).moveDown();
+			doc.addPage().font(semibold, 18).text('(A) CRYSTALLIZATION').moveDown().font(italic, 12).text('Required information to include in “Practical Considerations” section of your proposal: SDS-PAGE and chromatogram of protein purification to indicate yield & purity; photo of crystal.').moveDown().font(semibold, 14).text('Name of molecule to be crystallized (e.g. superoxide dismutase): ').font(regular, 12).text(proposal.crystallization.moleculeName).font(semibold, 14).text('FASTA sequence or Uniprot number: ').font(regular, 12).text(proposal.crystallization.moleculeIdentifier).font(semibold, 14).text('Molecular weight (kDA): ').font(regular, 12).text(proposal.crystallization.molecularWeight).font(semibold, 14).text('PDB ID of crystal structure: ').font(regular, 12).text(proposal.crystallization.pbdId).font(semibold, 14).text('DOI: ').font(regular, 12).text(proposal.crystallization.doi).moveDown().font(semibold, 14).text('Does the protein have any co-factors or ligands required for crystallization? Specify: ').font(regular, 12).text(proposal.crystallization.crystallizationRequirements).moveDown().font(semibold, 14).text('Known crystallization precipitant composition (incl. buffer, salt, additives, pH): ').font(regular, 12).text(proposal.crystallization.crystallizationPrecipitantComposition).moveDown().font(semibold, 14).text('What crystallization method, volume, and temperature have you used in the past? (e.g. vapour diffusion, 10 L drops, room temperature): ').font(regular, 12).text(proposal.crystallization.previousCrystallizationExperience).moveDown().font(semibold, 14).text('How long do your crystals take to appear?: ').font(regular, 12).text(proposal.crystallization.estimatedCrystallizationProductionTime).moveDown().font(semibold, 14).text('What is the typical size of your crystal (μm x μm x μm): ').font(regular, 12).text(proposal.crystallization.typicalCrystalSize).moveDown().font(semibold, 16)
+			doc.addPage().text('Details from protein preparation').font(semibold, 14).text('Typical yield (mg per liter of culture):').font(regular, 12).text(proposal.crystallization.typicalYieldMgPerLiter).moveDown().font(semibold, 14).text('Storage conditions (e.g. stable at 4 C or frozen at -20 C):').font(regular, 12).text(proposal.crystallization.typicalYieldMgPerLiter).moveDown().font(semibold, 14).text('Stability:').font(regular, 12).text(proposal.crystallization.stability).moveDown().font(semibold, 14).text('What buffer is your protein in?:').font(regular, 12).text(proposal.crystallization.buffer).moveDown().font(semibold, 14).text('Is your protein partially or fully deuterated?:').font(regular, 12).text(proposal.crystallization.levelOfDeuteration).moveDown().font(semibold, 14).text('What protein concentration do you usually use for crystallization: ').font(regular, 12).text(proposal.crystallization.typicalProteinConcentrationUsed).moveDown();
+			doc.addPage().font(semibold, 18).text('(B) BIOLOGICAL DEUTERATION').moveDown().font(italic, 12).text('If the protein is to be purified by us, please remember to include a chromatogram from purification and a picture of SDS-PAGE that indicates MW and purity in your science case.').font(semibold, 16).text('For biomass').moveDown().font(semibold, 14).text('Will user provide the organism for us to grow under deuterated conditions?').font(regular, 12).text(proposal.biomassDeuteration.organismProvidedByUser).moveDown().font(semibold, 14).text('What is the organism?').font(regular, 12).text(proposal.biomassDeuteration.organismDetails).moveDown().font(semibold, 14).text('Please attach a reference or protocol of culture conditions and media composition').font(regular, 12).text(proposal.biomassDeuteration.organismReferenceAttachment).moveDown().font(semibold, 14).text('How much material do you need (indicate wet or dry mass)').font(regular, 12).text(proposal.biomassDeuteration.amountNeeded).moveDown().font(semibold, 14).text('Justify amount').font(regular, 12).text(proposal.biomassDeuteration.amountNeededMotivation).moveDown().font(semibold, 14).text('Level of deuteration required:').font(regular, 12).text(proposal.biomassDeuteration.deuterationLevelRequired).moveDown().font(semibold, 14).text('Justify level of D incorporation').font(regular, 12).text(proposal.biomassDeuteration.deuterationLevelMotivation).moveDown();
 
-			doc.addPage()
-			.font(semibold, 16).text('For proteins').moveDown()
-			.font(semibold, 14).text('Name of molecule to be deuterated (e.g. superoxide dismutase):')
-			.font(regular, 12).text(proposal.proteinDeuteration.moleculeName).moveDown()
-			.font(semibold, 14).text('FASTA sequence or Uniprot number:')
-			.font(regular, 12).text(proposal.proteinDeuteration.moleculeIdentifier).moveDown()
-			.font(semibold, 14).text('Oligomerizarion state? (e.g. homodimer, tetramer etc.):')
-			.font(regular, 12).text(proposal.proteinDeuteration.oligomerizationState).moveDown()
-			.font(semibold, 14).text('Does the protein have any co-factors or ligands required for expression? Specify: ')
-			.font(regular, 12).text(proposal.proteinDeuteration.expressionRequirements)
-			.font(semibold, 14).text('Origin of molecules (e.g. human, E. coli, S. cerevisiae):')
-			.font(regular, 12).text(proposal.proteinDeuteration.moleculeOrigin).moveDown()
-			.font(semibold, 14).text('Will you provide an expression plasmid?')
-			.font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUser).moveDown()
-			.font(semibold, 14).text('If “yes”, please provide details (e.g. pET31b, C-terminal His-tag, Amp selection) If “no”, we will design & order a plasmid commercially)')
-			.font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUserDetails).moveDown()
-			.font(semibold, 14).text('How much material do you need: ')
-			.font(regular, 12).text(proposal.proteinDeuteration.amountNeeded).moveDown()
-			.font(semibold, 14).text('Justify amount:')
-			.font(regular, 12).text(proposal.proteinDeuteration.amountNeededMotivation).moveDown()
-			.font(semibold, 14).text('Will you need DEMAX to purify the protein from deuterated biomass?')
-			.font(regular, 12).text(proposal.proteinDeuteration.needsPurificationSupport).moveDown()
-			.font(semibold, 14).text('Has expression been done for the unlabeled protein?')
-			.font(regular, 12).text(proposal.proteinDeuteration.hasDoneUnlabeledProteinExpression).moveDown()
-			.font(semibold, 14).text('Typical yield:').font(regular, 12).text(proposal.proteinDeuteration.typicalYield).moveDown()
-			.font(semibold, 14).text('Have you been able to purify the unlabeled protein?')
-			.font(italic, 12).text('Please include chromatogram & image of SDS-PAGE in proposal.')
-			.font(regular, 12).text(proposal.proteinDeuteration.hasPurifiedUnlabeledProtein).moveDown()
-			.font(semibold, 14).text('Have you tried to deuterate the protein yourself, even in small scale?')
-			.font(regular, 12).text(proposal.proteinDeuteration.hasProteinDeuterationExperience).moveDown()
-			.font(semibold, 14).text('Results?:').font(regular, 12).text(proposal.proteinDeuteration.proteinDeuterationResults).moveDown();
+			doc.addPage().font(semibold, 16).text('For proteins').moveDown().font(semibold, 14).text('Name of molecule to be deuterated (e.g. superoxide dismutase):').font(regular, 12).text(proposal.proteinDeuteration.moleculeName).moveDown().font(semibold, 14).text('FASTA sequence or Uniprot number:').font(regular, 12).text(proposal.proteinDeuteration.moleculeIdentifier).moveDown().font(semibold, 14).text('Oligomerizarion state? (e.g. homodimer, tetramer etc.):').font(regular, 12).text(proposal.proteinDeuteration.oligomerizationState).moveDown().font(semibold, 14).text('Does the protein have any co-factors or ligands required for expression? Specify: ').font(regular, 12).text(proposal.proteinDeuteration.expressionRequirements).font(semibold, 14).text('Origin of molecules (e.g. human, E. coli, S. cerevisiae):').font(regular, 12).text(proposal.proteinDeuteration.moleculeOrigin).moveDown().font(semibold, 14).text('Will you provide an expression plasmid?').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUser).moveDown().font(semibold, 14).text('If “yes”, please provide details (e.g. pET31b, C-terminal His-tag, Amp selection) If “no”, we will design & order a plasmid commercially)').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUserDetails).moveDown().font(semibold, 14).text('How much material do you need: ').font(regular, 12).text(proposal.proteinDeuteration.amountNeeded).moveDown().font(semibold, 14).text('Justify amount:').font(regular, 12).text(proposal.proteinDeuteration.amountNeededMotivation).moveDown().font(semibold, 14).text('Will you need DEMAX to purify the protein from deuterated biomass?').font(regular, 12).text(proposal.proteinDeuteration.needsPurificationSupport).moveDown().font(semibold, 14).text('Has expression been done for the unlabeled protein?').font(regular, 12).text(proposal.proteinDeuteration.hasDoneUnlabeledProteinExpression).moveDown().font(semibold, 14).text('Typical yield:').font(regular, 12).text(proposal.proteinDeuteration.typicalYield).moveDown().font(semibold, 14).text('Have you been able to purify the unlabeled protein?').font(italic, 12).text('Please include chromatogram & image of SDS-PAGE in proposal.').font(regular, 12).text(proposal.proteinDeuteration.hasPurifiedUnlabeledProtein).moveDown().font(semibold, 14).text('Have you tried to deuterate the protein yourself, even in small scale?').font(regular, 12).text(proposal.proteinDeuteration.hasProteinDeuterationExperience).moveDown().font(semibold, 14).text('Results?:').font(regular, 12).text(proposal.proteinDeuteration.proteinDeuterationResults).moveDown();
 
-			doc.addPage()
-			.font(semibold, 18).text('Biosafety').moveDown()
-			.font(semibold, 14).text('1) Which biosafety containment level is required to work with your sample?')
-			.font(regular, 12).text(proposal.bioSafety.bioSafetyContainmentLevel).moveDown()
-			.font(semibold, 14).text('Is your organism a live virus, toxin-producing, or pose ay risk to human health and/or the environment?')
-			.font(regular, 12).text(proposal.bioSafety.organismRisk).moveDown().font(semibold, 14).text('If you chose “yes”, please provide details:')
-			.font(regular, 12).text(proposal.bioSafety.organismRiskDetails).moveDown();
+			doc.addPage().font(semibold, 18).text('Biosafety').moveDown().font(semibold, 14).text('1) Which biosafety containment level is required to work with your sample?').font(regular, 12).text(proposal.bioSafety.bioSafetyContainmentLevel).moveDown().font(semibold, 14).text('Is your organism a live virus, toxin-producing, or pose ay risk to human health and/or the environment?').font(regular, 12).text(proposal.bioSafety.organismRisk).moveDown().font(semibold, 14).text('If you chose “yes”, please provide details:').font(regular, 12).text(proposal.bioSafety.organismRiskDetails).moveDown();
 
-			doc.addPage().font(semibold, 18)
-			.text('(C) CHEMICAL DEUTERATION')
-			.moveDown().font(semibold, 14)
-			.text('Molecule/s to be deuterated (name):')
-			.font(regular, 12).text(proposal.chemicalDeuteration.moleculeName).moveDown()
-			.font(semibold, 14).text('Amount of material required (mass):')
-			.font(regular, 12).text(proposal.chemicalDeuteration.amount).moveDown()
-			.font(semibold, 14).text('Justify amount:')
-			.font(regular, 12).text(proposal.chemicalDeuteration.amountMotivation).moveDown()
-			.font(semibold, 14).text('Indicate percentage and location of deuteration:')
-			.font(regular, 12).text(proposal.chemicalDeuteration.deuterationLocationAndPercentege)
-			.moveDown().font(semibold, 14).text('Justify level of deuteration:')
-			.font(regular, 12).text(proposal.chemicalDeuteration.deuterationLevelMotivation).moveDown()
-			.font(semibold, 14).text('Has this molecule (or an unlabeled/isotopic analogue) been prepared by yourself or others?')
-			.font(regular, 12).text(proposal.chemicalDeuteration.hasPreparedMolecule).moveDown();
+			doc.addPage().font(semibold, 18).text('(C) CHEMICAL DEUTERATION').moveDown().font(semibold, 14).text('Molecule/s to be deuterated (name):').font(regular, 12).text(proposal.chemicalDeuteration.moleculeName).moveDown().font(semibold, 14).text('Amount of material required (mass):').font(regular, 12).text(proposal.chemicalDeuteration.amount).moveDown().font(semibold, 14).text('Justify amount:').font(regular, 12).text(proposal.chemicalDeuteration.amountMotivation).moveDown().font(semibold, 14).text('Indicate percentage and location of deuteration:').font(regular, 12).text(proposal.chemicalDeuteration.deuterationLocationAndPercentege).moveDown().font(semibold, 14).text('Justify level of deuteration:').font(regular, 12).text(proposal.chemicalDeuteration.deuterationLevelMotivation).moveDown().font(semibold, 14).text('Has this molecule (or an unlabeled/isotopic analogue) been prepared by yourself or others?').font(regular, 12).text(proposal.chemicalDeuteration.hasPreparedMolecule).moveDown();
 
 			doc.save();
 			doc.pipe(fs.createWriteStream('../files/uploads/' + proposal.proposalId + '_generatedProposal.pdf'));
 			let generatedDoc = doc.pipe(fs.createWriteStream('../files/uploads/' + proposal.proposalId + '.pdf'));
 			doc.end();
-			doc.pipe(response)
-			console.log(typeof(generatedDoc.path));
-			console.log(generatedDoc.path);
+			doc.pipe(response);
 
-			await proposal.update({generatedProposal: `"${generatedDoc.path}"`})
-			console.log('this is here' + proposal.generatedProposal)
-			//TODO check file exists
-				merge(
-					[ proposal.proposalTemplate,
-						proposal.generatedProposal,
-						proposal.needByDateAttachment,
-						proposal.pbdIdReferenceAttachment,
-						proposal.organismReferenceAttachment,
-						proposal.needsPurificationSupportAttachment,
-						proposal.chemicalStructureAttachment,
-						proposal.moleculePreparationReferenceArticle,
-					], "../files/merged/" + proposal.proposalId + '.pdf',
-					function(error) {
-						if(error) {
-							console.log(error);
-							return error;
-						}
-						const file = fs.createReadStream("../files/merged/" + proposal.proposalId + '.pdf');
-						const stat = fs.statSync("../files/merged/" + proposal.proposalId + '.pdf');
-						response.setHeader('Content-Length', stat.size);
-						response.setHeader('Content-Type', 'application/pdf');
-						response.setHeader('Content-Disposition', 'attachment; filename=' + proposal.proposalId + '.pdf');
-						file.pipe(response);
-					});
-			}catch(error) {
-			console.log(error);
+			await proposal.update({generatedProposal: `"${generatedDoc.path}"`});
+		}
+		catch(error){
+			console.log(error)
 		}
 	});
 
@@ -510,8 +382,8 @@ connection.once('open', () => {
 		try {
 			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
 
-//TODO	if(proposal.proposalTemplate === ''){
-//give mock file
+			//TODO	if(proposal.proposalTemplate === ''){
+			//give mock file
 
 			merge(
 				[ proposal.proposalTemplate,
