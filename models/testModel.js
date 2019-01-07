@@ -42,13 +42,25 @@ const proposalSchema = new mongoose.Schema({
 		oligomerizationState: String,
 		pbdIdQ: {type: String, default: "PDB ID of crystal structure"},
 		pbdId: String,
-		doiQ: {type: String, default: "If the PDB reference is openly accessible, please provide a DOI. Otherwise, upload a primary reference below"},
+		doiQ: {
+			type: String,
+			default: "If the PDB reference is openly accessible, please provide a DOI. Otherwise, upload a primary reference below"
+		},
 		doi: String,
-		crystallizationRequirementsQ: {type: String, default: "Does the protein have any co-factors or ligands required for crystallization? Specify"},
+		crystallizationRequirementsQ: {
+			type: String,
+			default: "Does the protein have any co-factors or ligands required for crystallization? Specify"
+		},
 		crystallizationRequirements: String,
-		crystallizationPrecipitantCompositionQ: {type: String, default: "Known crystallization precipitant composition (incl. buffer, salt, additives, pH)"},
+		crystallizationPrecipitantCompositionQ: {
+			type: String,
+			default: "Known crystallization precipitant composition (incl. buffer, salt, additives, pH)"
+		},
 		crystallizationPrecipitantComposition: String,
-		previousCrystallizationExperienceQ: {type: String, default: "What crystallization method, volume, and temperature have you used in the past? (e.g. vapour diffusion, 10 L drops, room temperature)"},
+		previousCrystallizationExperienceQ: {
+			type: String,
+			default: "What crystallization method, volume, and temperature have you used in the past? (e.g. vapour diffusion, 10 L drops, room temperature)"
+		},
 		previousCrystallizationExperience: String,
 		estimatedCrystallizationProductionTimeQ: {type: String, default: "How long do your crystals take to appear?"},
 		estimatedCrystallizationProductionTime: String,
@@ -64,13 +76,22 @@ const proposalSchema = new mongoose.Schema({
 		buffer: String,
 		levelOfDeuterationQ: {type: String, default: "Is your protein partially or fully deuterated?"},
 		levelOfDeuteration: String,
-		typicalProteinConcentrationUsedQ: {type: String, default: "What protein concentration do you usually use for crystallization"},
+		typicalProteinConcentrationUsedQ: {
+			type: String,
+			default: "What protein concentration do you usually use for crystallization"
+		},
 		typicalProteinConcentrationUsed: String,
-		otherQ: {type: String, default: "If there is anything else you would like us to know, please enter let us know here"},
+		otherQ: {
+			type: String,
+			default: "If there is anything else you would like us to know, please enter let us know here"
+		},
 		other: String
 	},
 	biomassDeuteration: {
-		organismProvidedByUserQ: {type: String, default: "Will user provide the organism for us to grow under deuterated conditions?"},
+		organismProvidedByUserQ: {
+			type: String,
+			default: "Will user provide the organism for us to grow under deuterated conditions?"
+		},
 		organismProvidedByUser: String,
 		organismDetailsQ: {type: String, default: "What is the organism?"},
 		organismDetails: String,
@@ -82,7 +103,10 @@ const proposalSchema = new mongoose.Schema({
 		deuterationLevelRequired: String,
 		deuterationLevelMotivationQ: {type: String, default: "Justify level of D incorporation"},
 		deuterationLevelMotivation: String,
-		otherQ: {type: String, default: "If there is anything else you would like us to know, please enter let us know here"},
+		otherQ: {
+			type: String,
+			default: "If there is anything else you would like us to know, please enter let us know here"
+		},
 		other: String
 	},
 	proteinDeuteration: {
@@ -94,13 +118,19 @@ const proposalSchema = new mongoose.Schema({
 		molecularWeight: String,
 		oligomerizationStateQ: {type: String, default: "Oligomerizarion state? (e.g. homodimer, tetramer etc.)"},
 		oligomerizationState: String,
-		expressionRequirementsQ: {type: String, default: "Does the protein have any co-factors or ligands required for expression? Specify"},
+		expressionRequirementsQ: {
+			type: String,
+			default: "Does the protein have any co-factors or ligands required for expression? Specify"
+		},
 		expressionRequirements: String,
 		moleculeOriginQ: {type: String, default: "Origin of molecules (e.g. human, E. coli, S. cerevisiae)"},
 		moleculeOrigin: String,
 		expressionPlasmidProvidedByUserQ: {type: String, default: "Will you provide an expression plasmid?"},
 		expressionPlasmidProvidedByUser: String,
-		expressionPlasmidProvidedByUserDetailsQ: {type: String, default: "If “yes”, please provide details (e.g. pET31b, C-terminal His-tag, Amp selection) (If “no”, we will design & order a plasmid commercially)"},
+		expressionPlasmidProvidedByUserDetailsQ: {
+			type: String,
+			default: "If “yes”, please provide details (e.g. pET31b, C-terminal His-tag, Amp selection) (If “no”, we will design & order a plasmid commercially)"
+		},
 		expressionPlasmidProvidedByUserDetails: String,
 		amountNeededQ: {type: String, default: "How much material do you need?"},
 		amountNeeded: String,
@@ -110,29 +140,50 @@ const proposalSchema = new mongoose.Schema({
 		deuterationLevelRequired: String,
 		deuterationLevelMotivationQ: {type: String, default: "Justify level of D incorporation"},
 		deuterationLevelMotivation: String,
-		needsPurificationSupportQ: {type: String, default: "Will you need DEMAX to purify the protein from deuterated biomass?"},
+		needsPurificationSupportQ: {
+			type: String,
+			default: "Will you need DEMAX to purify the protein from deuterated biomass?"
+		},
 		needsPurificationSupport: String,
-		hasDoneUnlabeledProteinExpressionQ: {type: String, default: "Has expression been done for the unlabeled protein?"},
+		hasDoneUnlabeledProteinExpressionQ: {
+			type: String,
+			default: "Has expression been done for the unlabeled protein?"
+		},
 		hasDoneUnlabeledProteinExpression: String,
 		typicalYieldQ: {type: String, default: "Typical yield"},
 		typicalYield: String,
 		hasDonePurificationQ: {type: String, default: "Have you been able to purify the unlabeled protein?"},
 		hasDonePurification: String,
-		hasProteinDeuterationExperienceQ: {type: String, default: "Have you tried to deuterate the protein yourself, even in small scale?"},
+		hasProteinDeuterationExperienceQ: {
+			type: String,
+			default: "Have you tried to deuterate the protein yourself, even in small scale?"
+		},
 		hasProteinDeuterationExperience: String,
 		proteinDeuterationResultsQ: {type: String, default: "Results"},
 		proteinDeuterationResults: String,
-		otherQ: {type: String, default: "If there is anything else you would like us to know, please enter let us know here"},
+		otherQ: {
+			type: String,
+			default: "If there is anything else you would like us to know, please enter let us know here"
+		},
 		other: String
 	},
 	bioSafety: {
-		bioSafetyContainmentLevelQ: {type: String, default: "Which biosafety containment level is required to work with your sample?"},
+		bioSafetyContainmentLevelQ: {
+			type: String,
+			default: "Which biosafety containment level is required to work with your sample?"
+		},
 		bioSafetyContainmentLevel: String,
-		organismRiskQ: {type: String, default: "Is your organism a live virus, toxin-producing, or pose ay risk to human health and/or the environment? "},
+		organismRiskQ: {
+			type: String,
+			default: "Is your organism a live virus, toxin-producing, or pose ay risk to human health and/or the environment? "
+		},
 		organismRisk: String,
 		organismRiskDetailsQ: {type: String, default: "If you chose “yes”, please provide details"},
 		organismRiskDetails: String,
-		otherQ: {type: String, default: "If there is anything else you would like us to know, please enter let us know here"},
+		otherQ: {
+			type: String,
+			default: "If there is anything else you would like us to know, please enter let us know here"
+		},
 		other: String
 	},
 	chemicalDeuteration: {
@@ -146,10 +197,15 @@ const proposalSchema = new mongoose.Schema({
 		deuterationLocationAndPercentege: String,
 		deuterationLevelMotivationQ: {type: String, default: "Justify level of deuteration"},
 		deuterationLevelMotivation: String,
-
-		hasPreparedMoleculeQ: {type: String, default: "Has this molecule (or an unlabeled/isotopic analogue) been prepared by yourself or others?"},
+		hasPreparedMoleculeQ: {
+			type: String,
+			default: "Has this molecule (or an unlabeled/isotopic analogue) been prepared by yourself or others?"
+		},
 		hasPreparedMolecule: String,
-		otherQ: {type: String, default: "If there is anything else you would like us to know, please enter let us know here"},
+		otherQ: {
+			type: String,
+			default: "If there is anything else you would like us to know, please enter let us know here"
+		},
 		other: String
 	},
 	proposalTemplate: String,
@@ -158,13 +214,19 @@ const proposalSchema = new mongoose.Schema({
 	submitted: {type: Boolean, default: false},
 	needByDateAttachment: String,
 	pbdIdReferenceAttachment: String,
-	organismReferenceAttachmentQ: {type: String, default: "Please attach a reference or protocol of culture conditions and media composition"},
+	organismReferenceAttachmentQ: {
+		type: String,
+		default: "Please attach a reference or protocol of culture conditions and media composition"
+	},
 	organismReferenceAttachment: String,
 	needsPurificationSupportAttachment: String,
 	chemicalStructureAttachmentQ: {type: String, default: "Attach chemical structure"},
 	chemicalStructureAttachment: String,
-	moleculePreparationReferenceArticleQ: {type: String, default: "If “yes”, please provide protocol (attach a reference PDF if published)"},
-	moleculePreparationReferenceArticle: String,
+	moleculePreparationReferenceArticleQ: {
+		type: String,
+		default: "If “yes”, please provide protocol (attach a reference PDF if published)"
+	},
+	moleculePreparationReferenceArticle: String
 });
 
 module.exports = mongoose.model('Proposal', proposalSchema);
