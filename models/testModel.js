@@ -1,5 +1,6 @@
 const shortid = require('shortid');
 const mongoose = require('mongoose');
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
 const proposalSchema = new mongoose.Schema({
 	proposalId: {type: String, unique: true, default: shortid.generate},
@@ -11,7 +12,7 @@ const proposalSchema = new mongoose.Schema({
 		lastName: String,
 		email: String,
 		phone: String,
-		affiliation: String,
+		employer: String,
 		sector: String,
 		title: String
 	},
@@ -26,11 +27,12 @@ const proposalSchema = new mongoose.Schema({
 	needByDateMotivation: String,
 	lab: String,
 	linksWithIndustry: String,
+	coProposerStudents: String,
 	workTowardsStudentsDegree: String,
-	wantsCrystallization: Boolean,
-	wantsBiomassDeuteration: Boolean,
-	wantsProteinDeuteration: Boolean,
-	wantsChemicalDeuteration: Boolean,
+	wantsCrystallization: String,
+	wantsBiomassDeuteration: String,
+	wantsProteinDeuteration: String,
+	wantsChemicalDeuteration: String,
 	crystallization: {
 		moleculeNameQ: {type: String, default: "Name of molecule to be crystallized (e.g. superoxide dismutase)"},
 		moleculeName: String,
@@ -212,21 +214,12 @@ const proposalSchema = new mongoose.Schema({
 	generatedProposal: String,
 	mergedProposal: String,
 	submitted: {type: Boolean, default: false},
-	needByDateAttachment: String,
-	pbdIdReferenceAttachment: String,
-	organismReferenceAttachmentQ: {
-		type: String,
-		default: "Please attach a reference or protocol of culture conditions and media composition"
-	},
-	organismReferenceAttachment: String,
-	needsPurificationSupportAttachment: String,
-	chemicalStructureAttachmentQ: {type: String, default: "Attach chemical structure"},
-	chemicalStructureAttachment: String,
-	moleculePreparationReferenceArticleQ: {
-		type: String,
-		default: "If “yes”, please provide protocol (attach a reference PDF if published)"
-	},
-	moleculePreparationReferenceArticle: String
+	needByDateAttachment: {type: String, default: `"../files/resources/needByDateAttachment.pdf"`},
+	pbdIdReferenceAttachment: {type: String, default: `"../files/resources/pbdIdReferenceAttachment.pdf"`},
+	organismReferenceAttachment: {type: String, default: `"../files/resources/organismReferenceAttachment.pdf"`},
+	needsPurificationSupportAttachment: {type: String, default: `"../files/resources/needsPurificationSupportAttachment.pdf"`},
+	chemicalStructureAttachment: {type: String, default: `"../files/resources/chemicalStructureAttachment.pdf"`},
+	moleculePreparationReferenceArticle: {type: String, default: `"../files/resources/moleculePreparationReferenceArticle.pdf"`}
 });
 
 module.exports = mongoose.model('Proposal', proposalSchema);
