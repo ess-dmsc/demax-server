@@ -2,10 +2,11 @@
 
 This repository constitutes the backend server of the DEMAX User Office website. The frontend part can be found <a href="https://github.com/ess-dmsc/demax-client">here.</a>
 
-The <a href="https://europeanspallationsource.se/science-support-systems/demax">Deuteration and Macromolecular Crystallisation (DEMAX)</a> platform supports life science and soft matter research users of ESS. ESS users will have access to a biodeuteration and macromolecular crystallography lab and service-level support for chemical deuteration. In this way users can access deuterated material production and large crystal growth for neutron experiments.
-The DEMAX User Office will be used for submission, management and administration of proposals and requests for deuterated material. 
+The <a href="https://europeanspallationsource.se/science-support-systems/demax">Deuteration and Macromolecular Crystallisation (DEMAX)</a> platform supports life science and soft matter research users of ESS. 
 
-### Demax-server - facts:
+The DEMAX User Office will be used for submission, management and administration of proposals and requests for deuterated material production. 
+
+### Project facts:
 Language: [JavaScript](https://www.ecma-international.org/publications/standards/Ecma-262.htm)
 Runtime: [Node.js](https://nodejs.org)
 Database: [MongoDB](https://www.mongodb.com)
