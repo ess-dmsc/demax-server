@@ -42,7 +42,7 @@ Please read CONTRIBUTING.md for details on our code of conduct, and the process 
 
 ## License
 
-This project is licensed under the BSD-2 License - see the LICENSE.md file for details
+This project is licensed under the BSD-2 License - see the <a href="https://github.com/ess-dmsc/demax-server/blob/master/LICENSE">LICENSE.md</a> file for details
 
 ## Acknowledgments
 
