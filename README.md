@@ -7,17 +7,20 @@ The <a href="https://europeanspallationsource.se/science-support-systems/demax">
 The DEMAX User Office will be used for submission, management and administration of proposals and requests for deuterated material production. 
 
 ### Project facts:
-Language: [JavaScript](https://www.ecma-international.org/publications/standards/Ecma-262.htm)
-Runtime: [Node.js](https://nodejs.org)
-Database: [MongoDB](https://www.mongodb.com)
-Package manager: [NPM](https://www.npmjs.com/)
+* Language: [JavaScript](https://www.ecma-international.org/publications/standards/Ecma-262.htm)
+* Runtime: [Node.js](https://nodejs.org)
+* Database: [MongoDB](https://www.mongodb.com)
+* Package manager: [NPM](https://www.npmjs.com/)
 
 ## Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
-1. [Node.js](https://nodejs.org)
-2. [MongoDB](https://www.mongodb.com)
+1. [Node.js](https://nodejs.org/en/download/)
+2. [MongoDB](https://www.mongodb.com/download-center/community)
+
+An alternative to installing MongoDB on your local machine is to use a cloud-hosted MongoDB.
+(mlab.com)[https://mlab.com/] is a free-to-use Database-as-a-service.
 
 ### Installing
 1. ```git clone https://github.com/ess-dmsc/demax-server.git```
