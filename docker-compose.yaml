@@ -1,10 +1,10 @@
 version: "3"
 services:
-  mongodb:	
-    image: 'bitnami/mongodb:latest'	
-    ports:	
-    - "27017"	
-    volumes:	
+  mongodb:
+    image: 'bitnami/mongodb:latest'
+    ports:
+    - "27017:27017"
+    volumes:
     - 'mongodb_data:/bitnami'
   demax-server:
     build:
@@ -12,7 +12,7 @@ services:
       dockerfile: 'Dockerfile-prod'
     ports:
       - '3000:3000'
-    depends_on:	
+    depends_on:
     - mongodb
   demax-client:
     build:
@@ -20,6 +20,6 @@ services:
       dockerfile: 'Dockerfile-prod'
     ports:
       - '4200:443'
-volumes:	
-  mongodb_data:	
+volumes:
+  mongodb_data:
     driver: local
