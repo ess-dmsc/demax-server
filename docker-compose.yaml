@@ -5,7 +5,7 @@ services:
     ports:
     - "27017"
     volumes:
-    - 'mongodb_data:/bitnami'
+     - ./data/db:/data/db
   demax-server:
     build:
       context: .
