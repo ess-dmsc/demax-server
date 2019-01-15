@@ -13,6 +13,11 @@ services:
       - '3000:3000'
     depends_on:
     - mongodb
+  demax-client:
+    build:
+      context: demax-client
+     ports:
+      - '4200:443'
 volumes:
   mongodb_data:
     driver: local
