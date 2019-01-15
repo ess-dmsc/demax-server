@@ -16,7 +16,7 @@ services:
   demax-client:
     build:
       context: demax-client
-     ports:
+    ports:
       - '4200:443'
 volumes:
   mongodb_data:
