@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: 'Dockerfile-prod'
     ports:
-      - '8080:8080'
+      - '3000:3000'
     depends_on:
     - mongodb
   demax-client:
@@ -19,7 +19,7 @@ services:
       context: "./demax-client"
       dockerfile: 'Dockerfile-prod'
     ports:
-      - '443:4200'
+      - '4200:4200'
 volumes:
   mongodb_data:
     driver: local
