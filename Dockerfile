@@ -1,6 +1,7 @@
 FROM markadams/chromium-xvfb-js:8
 LABEL maintainer="jeremias.hillerberg@esss.se"
-ENV http_proxy "http://192.168.1.1:8123"
+ENV http_proxy "http://172.18.12.30:8123"
+#ENV http_proxy "http://192.168.1.1:8123"
 ENV https_proxy $http_proxy
 ENV no_proxy "localhost, 127.0.0.1"
 
