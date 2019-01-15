@@ -315,7 +315,7 @@ connection.once('open', () => {
 	app.use(express.static('../public'));
 
 	const paths = {
-		word: path.join(__dirname, '../files/resources/', 'DEMAX_proposal_template.docx')
+		word: path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx')
 	};
 	const fileWord = fs.readFileSync(paths.word);
 	app.get('/word/attachment', function(req, res, next) {
