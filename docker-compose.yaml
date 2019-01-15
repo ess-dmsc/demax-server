@@ -15,7 +15,7 @@ services:
     depends_on:
     - mongodb
   demax-client:
-   build:
+    build:
       context: "./demax-client"
       dockerfile: 'Dockerfile-prod'
     ports:
