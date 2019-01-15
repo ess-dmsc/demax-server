@@ -1,4 +1,7 @@
 version: "3"
+volumes:
+  mongodb_data:
+    driver: local
 services:
   mongodb:
     image: 'bitnami/mongodb:latest'
@@ -20,6 +23,3 @@ services:
       dockerfile: 'Dockerfile-prod'
     ports:
       - '4200:443'
-volumes:
-  mongodb_data:
-    driver: local
