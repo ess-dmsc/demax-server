@@ -34,7 +34,7 @@ mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 gridfs.mongo = mongoose.mongo;
 
-mongoose.connect("mongodb://localhost:27017/ess", {useNewUrlParser: true},
+mongoose.connect("mongodb://mongodb_data/ess", {useNewUrlParser: true},
 	function(error, client) {
 		if(error) {
 			console.log(error);
