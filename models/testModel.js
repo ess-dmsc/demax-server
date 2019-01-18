@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
 const proposalSchema = new mongoose.Schema({
-	proposalId: {type: String, unique: true, default: shortid.generate},
+	proposalId: {type: String, unique: true},
 	dateCreated: {type: Date, default: Date.now()},
 	experimentTitle: String,
 	briefSummary: String,

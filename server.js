@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const fs = require('fs');
+const nanoid = require('nanoid/generate')
 const formidable = require('formidable');
 const multer = require('multer');
 const morgan = require('morgan');
@@ -34,7 +35,8 @@ mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 gridfs.mongo = mongoose.mongo;
 
-mongoose.connect("mongodb://mongodb/ess", {useNewUrlParser: true},
+//mongoose.connect("mongodb://mongodb/ess", {useNewUrlParser: true},
+mongoose.connect("mongodb://localhost:27017/ess", {useNewUrlParser: true},
 	function(error, client) {
 		if(error) {
 			console.log(error);
@@ -546,7 +548,7 @@ connection.once('open', () => {
 	app.post('/api/proposals', async function(request, response) {
 		try {
 			const obj = await new Proposal(request.body).save();
-			await obj.update({proposalId: "ESSDEMAX20191a-" + obj.proposalId});
+			await obj.update({proposalId: nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8)})
 			response.status(201).json(obj);
 		} catch(err) {
 			return response.status(400).json({
