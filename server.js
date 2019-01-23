@@ -89,7 +89,6 @@ connection.once('open', () => {
 	app.post('/api/file/upload/proposalTemplate', upload.single("file"), async function(request, response) {
 		try {
 			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {proposalTemplate: `"./${request.file.path}"`});
-			console.log(request.file.path);
 		}
 		catch(error) {console.log(error);}
 		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
@@ -118,8 +117,6 @@ connection.once('open', () => {
 	app.use(express.static('../public'));
 
 	const paths = {word: path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx')};
-
-	const fileWord = fs.readFileSync(paths.word);
 
 	app.get('/', async function(request, response) {
 		try {response.sendFile('./files/resources/home.html', {root: __dirname});}
@@ -221,7 +218,6 @@ connection.once('open', () => {
 	});
 
 	app.post('/api/users/login', function(request, response) {
-		console.log(request.body.email);
 		User.findOne({
 			email: request.body.email
 		}, (err, user) => {
