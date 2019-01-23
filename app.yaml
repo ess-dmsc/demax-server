@@ -15,7 +15,6 @@
 runtime: nodejs10
 # [END gae_quickstart_yaml]
 
-runtime: nodejs
 env: flex
 
 # This sample incurs costs to run on the App Engine flexible environment.
