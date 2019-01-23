@@ -69,7 +69,67 @@ describe('Upload', function () {
 		})
 	})
 
-	it('should ensure all request.files values (multi-files per field) point to an array', function (done) {
+	it('574312346342', function (done) {
+		makeStandardEnv(function (error, env) {
+			if (error) return done(error)
+
+			const parser = env.upload.single('tiny0')
+			env.form.append('tiny0', util.file('tiny0.dat'))
+
+			util.submitForm(parser, env.form, function (error, request) {
+				assert.ifError(error)
+				assert.equal(request.file.filename, 'tiny0tiny0.dat')
+				done()
+			})
+		})
+	})
+
+	it('634634264', function (done) {
+		makeStandardEnv(function (error, env) {
+			if (error) return done(error)
+
+			const parser = env.upload.single('tiny0')
+			env.form.append('tiny0', util.file('tiny0.dat'))
+
+			util.submitForm(parser, env.form, function (error, request) {
+				assert.ifError(error)
+				assert.equal(request.file.filename, 'tiny0tiny0.dat')
+				done()
+			})
+		})
+	})
+
+	it('79579565679', function (done) {
+		makeStandardEnv(function (error, env) {
+			if (error) return done(error)
+
+			const parser = env.upload.single('tiny0')
+			env.form.append('tiny0', util.file('tiny0.dat'))
+
+			util.submitForm(parser, env.form, function (error, request) {
+				assert.ifError(error)
+				assert.equal(request.file.filename, 'tiny0tiny0.dat')
+				done()
+			})
+		})
+	})
+
+	it('5678576957865976', function (done) {
+		makeStandardEnv(function (error, env) {
+			if (error) return done(error)
+
+			const parser = env.upload.single('tiny0')
+			env.form.append('tiny0', util.file('tiny0.dat'))
+
+			util.submitForm(parser, env.form, function (error, request) {
+				assert.ifError(error)
+				assert.equal(request.file.filename, 'tiny0tiny0.dat')
+				done()
+			})
+		})
+	})
+
+	it('06780689090', function (done) {
 		makeStandardEnv(function (error, env) {
 			if (error) return done(error)
 
