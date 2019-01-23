@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<style>
+		* {
+			box-sizing: border-box;
+			font-family: "Titillium Web", serif;
+		}
+
+		header {
+			padding: 2rem;
+		}
+
+		main {
+			width: 800px;
+			margin: 2rem auto;
+		}
+
+		thead td {
+			font-weight: bold;
+		}
+
+		@font-face {
+			font-family: 'Titillium Web';
+			src: url('../../fonts/titillium-regular-webfont.woff') format('woff'),
+			url('../../fonts/titillium-regularitalic-webfont.woff') format('woff'),
+			url('../../fonts/titillium-semibold-webfont.woff') format('woff');
+		}
+		.container{
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+		}
+		aside{
+			min-width: 200px;
+		}
+		main{
+			flex: 0.7;
+			border: solid black 1px;
+		}
+		.jumbotron{
+			margin: 3rem;
+			padding: 3rem;
+		}
+
+	</style>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+	      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+	        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	        crossorigin="anonymous"></script>
+	<title>DEMAX API</title>
+</head>
+<body>
+
+<div class="jumbotron">
+	<h1 class="display-4">Hello, world!</h1>
+	<p class="lead">It seems that demax-server is successfully running</p>
+	<hr class="my-4">
+	<p class="lead">
+		<a class="btn btn-primary btn-lg" href="/api" role="button">Explore the api</a></p>
+	<p class="lead"><a class="btn btn-primary btn-lg" href="https://github.com/ess-dmsc/DEMAX-server" role="button">Source code</a></p>
+</div>
+
+</body>
+</html>
