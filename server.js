@@ -87,7 +87,10 @@ connection.once('open', () => {
 		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
 	});
 	app.post('/api/file/upload/proposalTemplate', upload.single("file"), async function(request, response) {
-		try {let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {proposalTemplate: `"./${request.file.path}"`});console.log(request.file.path);}
+		try {
+			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {proposalTemplate: `"./${request.file.path}"`});
+			console.log(request.file.path);
+		}
 		catch(error) {console.log(error);}
 		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
 	});
@@ -97,19 +100,36 @@ connection.once('open', () => {
 		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
 	});
 
+	app.delete('/api/file/delete/:filename', async function(request, response) {
+		let filename = request.params.filename;
+		console.log(filename)
+		try {
+			fs.unlink(__basedir + '/files/uploads/' + filename, function(error) {
+				if(error) {
+					console.log(error);
+				}
+				response.send(filename + ' deleted');
+			});
+		}
+		catch(error) {
+			console.log(error);
+		}
+	});
+
 	app.use(express.static('../public'));
 
 	const paths = {word: path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx')};
 
 	const fileWord = fs.readFileSync(paths.word);
 
-	app.get('/', async function(request, response){
-		try{response.sendFile('./files/resources/home.html', {root: __dirname})}
-	catch(error){response.send('Error')}})
+	app.get('/', async function(request, response) {
+		try {response.sendFile('./files/resources/home.html', {root: __dirname});}
+		catch(error) {response.send('Error');}
+	});
 
 	app.get('/api', async function(request, response) {
 		try {
-			response.sendFile('./files/resources/api.html', {root: __dirname })
+			response.sendFile('./files/resources/api.html', {root: __dirname});
 		} catch(error) {
 			response.send(error);
 		}
@@ -147,7 +167,7 @@ connection.once('open', () => {
 			if(proposal.wantsBiomassDeuteration) {
 				doc.addPage().font(semibold, 18).text('(B) BIOLOGICAL DEUTERATION').moveDown().font(italic, 12).text('If the protein is to be purified by us, please remember to include a chromatogram from purification and a picture of SDS-PAGE that indicates MW and purity in your science case.').moveDown().font(semibold, 16).text('For biomass').moveDown().font(semibold, 13).text('Will user provide the organism for us to grow under deuterated conditions?').font(regular, 12).text(proposal.biomassDeuteration.organismProvidedByUser).moveDown().font(semibold, 13).text('What is the organism?').font(regular, 12).text(proposal.biomassDeuteration.organismDetails).moveDown().font(regular, 12).text(proposal.biomassDeuteration.organismReferenceAttachment).moveDown().font(semibold, 13).text('How much material do you need (indicate wet or dry mass)').font(regular, 12).text(proposal.biomassDeuteration.amountNeeded).moveDown().font(semibold, 13).text('Justify amount').font(regular, 12).text(proposal.biomassDeuteration.amountNeededMotivation).moveDown().font(semibold, 13).text('Level of deuteration required:').font(regular, 12).text(proposal.biomassDeuteration.deuterationLevelRequired).moveDown().font(semibold, 13).text('Justify level of D incorporation').font(regular, 12).text(proposal.biomassDeuteration.deuterationLevelMotivation).moveDown().font(semibold, 13).text('Other:').font(regular, 12).text(proposal.biomassDeuteration.other);
 			}
-			if(proposal.wantsProteinDeuteration){
+			if(proposal.wantsProteinDeuteration) {
 				doc.addPage().font(semibold, 16).text('For proteins').moveDown().font(semibold, 13).text('Name of molecule to be deuterated (e.g. superoxide dismutase):').font(regular, 12).text(proposal.proteinDeuteration.moleculeName).moveDown().font(semibold, 13).text('FASTA sequence or Uniprot number:').font(regular, 12).text(proposal.proteinDeuteration.moleculeIdentifier).moveDown().font(semibold, 13).text('Oligomerizarion state? (e.g. homodimer, tetramer etc.):').font(regular, 12).text(proposal.proteinDeuteration.oligomerizationState).moveDown().font(semibold, 13).text('Does the protein have any co-factors or ligands required for expression? Specify: ').font(regular, 12).text(proposal.proteinDeuteration.expressionRequirements).font(semibold, 13).text('Origin of molecules (e.g. human, E. coli, S. cerevisiae):').font(regular, 12).text(proposal.proteinDeuteration.moleculeOrigin).moveDown().font(semibold, 13).text('Will you provide an expression plasmid?').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUser).moveDown().font(semibold, 13).text('If “yes”, please provide details (e.g. pET31b, C-terminal His-tag, Amp selection) If “no”, we will design & order a plasmid commercially)').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUserDetails).moveDown().font(semibold, 13).text('How much material do you need: ').font(regular, 12).text(proposal.proteinDeuteration.amountNeeded).moveDown().font(semibold, 13).text('Justify amount:').font(regular, 12).text(proposal.proteinDeuteration.amountNeededMotivation).moveDown().font(semibold, 13).text('Will you need DEMAX to purify the protein from deuterated biomass?').font(regular, 12).text(proposal.proteinDeuteration.needsPurificationSupport).moveDown().font(semibold, 13).text('Has expression been done for the unlabeled protein?').font(regular, 12).text(proposal.proteinDeuteration.hasDoneUnlabeledProteinExpression).moveDown().font(semibold, 13).text('Typical yield:').font(regular, 12).text(proposal.proteinDeuteration.typicalYield).moveDown().font(semibold, 13).text('Have you been able to purify the unlabeled protein?').font(italic, 12).text('Please include chromatogram & image of SDS-PAGE in proposal.').font(regular, 12).text(proposal.proteinDeuteration.hasPurifiedUnlabeledProtein).moveDown().font(semibold, 13).text('Have you tried to deuterate the protein yourself, even in small scale?').font(regular, 12).text(proposal.proteinDeuteration.hasProteinDeuterationExperience).moveDown().font(semibold, 13).text('Results?:').font(regular, 12).text(proposal.proteinDeuteration.proteinDeuterationResults).moveDown().font(semibold, 13).text('Other:').font(regular, 12).text(proposal.proteinDeuteration.other);
 			}
 			if(proposal.biomassDeuteration || proposal.wantsProteinDeuteration) {
