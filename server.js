@@ -102,13 +102,12 @@ connection.once('open', () => {
 
 	app.delete('/api/file/delete/:filename', async function(request, response) {
 		let filename = request.params.filename;
-		console.log(filename)
 		try {
 			fs.unlink(__basedir + '/files/uploads/' + filename, function(error) {
 				if(error) {
 					console.log(error);
 				}
-				response.send(filename + ' deleted');
+				response.send(filename + ' successfully deleted');
 			});
 		}
 		catch(error) {
@@ -193,8 +192,6 @@ connection.once('open', () => {
 		try {
 			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
 			let files = [];
-			//TODO	if(proposal.proposalTemplate === ''){
-
 			files.push(proposal.proposalTemplate);
 			files.push(proposal.generatedProposal);
 			files.push(proposal.needByDateAttachment);
