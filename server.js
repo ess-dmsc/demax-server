@@ -55,65 +55,6 @@ connection.once('open', () => {
 
 	const upload = multer({storage: storage});
 
-	app.post('/api/file/upload/needByDateAttachment', upload.single("file"), async function(request, response) {
-		try {let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {needByDateAttachment: `"./${request.file.path}"`});}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
-	});
-
-	app.post('/api/file/upload/pbdIdReferenceAttachment', upload.single("file"), async function(request, response) {
-		try {let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {pbdIdReferenceAttachment: `"./${request.file.path}"`});}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
-	});
-	app.post('/api/file/upload/organismReferenceAttachment', upload.single("file"), async function(request, response) {
-		try {let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {organismReferenceAttachment: `"./${request.file.path}"`});}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
-	});
-	app.post('/api/file/upload/needsPurificationSupportAttachment', upload.single("file"), async function(request, response) {
-		try {let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {needsPurificationSupportAttachment: `"./${request.file.path}"`});}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
-	});
-	app.post('/api/file/upload/chemicalStructureAttachment', upload.single("file"), async function(request, response) {
-		try {let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {chemicalStructureAttachment: `"./${request.file.path}"`});}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
-	});
-	app.post('/api/file/upload/moleculePreparationReferenceArticle', upload.single("file"), async function(request, response) {
-		try {let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {moleculePreparationReferenceArticle: `"./${request.file.path}"`});}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
-	});
-	app.post('/api/file/upload/proposalTemplate', upload.single("file"), async function(request, response) {
-		try {
-			let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {proposalTemplate: `"./${request.file.path}"`});
-		}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
-	});
-	app.post('/api/file/upload/generatedProposal', upload.single("file"), async function(request, response) {
-		try {let doc = await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {generatedProposal: `"./${request.file.path}"`});}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
-	});
-
-	app.delete('/api/file/delete/:filename', async function(request, response) {
-		let filename = request.params.filename;
-		try {
-			fs.unlink(__basedir + '/files/uploads/' + filename, function(error) {
-				if(error) {
-					console.log(error);
-				}
-				response.send(filename + ' successfully deleted');
-			});
-		}
-		catch(error) {
-			console.log(error);
-		}
-	});
-
 	app.use(express.static('../public'));
 
 	const paths = {word: path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx')};
@@ -391,6 +332,70 @@ connection.once('open', () => {
 				error: err.message
 			});
 		}
+	});
+
+	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
+		let attachment = request.params.attachment;
+		try {
+		switch(attachment){
+			case 'needByDateAttachment':
+				attachment = 'needByDateAttachment';
+				await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {needByDateAttachment: `"./${request.file.path}"`});
+				break;
+			case 'pbdIdReferenceAttachment':
+				attachment = 'pbdIdReferenceAttachment';
+				await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {pbdIdReferenceAttachment: `"./${request.file.path}"`});
+				break;
+			case 'organismReferenceAttachment':
+				attachment = 'organismReferenceAttachment';
+				await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {organismReferenceAttachment: `"./${request.file.path}"`});
+				break;
+			case 'needsPurificationSupportAttachment':
+				attachment = 'needsPurificationSupportAttachment';
+				await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {needsPurificationSupportAttachment: `"./${request.file.path}"`});
+
+				break;
+			case 'chemicalStructureAttachment':
+				attachment = 'chemicalStructureAttachment';
+				await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {chemicalStructureAttachment: `"./${request.file.path}"`});
+
+				break;
+			case 'moleculeReferencePreparationArticle':
+				attachment = 'moleculeReferencePreparationArticle';
+				await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {moleculeReferencePreparationArticle: `"./${request.file.path}"`});
+
+				break;
+			case 'proposalTemplate':
+				attachment = 'proposalTemplate';
+				await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {proposalTemplate: `"./${request.file.path}"`});
+				break;
+		}}
+		catch(error) {console.log(error);}
+		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+	});
+
+	app.get('/api/file/all',(request, response) => {
+		fs.readdir(__basedir + '/files/uploads/', (err, files) => {
+			for (let i = 0; i < files.length; ++i) {
+				files[i] = files[i];
+			}
+			response.send(files);
+		})
+	});
+
+	app.get('/api/file/:filename', (request, response) => {
+		let filename = request.params.filename;
+		response.download(__basedir + '/files/uploads/' + filename);
+	});
+
+	app.delete('/api/file/:filename', (request, response) => {
+		let filename = request.params.filename;
+		fs.unlink(__basedir + '/files/uploads/' + filename, function(error){
+			if(error){
+				console.log(error)
+			}
+			response.send(filename + ' deleted')
+		});
 	});
 
 	const server = app.listen(process.env.PORT || 8080, function() {
