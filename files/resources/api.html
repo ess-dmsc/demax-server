@@ -40,23 +40,28 @@
 				</thead>
 				<tbody>
 				<tr><td><h5>Proposals</h5></td></tr>
-				<tr><td>/proposals</td><td>GET</td><td></td></tr>
-				<tr><td>/proposals</td><td>GET</td><td></td></tr>
-				<tr><td>/proposals/count</td><td>GET</td><td></td></tr>
-				<tr><td>/proposals/ID</td><td>POST</td><td></td></tr>
-				<tr><td>/proposals/ID</td><td>PUT</td><td></td></tr>
-				<tr><td>/proposals/ID</td><td>DELETE</td><td></td></tr>
+				<tr><td>/api/proposals</td><td>GET</td><td>Get an array of all proposals</td></tr>
+				<tr><td>/api/proposals/ID</td><td>GET</td><td>Get a single proposal</td></tr>
+				<tr><td>/api/proposals/count</td><td>GET</td><td>Get the total number of proposals</td></tr>
+				<tr><td>/api/proposals</td><td>POST</td><td>Post a new proposal</td></tr>
+				<tr><td>/api/proposals/ID</td><td>PUT</td><td>Edit an existing proposal</td></tr>
+				<tr><td>/api/proposals/ID</td><td>DELETE</td><td>Delete a proposal</td></tr>
 				<tr><td><h5>Users</h5></td></tr>
-				<tr><td>/users/all</td><td>GET</td><td></td></tr>
-				<tr><td>/users/ID</td><td>GET</td><td></td></tr>
-				<tr><td>/users/count</td><td>GET</td><td></td></tr>
-				<tr><td>/users/register</td><td>POST</td><td></td></tr>
-				<tr><td>/users/login</td><td>POST</td><td></td></tr>
-				<tr><td>/users/ID</td><td>PUT</td><td></td></tr>
-				<tr><td>/users/ID</td><td>DELETE</td><td></td></tr>
-				<tr><td><h5>Files</h5></td></tr>
-				<tr><td>/pdf/proposalID</td><td>GET</td><td></td></tr>
-				<tr><td>/pdf/merge/proposalID</td><td>GET</td><td></td></tr>
+				<tr><td>/api/users/all</td><td>GET</td><td>Get an array of all users</td></tr>
+				<tr><td>/api/users/ID</td><td>GET</td><td>Get a single user</td></tr>
+				<tr><td>/api/users/count</td><td>GET</td><td>Get the total number of users</td></tr>
+				<tr><td>/api/users/register</td><td>POST</td><td>Register a new user</td></tr>
+				<tr><td>/api/users/login</td><td>POST</td><td>Authenticate and sign in an existing user - returns a JSON Web Token</td></tr>
+				<tr><td>/api/users/ID</td><td>PUT</td><td>Edit an existing user</td></tr>
+				<tr><td>/api/users/ID</td><td>DELETE</td><td>Delete a user</td></tr>
+				<tr><td><h5>File management</h5></td></tr>
+				<tr><td>/api/file/all</td><td>GET</td><td>Get an array of all files</td></tr>
+				<tr><td>/api/file/filename</td><td>GET</td><td>Download a single file</td></tr>
+				<tr><td>/api/file/upload/attachment-type</td><td>POST</td><td>Upload a file</td></tr>
+				<tr><td>/api/file/filename</td><td>DELETE</td><td>Delete a file</td></tr>
+				<tr><td><h5>PDF management</h5></td></tr>
+				<tr><td>/api/pdf/proposalID</td><td>GET</td><td>Generate a PDF from a proposal</td></tr>
+				<tr><td>/api/pdf/merge/proposalID</td><td>GET</td><td>Merge all attachments in a proposal</td></tr>
 				</tbody>
 		</div>
 </div>

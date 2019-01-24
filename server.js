@@ -9,7 +9,7 @@ const morgan = require('morgan');
 const path = require('path');
 const mongoose = require('mongoose');
 const User = require('./models/user.js');
-const Proposal = require('./models/testModel.js');
+const Proposal = require('./models/proposal.js');
 const jwt = require('jsonwebtoken');
 const PDFDocument = require('pdfkit');
 const merge = require('easy-pdf-merge');
@@ -382,6 +382,7 @@ connection.once('open', () => {
 			});
 		}
 	});
+
 	app.put('/api/proposals/:id', async function(request, response) {
 		try {
 			await Proposal.findOneAndUpdate({
