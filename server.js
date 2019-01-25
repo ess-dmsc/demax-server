@@ -54,44 +54,19 @@ connection.once('open', () => {
 	});
 
 	const upload = multer({storage: storage});
-	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
-		let attachment = request.params.attachment;
-		try {
-			switch(attachment){
-				case 'needByDateAttachment':
-					attachment = 'needByDateAttachment';
-					await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {needByDateAttachment: `"./${request.file.path}"`});
-					break;
-				case 'pbdIdReferenceAttachment':
-					attachment = 'pbdIdReferenceAttachment';
-					await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {pbdIdReferenceAttachment: `"./${request.file.path}"`});
-					break;
-				case 'organismReferenceAttachment':
-					attachment = 'organismReferenceAttachment';
-					await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {organismReferenceAttachment: `"./${request.file.path}"`});
-					break;
-				case 'needsPurificationSupportAttachment':
-					attachment = 'needsPurificationSupportAttachment';
-					await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {needsPurificationSupportAttachment: `"./${request.file.path}"`});
 
-					break;
-				case 'chemicalStructureAttachment':
-					attachment = 'chemicalStructureAttachment';
-					await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {chemicalStructureAttachment: `"./${request.file.path}"`});
+	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response){
+		let document = {
+			attachmentType: request.params.attachment,
+			path: `"./${request.file.path}"`
+		};
 
-					break;
-				case 'moleculePreparationReferenceArticle':
-					attachment = 'moleculePreparationReferenceArticle';
-					await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {moleculePreparationReferenceArticle: `"./${request.file.path}"`});
-
-					break;
-				case 'proposalTemplate':
-					attachment = 'proposalTemplate';
-					await Proposal.findOneAndUpdate({proposalId: request.body.proposalId}, {proposalTemplate: `"./${request.file.path}"`});
-					break;
-			}}
-		catch(error) {console.log(error);}
-		response.send('File uploaded successfully! -> filename = ' + request.file.filename);
+		try{
+			await Proposal.update({proposalId: request.body.proposalId},{"$push":{attachments: document}});
+		}catch(error){
+			console.log(error)
+		}
+		response.send('File uploaded successfully! -> Filename = ' + request.file.filename)
 	});
 
 	app.get('/api/file/all',(request, response) => {

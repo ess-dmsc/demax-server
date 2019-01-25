@@ -211,6 +211,7 @@ const proposalSchema = new mongoose.Schema({
 		},
 		other: String
 	},
+	attachments: Array,
 	proposalTemplate: String,
 	generatedProposal: String,
 	mergedProposal: String,
