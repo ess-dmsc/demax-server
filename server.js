@@ -55,27 +55,23 @@ connection.once('open', () => {
 
 	const upload = multer({storage: storage});
 
-	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response){
-		let document = {
-			attachmentType: request.params.attachment,
-			path: `"./${request.file.path}"`
-		};
+	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
 
-		try{
-			await Proposal.update({proposalId: request.body.proposalId},{"$push":{attachments: document}});
-		}catch(error){
-			console.log(error)
+		try {
+			await Proposal.update({proposalId: request.body.proposalId}, {"$push": {attachments: {attachmentType: request.params.attachment, path: `"./${request.file.path}"`}}});
+		} catch(error) {
+			console.log(error);
 		}
-		response.send('File uploaded successfully! -> Filename = ' + request.file.filename)
+		response.send('File uploaded successfully! -> Filename = ' + request.file.filename);
 	});
 
-	app.get('/api/file/all',(request, response) => {
+	app.get('/api/file/all', (request, response) => {
 		fs.readdir(__basedir + '/files/uploads/', (err, files) => {
-			for (let i = 0; i < files.length; ++i) {
-				files[i] = files[i];
+			for(let i = 0; i < files.length; ++i) {
+				files[ i ] = files[ i ];
 			}
 			response.send(files);
-		})
+		});
 	});
 
 	app.get('/api/file/:filename', (request, response) => {
@@ -85,11 +81,11 @@ connection.once('open', () => {
 
 	app.delete('/api/file/:filename', (request, response) => {
 		let filename = request.params.filename;
-		fs.unlink(__basedir + '/files/uploads/' + filename, function(error){
-			if(error){
-				console.log(error)
+		fs.unlink(__basedir + '/files/uploads/' + filename, function(error) {
+			if(error) {
+				console.log(error);
 			}
-			response.send(filename + ' deleted')
+			response.send(filename + ' deleted');
 		});
 	});
 
@@ -154,11 +150,11 @@ connection.once('open', () => {
 			doc.save();
 			doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '_generatedProposal.pdf'));
 			let generatedDoc = doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
+
+			await Proposal.findOneAndUpdate({proposalId: request.body.proposalId, generatedProposal: `"${generatedDoc.path}"`});
+
 			doc.end();
 			doc.pipe(response);
-
-			await proposal.update({generatedProposal: `"${generatedDoc.path}"`});
-			console.log(generatedDoc.path)
 		}
 		catch(error) {
 			console.log(error);
@@ -168,26 +164,7 @@ connection.once('open', () => {
 	app.get('/api/pdf/merge/:proposalId', async function(request, response) {
 		try {
 			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-			let files = [];
-			files.push(proposal.proposalTemplate);
-			files.push(proposal.generatedProposal);
-			files.push(proposal.needByDateAttachment);
 
-			if(proposal.wantsCrystallization) {
-				files.push(proposal.pbdIdReferenceAttachment);
-			}
-			if(proposal.wantsChemicalDeuteration){
-				files.push(proposal.chemicalStructureAttachment);
-				files.push(proposal.moleculePreparationReferenceArticle);
-			}
-			if(proposal.wantsBiomassDeuteration){
-				files.push(proposal.organismReferenceAttachment);
-			}
-			if(proposal.wantsProteinDeuteration){
-				files.push(proposal.needsPurificationSupportAttachment);
-			}
-			console.log(typeof( files ));
-			console.log(files)
 			merge(files, `"./files/merged/${proposal.proposalId}.pdf"`,
 				function(error) {
 					if(error) {

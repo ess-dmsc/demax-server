@@ -211,7 +211,12 @@ const proposalSchema = new mongoose.Schema({
 		},
 		other: String
 	},
-	attachments: Array,
+	attachments: [
+		{
+			attachmentType: String,
+			path: String
+		}
+	],
 	proposalTemplate: String,
 	generatedProposal: String,
 	mergedProposal: String,
@@ -219,9 +224,15 @@ const proposalSchema = new mongoose.Schema({
 	needByDateAttachment: {type: String, default: `"../files/resources/needByDateAttachment.pdf"`},
 	pbdIdReferenceAttachment: {type: String, default: `"../files/resources/pbdIdReferenceAttachment.pdf"`},
 	organismReferenceAttachment: {type: String, default: `"../files/resources/organismReferenceAttachment.pdf"`},
-	needsPurificationSupportAttachment: {type: String, default: `"../files/resources/needsPurificationSupportAttachment.pdf"`},
+	needsPurificationSupportAttachment: {
+		type: String,
+		default: `"../files/resources/needsPurificationSupportAttachment.pdf"`
+	},
 	chemicalStructureAttachment: {type: String, default: `"../files/resources/chemicalStructureAttachment.pdf"`},
-	moleculePreparationReferenceArticle: {type: String, default: `"../files/resources/moleculePreparationReferenceArticle.pdf"`}
+	moleculePreparationReferenceArticle: {
+		type: String,
+		default: `"../files/resources/moleculePreparationReferenceArticle.pdf"`
+	}
 });
 
 module.exports = mongoose.model('Proposal', proposalSchema);
