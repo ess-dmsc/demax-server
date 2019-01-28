@@ -8,13 +8,11 @@ const userSchema = new mongoose.Schema({
 	firstName: String,
 	lastName: String,
 	phone: String,
-	employerSector: String,
-	employerName: String,
-	employerStreet: String,
-	employerZipcode: String,
-	employerCity: String,
-	employerCountry: String,
-	employerPhone: String
+	employer: String,
+	industry: String,
+	jobTitle: String,
+	hasConsentedToGdpr: Boolean,
+	hasConsentedToEmails: Boolean
 });
 
 userSchema.pre('save', function(next) {

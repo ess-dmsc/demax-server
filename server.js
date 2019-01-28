@@ -58,7 +58,8 @@ connection.once('open', () => {
 	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
 
 		try {
-			await Proposal.update({proposalId: request.body.proposalId}, {"$push": {attachments: {attachmentType: request.params.attachment, path: `"./${request.file.path}"`}}});
+			await Proposal.update({proposalId: request.body.proposalId}, {"$push": {attachments: `"./${request.file.path}"`}});
+			console.log(proposal.attachments);
 		} catch(error) {
 			console.log(error);
 		}
@@ -151,7 +152,10 @@ connection.once('open', () => {
 			doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '_generatedProposal.pdf'));
 			let generatedDoc = doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
 
-			await Proposal.findOneAndUpdate({proposalId: request.body.proposalId, generatedProposal: `"${generatedDoc.path}"`});
+			await Proposal.findOneAndUpdate({
+				proposalId: request.body.proposalId,
+				generatedProposal: `"${generatedDoc.path}"`
+			});
 
 			doc.end();
 			doc.pipe(response);
@@ -165,7 +169,10 @@ connection.once('open', () => {
 		try {
 			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
 
-			merge(files, `"./files/merged/${proposal.proposalId}.pdf"`,
+			merge([ "./files/resources/proposalTemplate.pdf",
+					`"./files/generated/${proposal.proposalId}.pdf"`,
+					"./files/resources/needByDateAttachment.pdf",
+					"./files/resources/organismReferenceAttachment.pdf" ], `"./files/merged/${proposal.proposalId}.pdf"`,
 				function(error) {
 					if(error) {
 						console.log(error);
