@@ -90,7 +90,7 @@ connection.once('open', () => {
 		});
 	});
 
-	app.use(express.static('../public'));
+	app.use(express.static('../demax-client/dist'));
 
 	const paths = {word: path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx')};
 
@@ -368,7 +368,7 @@ connection.once('open', () => {
 		}
 	});
 
-	const server = app.listen(process.env.PORT || 8080, function() {
+	const server = app.listen(process.env.PORT || 3000, function() {
 		const port = server.address().port;
 		console.log(Date.now() + "\nSERVICE_START:SUCCESS\nHOST: 127.0.0.1\nPORT: " + port + "\n");
 	});
