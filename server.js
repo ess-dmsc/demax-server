@@ -64,6 +64,19 @@ connection.once('open', () => {
 		response.send('File uploaded successfully! -> Filename = ' + request.file.filename);
 	});
 
+
+	app.get('/api/file/proposals/:proposalId', async function(request, response) {
+
+		try {
+			let proposal = Proposal.find({proposalId: request.params.proposalId});
+				response.send(proposal.attachments);
+			}catch(error) {
+			return response.status(400).json({
+				error: error.message
+			});
+		}
+	});
+
 	app.get('/api/file/all', async function(request, response) {
 
 		try {
@@ -460,8 +473,9 @@ connection.once('open', () => {
 
 	app.get('/api/proposals/:email', async function(request,response){
 		try{
-			const proposals = await Proposal.find({mainProposer:{email: request.params.email}});
-			response.status(200).json(proposals);
+			const docs = await Proposal.find({"mainProposer.email": request.params.email});
+			console.log(docs)
+			response.status(200).json(docs);
 		} catch(error) {
 			return response.status(400).json({
 				error: error.message
@@ -484,16 +498,6 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/api/proposals/count', async function(request, response) {
-		try {
-			const count = await Proposal.countDocuments();
-			response.status(200).json(count);
-		} catch(err) {
-			return response.status(400).json({
-				error: err.message
-			});
-		}
-	});
 	app.post('/api/proposals', async function(request, response) {
 		try {
 			const newProposal = request.body;
