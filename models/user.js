@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-	email: {type: String, unique: true, lowercase: true, trim: true},
+	email: {
+		type: String,
+		unique: [ true, 'Email already exists' ],
+		lowercase: true,
+		trim: true
+	},
 	password: String,
 	role: String,
 	firstName: String,
@@ -11,8 +16,8 @@ const userSchema = new mongoose.Schema({
 	employer: String,
 	industry: String,
 	jobTitle: String,
-	hasConsentedToGdpr: Boolean,
-	hasConsentedToEmails: Boolean
+	hasConsentedToGdpr: String,
+	hasConsentedToEmails: String
 });
 
 userSchema.pre('save', function(next) {
