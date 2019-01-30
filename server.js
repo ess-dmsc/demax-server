@@ -111,7 +111,7 @@ connection.once('open', () => {
 		}
 	});
 
-		app.get('/word/attachment', function(req, res, next) {
+		app.get('/word/attachment', function(request, response, next) {
 		response.download(__basedir + '/files/resources/' + 'DEMAX_proposal_template.docx');
 	});
 
