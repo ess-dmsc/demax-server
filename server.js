@@ -56,8 +56,12 @@ connection.once('open', () => {
 
 	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
 
+		const newFile = {
+			path: `"./${request.file.path}"`,
+			name: request.file.filename
+		}
 		try {
-			await Proposal.updateOne({proposalId: request.body.proposalId}, {"$push": {attachments: `"./${request.file.path}"`}});
+			await Proposal.updateOne({proposalId: request.body.proposalId}, {"$push": {attachments: newFile}});
 		} catch(error) {
 			console.log(error);
 		}
@@ -98,7 +102,7 @@ connection.once('open', () => {
 		response.download(__basedir + '/files/uploads/' + filename);
 	});
 
-	app.delete('/api/file/:filename', (request, response) => {
+	app.get('/api/file/delete/:filename', (request, response) => {
 		let filename = request.params.filename;
 		fs.unlink(__basedir + '/files/uploads/' + filename, function(error) {
 			if(error) {
