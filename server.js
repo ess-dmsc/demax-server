@@ -111,13 +111,8 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/word/attachment', function(req, res, next) {
-		const file = fs.createReadStream(paths.word);
-		const stat = fs.statSync(paths.word);
-		res.setHeader('Content-Length', stat.size);
-		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-		res.setHeader('Content-Disposition', 'attachment; filename=DEMAX_proposal_template.docx');
-		file.pipe(res);
+		app.get('/word/attachment', function(req, res, next) {
+		response.download(__basedir + '/files/resources/' + 'DEMAX_proposal_template.docx');
 	});
 
 	app.get('/api/pdf/:id', async function(request, response) {
