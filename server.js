@@ -32,9 +32,8 @@ app.get('/test', function(req, res) {res.sendfile('./public/test.html');});
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 
-//mongoose.connect("mongodb://mongodb/ess", {useNewUrlParser: true},
-mongoose.connect("mongodb://localhost:27017/ess", {useNewUrlParser: true},
-	function(error, client) {
+mongoose.connect("mongodb://mongodb/ess", {useNewUrlParser: true},
+		 function(error, client) {
 		if(error) {
 			console.log(error);
 			process.exit(1);
