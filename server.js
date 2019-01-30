@@ -32,7 +32,8 @@ app.get('/test', function(req, res) {res.sendfile('./public/test.html');});
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 
-mongoose.connect("mongodb://mongodb/ess", {useNewUrlParser: true},
+//mongoose.connect("mongodb://mongodb/ess", {useNewUrlParser: true},
+mongoose.connect("mongodb://localhost:27017/ess", {useNewUrlParser: true},
 	function(error, client) {
 		if(error) {
 			console.log(error);
@@ -57,21 +58,26 @@ connection.once('open', () => {
 	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
 
 		try {
-			await Proposal.update({proposalId: request.body.proposalId}, {"$push": {attachments: `"./${request.file.path}"`}});
-			console.log(proposal.attachments);
+			await Proposal.updateOne({proposalId: request.body.proposalId}, {"$push": {attachments: `"./${request.file.path}"`}});
 		} catch(error) {
 			console.log(error);
 		}
 		response.send('File uploaded successfully! -> Filename = ' + request.file.filename);
 	});
 
-	app.get('/api/file/all', (request, response) => {
-		fs.readdir(__basedir + '/files/uploads/', (err, files) => {
-			for(let i = 0; i < files.length; ++i) {
-				files[ i ] = files[ i ];
-			}
-			response.send(files);
-		});
+	app.get('/api/file/all', async function (request, response) {
+
+		try{
+			fs.readdir(__basedir + '/files/uploads/', (err, files) => {
+				for(let i = 0; i < files.length; ++i) {
+					files[ i ] = files[ i ];
+				}
+				response.send(files);
+			});
+		}catch(error){
+			return response.status(400).json({
+				error: error.message
+			});		}
 	});
 
 	app.get('/api/file/:filename', (request, response) => {
@@ -167,11 +173,7 @@ connection.once('open', () => {
 	app.get('/api/pdf/merge/:proposalId', async function(request, response) {
 		try {
 			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-
-			merge([ "./files/resources/proposalTemplate.pdf",
-					`"./files/generated/${proposal.proposalId}.pdf"`,
-					"./files/resources/needByDateAttachment.pdf",
-					"./files/resources/organismReferenceAttachment.pdf" ], `"./files/merged/${proposal.proposalId}.pdf"`,
+			merge(proposal.attachments, `"./files/merged/${proposal.proposalId}.pdf"`,
 				function(error) {
 					if(error) {
 						console.log(error);
@@ -234,9 +236,10 @@ connection.once('open', () => {
 		}
 	});
 
-		app.post('/api/users/register', async function(request, response) {
+	app.post('/api/users/register', async function(request, response) {
 
 		await findUserByEmail(request.body.email);
+
 		const userData ={
 			email: request.body.email,
 			password: request.body.password,
