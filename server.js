@@ -418,47 +418,35 @@ connection.once('open', () => {
 		}
 	}
 
-	app.post('/api/users', async function(request, response) {
+	app.get('/api/users/:email', async function(request, response) {
 		try {
-			const obj = await new User(request.body).save();
-			response.status(201).json(obj);
-		} catch(err) {
-			return response.status(400).json({
-				error: err.message
+			const user = await User.findOne({
+				email: request.params.email
 			});
-		}
-	});
-
-
-	app.get('/api/users/:id', async function(request, response) {
-		try {
-			const obj = await User.findOne({
-				_id: request.params.id
-			});
-			response.status(200).json(obj);
+			response.status(200).json(user);
 		} catch(err) {
 			return response.status(500).json({
 				error: err.message
 			});
 		}
 	});
-	app.put('/api/users/:id', async function(request, response) {
+	app.put('/api/users/:email', async function(request, response) {
 		try {
 			await User.findOneAndUpdate({
-				_id: request.params.id
+				email: request.params.email
 			}, request.body);
 			response.sendStatus(200);
-		} catch(err) {
+		} catch(error) {
 			return response.status(400).json({
-				error: err.message
+				error: error.message
 			});
 		}
 
 	});
-	app.delete('/api/users/:id', async function(request, response) {
+	app.delete('/api/users/:email', async function(request, response) {
 		try {
 			await User.findOneAndDelete({
-				_id: request.params.id
+				email: request.params.email
 			});
 			response.sendStatus(200);
 		} catch(err) {
