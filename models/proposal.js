@@ -1,6 +1,5 @@
 const shortid = require('shortid');
 const mongoose = require('mongoose');
-shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
 const proposalSchema = new mongoose.Schema({
 	proposalId: {type: String, unique: true},
@@ -12,9 +11,9 @@ const proposalSchema = new mongoose.Schema({
 		lastName: String,
 		email: String,
 		phone: String,
+		industry: String,
 		employer: String,
-		sector: String,
-		title: String
+		jobTitle: String
 	},
 	coProposers: [
 		{
