@@ -352,17 +352,8 @@ connection.once('open', () => {
 		});
 	});
 
-	app.get('/api/users/all', async function(request, response) {
-		try {
-			const docs = await User.find({});
-			response.status(200).json(docs);
-		} catch(err) {
-			return response.status(400).json({
-				error: err.message
-			});
-		}
-	});
-	app.get('/api/users/count', async function(request, response) {
+
+	app.get('/api/admin/users', async function(request, response) {
 		try {
 			const count = await User.countDocuments();
 			response.status(200).json(count);
@@ -456,10 +447,21 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/api/proposals', async function(request, response) {
+	app.get('/api/admin/proposals', async function(request, response) {
 		try {
 			const docs = await Proposal.find({});
 			response.status(200).json(docs);
+		} catch(error) {
+			return response.status(400).json({
+				error: error.message
+			});
+		}
+	});
+
+	app.get('/api/proposals/:email', async function(request,response){
+		try{
+			const proposals = await Proposal.find({mainProposer:{email: request.params.email}});
+			response.status(200).json(proposals);
 		} catch(error) {
 			return response.status(400).json({
 				error: error.message
