@@ -1,4 +1,4 @@
-const env = process.env.NODE_ENV;
+/*const env = process.env.NODE_ENV;
 
 const dev = {
 	app: {
@@ -40,3 +40,4 @@ const config = {
 };
 
 module.exports = config[env];
+	*/

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/*const mongoose = require('mongoose');
 const config = require('./config');
 
 const {db: {host, port, name}} = config;
@@ -13,3 +13,4 @@ connection.once('open', function(error) {
 	console.log('DATABASE CONNECTION SUCCESS' + "\n" + "CONNECTED TO " + `mongodb://${host}:${port}/${name}`);
 	if(error) {console.log(error);}
 });
+	*/
