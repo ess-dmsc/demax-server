@@ -10,6 +10,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const User = require('./models/user.js');
 const Proposal = require('./models/proposal.js');
+const Attachment = require('./models/attachment.js');
 const jwt = require('jsonwebtoken');
 const PDFDocument = require('pdfkit');
 const merge = require('easy-pdf-merge');
@@ -54,28 +55,118 @@ connection.once('open', () => {
 
 	const upload = multer({storage: storage});
 
-	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
+	app.post('/api/file', upload.single("file"), async function(request, response) {
 
-		const newFile = {
-			path: `"./${request.file.path}"`,
-			name: request.file.filename,
-			type: request.body.name
+		const newAttachment = {
+			nanoid: nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8),
+			fieldname: request.file.fieldname,
+			originalname: request.file.originalname,
+			encoding: request.file.encoding,
+			mimetype: request.file.mimetype,
+			filename: request.file.filename,
+			path: request.file.path,
+			size: request.file.size,
+			proposal: request.body.proposalId,
+			type: request.body.name,
 		};
 		try {
-			await Proposal.updateOne({proposalId: request.body.proposalId}, {"$push": {attachments: newFile}});
+			await new Attachment(newAttachment).save();
+			await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
+				{"$push": {attachments: newAttachment._id}});
+			response.status(201).json(newAttachment);
 		} catch(error) {
-			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
 		}
-		response.send('File uploaded successfully! -> Filename = ' + request.file.filename);
 	});
 
+	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
+		let attachment = request.params.attachment;
+		let id = request.body.proposalId;
+		let path = `"./${request.file.path}"`;
+		let name = request.file.originalname;
+		try {
+			switch(attachment) {
+				case 'needByDateAttachment':
+					attachment = 'needByDateAttachment';
+					await Proposal.findOneAndUpdate({proposalId: id}, {
+						needByDateAttachment: {
+							path: path,
+							name: request.file.originalname
+						}
+					});
+					break;
+				case 'pbdIdReferenceAttachment':
+					attachment = 'pbdIdReferenceAttachment';
+					await Proposal.findOneAndUpdate({proposalId: id}, {
+						pbdIdReferenceAttachment: {
+							path: path,
+							name: request.file.originalname
+						}
+					});
+					break;
+				case 'organismReferenceAttachment':
+					attachment = 'organismReferenceAttachment';
+					await Proposal.findOneAndUpdate({proposalId: id}, {
+						organismReferenceAttachment: {
+							path: path,
+							name: request.file.originalname
+						}
+					});
+					break;
+				case 'needsPurificationSupportAttachment':
+					attachment = 'needsPurificationSupportAttachment';
+					await Proposal.findOneAndUpdate({proposalId: id}, {
+						needsPurificationSupportAttachment: {
+							path: path,
+							name: request.file.originalname
+						}
+					});
+
+					break;
+				case 'chemicalStructureAttachment':
+					attachment = 'chemicalStructureAttachment';
+					await Proposal.findOneAndUpdate({proposalId: id}, {
+						chemicalStructureAttachment: {
+							path: path,
+							name: request.file.originalname
+						}
+					});
+
+					break;
+				case 'moleculeReferencePreparationArticle':
+					attachment = 'moleculeReferencePreparationArticle';
+					await Proposal.findOneAndUpdate({proposalId: id}, {
+						moleculeReferencePreparationArticle: {
+							path: path,
+							name: request.file.originalname
+						}
+					});
+
+					break;
+				case 'proposalTemplate':
+					attachment = 'proposalTemplate';
+					await Proposal.findOneAndUpdate({proposalId: id}, {
+						proposalTemplate: {
+							path: path,
+							name: request.file.originalname
+						}
+					});
+					break;
+			}
+		}
+
+		catch(error) {console.log(error);}
+		response.send('File uploaded successfully! -> filename = ' + name);
+	});
 
 	app.get('/api/file/proposals/:proposalId', async function(request, response) {
 
 		try {
 			let proposal = Proposal.find({proposalId: request.params.proposalId});
-				response.send(proposal.attachments);
-			}catch(error) {
+			response.send(proposal.attachments);
+		} catch(error) {
 			return response.status(400).json({
 				error: error.message
 			});
@@ -183,31 +274,32 @@ connection.once('open', () => {
 		}
 	});
 
+
 	app.get('/api/pdf/merge/:proposalId', async function(request, response) {
 		try {
 			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+			let attachments = [
+				proposal.proposalTemplate.path,
+				proposal.needByDateAttachment.path];
+			console.log(typeof( attachments ));
+			/*
+			 if(proposal.wantsCrystallization) {
+			 attachments.push(proposal.pbdIdReferenceAttachment.path);
+			 }
+			 if(proposal.wantsBiomassDeuteration) {
+			 attachments.push(proposal.organismReferenceAttachment.path);
+			 }
+			 if(proposal.wantsProteinDeuteration) {
+			 attachments.push(proposal.needsPurificationSupportAttachment.path);
+			 }
 
-			let attachments = [ proposal.proposalTemplate.path, proposal.generatedProposal.path, proposal.needByDateAttachment.path ];
-
-			if(proposal.wantsCrystallization) {
-				attachments.push(proposal.pbdIdReferenceAttachment);
-			}
-			if(proposal.wantsBiomassDeuteration) {
-				attachments.push(proposal.organismReferenceAttachment.path);
-			}
-			if(proposal.wantsProteinDeuteration) {
-				attachments.push(proposal.needsPurificationSupport.path);
-			}
-			//if(proposal.wantsBiologicalDeuteration){
-			//		attachments.push(proposal.bioSafetyAttachment)
-			//	}
-			if(proposal.wantsChemicalDeuteration) {
-				attachments.push(proposal.chemicalStructureAttachment.path);
-			}
-			if(proposal.chemicalDeuteration.hasPreparedMolecule) {
-				attachments.push(proposal.moleculePreparationReferenceArticle);
-			}
-
+			 if(proposal.wantsChemicalDeuteration) {
+			 attachments.push(proposal.chemicalStructureAttachment.path);
+			 }
+			 if(proposal.chemicalDeuteration.hasPreparedMolecule) {
+			 attachments.push(proposal.moleculePreparationReferenceArticle);
+			 }
+			 */
 			merge(attachments, `"./files/merged/${proposal.proposalId}.pdf"`,
 				function(error) {
 					if(error) {
@@ -226,6 +318,7 @@ connection.once('open', () => {
 			console.log(error);
 		}
 	});
+
 
 	app.post('/api/users/login', function(request, response) {
 		User.findOne({
@@ -357,10 +450,10 @@ connection.once('open', () => {
 	});
 
 
-	app.get('/api/proposals/:email', async function(request,response){
-		try{
+	app.get('/api/proposals/:email', async function(request, response) {
+		try {
 			const docs = await Proposal.find({"mainProposer.email": request.params.email});
-			console.log(docs)
+			console.log(docs);
 			response.status(200).json(docs);
 		} catch(error) {
 			return response.status(400).json({
@@ -389,7 +482,7 @@ connection.once('open', () => {
 			const newProposal = request.body;
 			newProposal.proposalId = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8);
 			await new Proposal(newProposal).save();
-			console.log(newProposal.proposalId)
+			console.log(newProposal.proposalId);
 			response.status(201).json(newProposal);
 		} catch(error) {
 			return response.status(400).json({
