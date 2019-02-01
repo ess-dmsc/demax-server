@@ -32,7 +32,7 @@ app.get('/test', function(req, res) {res.sendfile('./public/test.html');});
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 
-mongoose.connect("mongodb://localhost:27017/ess", {useNewUrlParser: true},
+mongoose.connect("mongodb://mongodb/ess", {useNewUrlParser: true},
 	function(error, client) {
 		if(error) {
 			console.log(error);
@@ -73,16 +73,14 @@ connection.once('open', () => {
 	app.get('/api/file/proposals/:proposalId', async function(request, response) {
 
 		try {
-			let proposal = await Proposal.find({proposalId: request.params.proposalId});
-			console.log(proposal.attachments)
-			response.send(proposal.attachments);
-		} catch(error) {
+			let proposal = Proposal.find({proposalId: request.params.proposalId});
+				response.send(proposal.attachments);
+			}catch(error) {
 			return response.status(400).json({
 				error: error.message
 			});
 		}
 	});
-
 
 	app.get('/api/file/all', async function(request, response) {
 
@@ -358,10 +356,11 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/api/proposals/:email', async function(request, response) {
-		try {
+
+	app.get('/api/proposals/:email', async function(request,response){
+		try{
 			const docs = await Proposal.find({"mainProposer.email": request.params.email});
-			console.log(docs);
+			console.log(docs)
 			response.status(200).json(docs);
 		} catch(error) {
 			return response.status(400).json({
@@ -399,18 +398,6 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/api/proposals/new', async function(request, response) {
-		try {
-			const newProposal = request.body;
-			newProposal.proposalId = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8);
-			await new Proposal(newProposal).save();
-			response.status(200).json(newProposal);
-		} catch(error) {
-			return response.status(500).json({
-				error: error.message
-			});
-		}
-	});
 
 	app.get('/api/proposals/:id', async function(request, response) {
 		try {
