@@ -19,6 +19,7 @@ const proposalSchema = new mongoose.Schema({
 		{
 			firstName: String,
 			lastName: String,
+			email: String,
 			affiliation: String
 		}
 	],
@@ -98,8 +99,42 @@ const proposalSchema = new mongoose.Schema({
 		hasPreparedMolecule: String,
 		other: String
 	},
-	attachments: Array,
+	proposalTemplate: {
+		name: String,
+		path: {type: String, default: "./files/error/proposalTemplateError.pdf"}
+	},
+	generatedProposal: {
+		name: String,
+		path: {type: String, default: "./files/error/generatedProposalError.pdf"}
+	},
+	needByDateAttachment: {
+		name: String,
+		path: {type: String, default: "./files/error/needByDateAttachmentError.pdf"}
+	},
+	mergedProposal: {
+		name: String,
+		path: {type: String, default: "./files/error/mergedProposalError.pdf"}
+	},
+	pbdIdReferenceAttachment: {
+		name: String,
+		path: {type: String, default: "./files/error/pbdIdReferenceAttachmentError.pdf"}
+	},
+	organismReferenceAttachment: {
+		name: String,
+		path: {type: String, default: "./files/error/organismReferenceAttachmentError.pdf"}
+	},
+	needsPurificationSupportAttachment: {
+		name: String,
+		path: {type: String, default: "./files/error/needsPurificationSupportAttachmentError.pdf"}
+	},
+	chemicalStructureAttachment: {
+		name: String,
+		path: {type: String, default: "./files/error/chemicalStructureAttachmentError.pdf"}
+	},
+	moleculePreparationReferenceArticle: {
+		name: String,
+		path: {type: String, default: "./files/error/moleculePreparationReferenceArticleError.pdf"}
+	},
 	submitted: {type: Boolean, default: false},
 });
-
 module.exports = mongoose.model('Proposal', proposalSchema);
