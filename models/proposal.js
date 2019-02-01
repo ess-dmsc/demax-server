@@ -101,39 +101,39 @@ const proposalSchema = new mongoose.Schema({
 	},
 	proposalTemplate: {
 		name: String,
-		path: {type: String, default: "./files/error/proposalTemplateError.pdf"}
+		path: String,
 	},
 	generatedProposal: {
 		name: String,
-		path: {type: String, default: "./files/error/generatedProposalError.pdf"}
+		path: String,
 	},
 	needByDateAttachment: {
 		name: String,
-		path: {type: String, default: "./files/error/needByDateAttachmentError.pdf"}
+		path: String,
 	},
 	mergedProposal: {
 		name: String,
-		path: {type: String, default: "./files/error/mergedProposalError.pdf"}
+		path: String,
 	},
 	pbdIdReferenceAttachment: {
 		name: String,
-		path: {type: String, default: "./files/error/pbdIdReferenceAttachmentError.pdf"}
+		path: String,
 	},
 	organismReferenceAttachment: {
 		name: String,
-		path: {type: String, default: "./files/error/organismReferenceAttachmentError.pdf"}
+		path: String,
 	},
 	needsPurificationSupportAttachment: {
 		name: String,
-		path: {type: String, default: "./files/error/needsPurificationSupportAttachmentError.pdf"}
+		path: String,
 	},
 	chemicalStructureAttachment: {
 		name: String,
-		path: {type: String, default: "./files/error/chemicalStructureAttachmentError.pdf"}
+		path: String,
 	},
 	moleculePreparationReferenceArticle: {
 		name: String,
-		path: {type: String, default: "./files/error/moleculePreparationReferenceArticleError.pdf"}
+		path: String,
 	},
 	submitted: {type: Boolean, default: false},
 });
