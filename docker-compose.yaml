@@ -1,15 +1,13 @@
 version: "2"
 services:
   mongodb:
-    image: 'mongo:latest'
+    image: 'bitnami/mongodb:latest'
     ports:
     - "27017"
-    mem_limit: 500m
   demax-server:
     build:
       context: .
       dockerfile: 'Dockerfile-prod'
-    mem_limit: 500m
     ports:
     - '3000:3000'
     depends_on:
@@ -17,7 +15,6 @@ services:
   demax-client:
     build:
       context: "./demax-client"
-      dockerfile: 'Dockerfile-prod'
-    mem_limit: 500m
+      dockerfile: 'Dockerfile-nginx'
     ports:
     - '8080:8080'

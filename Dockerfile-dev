@@ -4,10 +4,10 @@ LABEL maintainer="jeremias.hillerberg@esss.se"
 #ENV https_proxy $http_proxy
 ENV no_proxy "localhost, 127.0.0.1"
 
-ENV DEV_APP_PORT = 3000
-ENV DEV_DB_HOST = 'localhost'
-ENV DEV_DB_PORT = 27017
-ENV DEV_DB_NAME = 'ess'
+#ENV DEV_APP_PORT = 3000
+#ENV DEV_DB_HOST = 'localhost'
+#ENV DEV_DB_PORT = 27017
+#ENV DEV_DB_NAME = 'ess'
 
 #RUN npm config set proxy  $http_proxy
 #RUN npm config set https-proxy  $http_proxy

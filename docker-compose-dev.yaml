@@ -1,29 +1,20 @@
-version: "3"
+version: "2"
 services:
   mongodb:
-    image: 'bitnami/mongodb:latest'
-    env_file:
-    - ./environments/.env
-    environment:
-    - NODE_ENV=production
+    image: 'mongo:latest'
     ports:
     - "27017"
-    volumes:
-    - mongodb_data:/bitnami
   demax-server:
     build:
       context: .
       dockerfile: 'Dockerfile-prod'
     ports:
-    - '8080:8080'
+    - '3000:3000'
     depends_on:
     - mongodb
   demax-client:
     build:
       context: "./demax-client"
-      dockerfile: 'Dockerfile-prod'
+      dockerfile: 'Dockerfile-nginx'
     ports:
-    - '80:443'
-volumes:
-  mongodb_data:
-    driver: local
+    - '80:80'
