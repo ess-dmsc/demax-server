@@ -93,7 +93,8 @@ connection.once('open', () => {
 					await Proposal.findOneAndUpdate({proposalId: id}, {
 						needByDateAttachment: {
 							path: path,
-							name: request.file.originalname
+							name: request.file.originalname,
+							uploaded: true
 						}
 					});
 					break;
@@ -102,7 +103,8 @@ connection.once('open', () => {
 					await Proposal.findOneAndUpdate({proposalId: id}, {
 						pbdIdReferenceAttachment: {
 							path: path,
-							name: request.file.originalname
+							name: request.file.originalname,
+							uploaded: true
 						}
 					});
 					break;
@@ -111,7 +113,8 @@ connection.once('open', () => {
 					await Proposal.findOneAndUpdate({proposalId: id}, {
 						organismReferenceAttachment: {
 							path: path,
-							name: request.file.originalname
+							name: request.file.originalname,
+							uploaded: true
 						}
 					});
 					break;
@@ -120,7 +123,8 @@ connection.once('open', () => {
 					await Proposal.findOneAndUpdate({proposalId: id}, {
 						needsPurificationSupportAttachment: {
 							path: path,
-							name: request.file.originalname
+							name: request.file.originalname,
+							uploaded: true
 						}
 					});
 
@@ -130,7 +134,8 @@ connection.once('open', () => {
 					await Proposal.findOneAndUpdate({proposalId: id}, {
 						chemicalStructureAttachment: {
 							path: path,
-							name: request.file.originalname
+							name: request.file.originalname,
+							uploaded: true
 						}
 					});
 
@@ -140,7 +145,8 @@ connection.once('open', () => {
 					await Proposal.findOneAndUpdate({proposalId: id}, {
 						moleculeReferencePreparationArticle: {
 							path: path,
-							name: request.file.originalname
+							name: request.file.originalname,
+							uploaded: true
 						}
 					});
 
@@ -150,14 +156,20 @@ connection.once('open', () => {
 					await Proposal.findOneAndUpdate({proposalId: id}, {
 						proposalTemplate: {
 							path: path,
-							name: request.file.originalname
+							name: request.file.originalname,
+							uploaded: true
 						}
 					});
 					break;
 			}
 		}
 
-		catch(error) {console.log(error);}
+		catch(error) {
+			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
+		}
 		response.send('File uploaded successfully! -> filename = ' + name);
 	});
 
@@ -167,6 +179,7 @@ connection.once('open', () => {
 			let proposal = Proposal.find({proposalId: request.params.proposalId});
 			response.send(proposal.attachments);
 		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
 				error: error.message
 			});
@@ -183,46 +196,75 @@ connection.once('open', () => {
 				response.send(files);
 			});
 		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
 				error: error.message
 			});
 		}
 	});
 
-	app.get('/api/file/:filename', (request, response) => {
-		let filename = request.params.filename;
-		response.download(__basedir + '/files/uploads/' + filename);
+	app.get('/api/file/:filename', async function(request, response) {
+		try {
+			let filename = request.params.filename;
+			response.download(__basedir + '/files/uploads/' + filename);
+		}
+		catch(error) {
+			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
+		}
 	});
 
-	app.get('/api/file/delete/:filename', (request, response) => {
-		let filename = request.params.filename;
-		fs.unlink(__basedir + '/files/uploads/' + filename, function(error) {
-			if(error) {
-				console.log(error);
-			}
-			response.send(filename + ' deleted');
-		});
+	app.get('/api/file/delete/:filename', async function(request, response) {
+		try {
+			let filename = request.params.filename;
+			fs.unlink(__basedir + '/files/uploads/' + filename, function(error) {
+				if(error) {
+					console.log(error);
+				}
+				response.send(filename + ' deleted');
+			});
+		} catch(error) {
+			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
+		}
 	});
-
-	app.use(express.static('../demax-client/dist'));
 
 	const paths = {word: path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx')};
 
 	app.get('/', async function(request, response) {
 		try {response.sendFile('./files/resources/home.html', {root: __dirname});}
-		catch(error) {response.send('Error');}
+		catch(error) {
+			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
+		}
 	});
 
 	app.get('/api', async function(request, response) {
 		try {
 			response.sendFile('./files/resources/api.html', {root: __dirname});
 		} catch(error) {
-			response.send(error);
+			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
 		}
 	});
 
-	app.get('/word/attachment', function(request, response, next) {
-		response.download(__basedir + '/files/resources/' + 'DEMAX_proposal_template.docx');
+	app.get('/word/attachment', async function(request, response) {
+		try {
+			response.download(__basedir + '/files/resources/' + 'DEMAX_proposal_template.docx');
+		} catch(error) {
+			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
+		}
 	});
 
 	app.get('/api/pdf/:id', async function(request, response) {
@@ -271,6 +313,9 @@ connection.once('open', () => {
 		}
 		catch(error) {
 			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
 		}
 	});
 
@@ -280,7 +325,7 @@ connection.once('open', () => {
 			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
 			let attachments = [
 				proposal.proposalTemplate.path,
-				proposal.needByDateAttachment.path];
+				proposal.needByDateAttachment.path ];
 			console.log(typeof( attachments ));
 			/*
 			 if(proposal.wantsCrystallization) {
@@ -304,7 +349,9 @@ connection.once('open', () => {
 				function(error) {
 					if(error) {
 						console.log(error);
-						return error;
+						return response.status(400).json({
+							error: error.message
+						});
 					}
 					const file = fs.createReadStream("./files/merged/" + proposal.proposalId + '.pdf');
 					const stat = fs.statSync("./files/merged/" + proposal.proposalId + '.pdf');
@@ -316,31 +363,43 @@ connection.once('open', () => {
 			await proposal.update({mergedProposal: `"./files/merged/${proposal.proposalId}.pdf"`});
 		} catch(error) {
 			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
 		}
 	});
 
 
-	app.post('/api/users/login', function(request, response) {
-		User.findOne({
-			email: request.body.email
-		}, (err, user) => {
-			if(!user) {
-				return response.sendStatus(403);
-			}
-			user.comparePassword(request.body.password, (error, isMatch) => {
-				if(!isMatch) {
+	app.post('/api/users/login', async function(request, response) {
+
+
+		try {
+			User.findOne({
+				email: request.body.email
+			}, (err, user) => {
+				if(!user) {
 					return response.sendStatus(403);
 				}
-				const token = jwt.sign({
-						user: user,
-						expiresIn: 5000
-					},
-					'3eb64519dc0e32eb7e99d645b44942b1b289970de5f64ffc49922b90d4b6ae58');
-				response.status(200).json({
-					token: token
+				user.comparePassword(request.body.password, (error, isMatch) => {
+					if(!isMatch) {
+						return response.sendStatus(403);
+					}
+					const token = jwt.sign({
+							user: user,
+							expiresIn: 5000
+						},
+						'3eb64519dc0e32eb7e99d645b44942b1b289970de5f64ffc49922b90d4b6ae58');
+					response.status(200).json({
+						token: token
+					});
 				});
 			});
-		});
+		} catch(error) {
+			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
+		}
 	});
 
 
@@ -348,9 +407,10 @@ connection.once('open', () => {
 		try {
 			const docs = await User.find({});
 			response.status(200).json(docs);
-		} catch(err) {
+		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
-				error: err.message
+				error: error.message
 			});
 		}
 	});
@@ -382,6 +442,7 @@ connection.once('open', () => {
 			});
 			response.status(201).json(newUser);
 		} catch(err) {
+			console.log(error)
 			return response.status(400).json({
 				error: err.message
 			});
@@ -406,9 +467,10 @@ connection.once('open', () => {
 				email: request.params.email
 			});
 			response.status(200).json(user);
-		} catch(err) {
+		} catch(error) {
+			console.log(error);
 			return response.status(500).json({
-				error: err.message
+				error: error.message
 			});
 		}
 	});
@@ -431,9 +493,10 @@ connection.once('open', () => {
 				email: request.params.email
 			});
 			response.sendStatus(200);
-		} catch(err) {
+		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
-				error: err.message
+				error: error.message
 			});
 		}
 	});
@@ -443,6 +506,7 @@ connection.once('open', () => {
 			const docs = await Proposal.find({});
 			response.status(200).json(docs);
 		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
 				error: error.message
 			});
@@ -456,6 +520,7 @@ connection.once('open', () => {
 			console.log(docs);
 			response.status(200).json(docs);
 		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
 				error: error.message
 			});
@@ -471,6 +536,7 @@ connection.once('open', () => {
 			}
 			response.status(200).json(responseArray);
 		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
 				error: error.message
 			});
@@ -485,6 +551,7 @@ connection.once('open', () => {
 			console.log(newProposal.proposalId);
 			response.status(201).json(newProposal);
 		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
 				error: error.message
 			});
@@ -499,6 +566,7 @@ connection.once('open', () => {
 			});
 			response.status(200).json(obj);
 		} catch(error) {
+			console.log(error);
 			return response.status(500).json({
 				error: error.message
 			});
@@ -512,6 +580,7 @@ connection.once('open', () => {
 			}, request.body);
 			response.sendStatus(200);
 		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
 				error: error.message
 			});
@@ -524,14 +593,16 @@ connection.once('open', () => {
 				proposalId: request.params.id
 			});
 			response.sendStatus(200);
-		} catch(err) {
+		} catch(error) {
+			console.log(error);
 			return response.status(400).json({
-				error: err.message
+				error: error.message
 			});
 		}
 	});
 
-	const server = app.listen(process.env.PORT || 3000, function() {
+	const server = app.listen(process.env.PORT || 3000, async function() {
+		try{
 		const port = server.address().port;
 		console.log(
 			"\n" +
@@ -540,6 +611,7 @@ connection.once('open', () => {
 			"SERVER RUNNING AT PORT " + port
 			+ "\n"
 		);
+	}catch(error){
+		console.log(error)}
 	});
-})
-;
+});

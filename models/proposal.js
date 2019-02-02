@@ -102,38 +102,47 @@ const proposalSchema = new mongoose.Schema({
 	proposalTemplate: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	generatedProposal: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	needByDateAttachment: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	mergedProposal: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	pbdIdReferenceAttachment: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	organismReferenceAttachment: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	needsPurificationSupportAttachment: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	chemicalStructureAttachment: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	moleculePreparationReferenceArticle: {
 		name: String,
 		path: String,
+		uploaded: {type: Boolean, default: false}
 	},
 	submitted: {type: Boolean, default: false},
 });
