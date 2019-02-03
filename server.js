@@ -78,11 +78,11 @@ connection.once('open', () => {
 	});
 
 	app.post('/api/file/upload/:attachment', upload.single("file"), async function(request, response) {
+
 		let attachment = request.params.attachment;
 		let id = request.body.proposalId;
 		let path = `"./${request.file.path}"`;
 		let name = request.file.originalname;
-		console.log();
 
 		let proposal = await Proposal.findOne({proposalId: id});
 
@@ -171,11 +171,39 @@ connection.once('open', () => {
 		response.status(201).json(proposal);
 	});
 
-	app.get('/api/file/proposals/:proposalId', async function(request, response) {
+	app.get('/api/file/:proposalId', async function(request, response) {
+
+		let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
 
 		try {
-			let proposal = Proposal.find({proposalId: request.params.proposalId});
-			response.send(proposal.attachments);
+
+			console.log(proposal.proposalId);
+			let attachments = [];
+
+			if(proposal.proposalTemplate.uploaded) {
+				attachments.push(proposal.proposalTemplate.name);
+			}
+			if(proposal.needByDateAttachment.uploaded) {
+				attachments.push(proposal.needByDateAttachment.name);
+			}
+
+			if(proposal.pbdIdReferenceAttachment.uploaded) {
+				attachments.push(proposal.pbdIdReferenceAttachment.name);
+			}
+			if(proposal.organismReferenceAttachment.uploaded) {
+				attachments.push(proposal.organismReferenceAttachment.name);
+			}
+			if(proposal.needsPurificationSupportAttachment.uploaded) {
+				attachments.push(proposal.needsPurificationSupportAttachment.name);
+			}
+			if(proposal.chemicalStructureAttachment.uploaded) {
+				attachments.push(proposal.chemicalStructureAttachment.name);
+			}
+			if(proposal.moleculePreparationReferenceArticle.uploaded) {
+				attachments.push(proposal.moleculePreparationReferenceArticle.name);
+			}
+
+			response.send(attachments);
 		} catch(error) {
 			console.log(error);
 			return response.status(400).json({
@@ -214,7 +242,7 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/api/file/delete/:filename', async function(request, response) {
+	app.delete('/api/file/:filename', async function(request, response) {
 		try {
 			let filename = request.params.filename;
 			fs.unlink(__basedir + '/files/uploads/' + filename, function(error) {
