@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const cors = require('cors');
 const fs = require('fs');
 const nanoid = require('nanoid/generate');
-const formidable = require('formidable');
 const multer = require('multer');
 const morgan = require('morgan');
 const path = require('path');
@@ -28,7 +27,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 global.__basedir = __dirname;
-app.get('/test', function(req, res) {res.sendfile('./public/test.html');});
 
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
@@ -45,8 +43,6 @@ mongoose.connect(`mongodb://mongodb/ess`, {useNewUrlParser: true},
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.once('open', () => {
 	console.log('successful db connection');
-
-	const multer = require('multer');
 
 	const storage = multer.diskStorage({
 		destination: (request, file, callback) => {callback(null, './files/uploads/');},
