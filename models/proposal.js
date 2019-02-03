@@ -79,7 +79,7 @@ const proposalSchema = new mongoose.Schema({
 		needsPurificationSupport: String,
 		hasDoneUnlabeledProteinExpression: String,
 		typicalYield: String,
-		hasDonePurification: String,
+		hasDoneProteinPurification: String,
 		hasProteinDeuterationExperience: String,
 		proteinDeuterationResults: String,
 		other: String
@@ -107,7 +107,7 @@ const proposalSchema = new mongoose.Schema({
 	generatedProposal: {
 		name: String,
 		path: String,
-		uploaded: {type: Boolean, default: false}
+		generated: {type: Boolean, default: false}
 	},
 	needByDateAttachment: {
 		name: String,
@@ -117,7 +117,7 @@ const proposalSchema = new mongoose.Schema({
 	mergedProposal: {
 		name: String,
 		path: String,
-		uploaded: {type: Boolean, default: false}
+		merged: {type: Boolean, default: false}
 	},
 	pbdIdReferenceAttachment: {
 		name: String,

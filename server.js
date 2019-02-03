@@ -33,7 +33,7 @@ app.get('/test', function(req, res) {res.sendfile('./public/test.html');});
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 
-mongoose.connect("mongodb://mongodb/ess", {useNewUrlParser: true},
+mongoose.connect(`mongodb://mongodb/ess`, {useNewUrlParser: true},
 	function(error, client) {
 		if(error) {
 			console.log(error);
@@ -86,6 +86,10 @@ connection.once('open', () => {
 		let id = request.body.proposalId;
 		let path = `"./${request.file.path}"`;
 		let name = request.file.originalname;
+		console.log();
+
+		let proposal = await Proposal.findOne({proposalId: id});
+
 		try {
 			switch(attachment) {
 				case 'needByDateAttachment':
@@ -140,10 +144,10 @@ connection.once('open', () => {
 					});
 
 					break;
-				case 'moleculeReferencePreparationArticle':
-					attachment = 'moleculeReferencePreparationArticle';
+				case 'moleculePreparationReferenceArticle':
+					attachment = 'moleculePreparationReferenceArticle';
 					await Proposal.findOneAndUpdate({proposalId: id}, {
-						moleculeReferencePreparationArticle: {
+						moleculePreparationReferenceArticle: {
 							path: path,
 							name: request.file.originalname,
 							uploaded: true
@@ -162,15 +166,13 @@ connection.once('open', () => {
 					});
 					break;
 			}
-		}
-
-		catch(error) {
+		} catch(error) {
 			console.log(error);
 			return response.status(400).json({
 				error: error.message
 			});
 		}
-		response.send('File uploaded successfully! -> filename = ' + name);
+		response.status(201).json(proposal);
 	});
 
 	app.get('/api/file/proposals/:proposalId', async function(request, response) {
@@ -267,9 +269,8 @@ connection.once('open', () => {
 		}
 	});
 
-	app.get('/api/pdf/:id', async function(request, response) {
+	app.get('/api/pdf/merge/:id', async function(request, response) {
 		const doc = new PDFDocument();
-
 
 		try {
 			let proposal = await Proposal.findOne({proposalId: request.params.id});
@@ -294,7 +295,7 @@ connection.once('open', () => {
 				doc.addPage().font(semibold, 18).text('(B) BIOLOGICAL DEUTERATION').moveDown().font(italic, 12).text('If the protein is to be purified by us, please remember to include a chromatogram from purification and a picture of SDS-PAGE that indicates MW and purity in your science case.').moveDown().font(semibold, 16).text('For biomass').moveDown().font(semibold, 13).text('Will user provide the organism for us to grow under deuterated conditions?').font(regular, 12).text(proposal.biomassDeuteration.organismProvidedByUser).moveDown().font(semibold, 13).text('What is the organism?').font(regular, 12).text(proposal.biomassDeuteration.organismDetails).moveDown().font(regular, 12).text(proposal.biomassDeuteration.organismReferenceAttachment).moveDown().font(semibold, 13).text('How much material do you need (indicate wet or dry mass)').font(regular, 12).text(proposal.biomassDeuteration.amountNeeded).moveDown().font(semibold, 13).text('Justify amount').font(regular, 12).text(proposal.biomassDeuteration.amountNeededMotivation).moveDown().font(semibold, 13).text('Level of deuteration required:').font(regular, 12).text(proposal.biomassDeuteration.deuterationLevelRequired).moveDown().font(semibold, 13).text('Justify level of D incorporation').font(regular, 12).text(proposal.biomassDeuteration.deuterationLevelMotivation).moveDown();
 			}
 			if(proposal.wantsProteinDeuteration) {
-				doc.addPage().font(semibold, 16).text('For proteins').moveDown().font(semibold, 13).text('Name of molecule to be deuterated (e.g. superoxide dismutase):').font(regular, 12).text(proposal.proteinDeuteration.moleculeName).moveDown().font(semibold, 13).text('FASTA sequence or Uniprot number:').font(regular, 12).text(proposal.proteinDeuteration.moleculeIdentifier).moveDown().font(semibold, 13).text('Oligomerizarion state? (e.g. homodimer, tetramer etc.):').font(regular, 12).text(proposal.proteinDeuteration.oligomerizationState).moveDown().font(semibold, 13).text('Does the protein have any co-factors or ligands required for expression? Specify: ').font(regular, 12).text(proposal.proteinDeuteration.expressionRequirements).font(semibold, 13).text('Origin of molecules (e.g. human, E. coli, S. cerevisiae):').font(regular, 12).text(proposal.proteinDeuteration.moleculeOrigin).moveDown().font(semibold, 13).text('Will you provide an expression plasmid?').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUser).moveDown().font(semibold, 13).text('If “yes”, please provide details (e.g. pET31b, C-terminal His-tag, Amp selection) If “no”, we will design & order a plasmid commercially)').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUserDetails).moveDown().font(semibold, 13).text('How much material do you need: ').font(regular, 12).text(proposal.proteinDeuteration.amountNeeded).moveDown().font(semibold, 13).text('Justify amount:').font(regular, 12).text(proposal.proteinDeuteration.amountNeededMotivation).moveDown().font(semibold, 13).text('Will you need DEMAX to purify the protein from deuterated biomass?').font(regular, 12).text(proposal.proteinDeuteration.needsPurificationSupport).moveDown().font(semibold, 13).text('Has expression been done for the unlabeled protein?').font(regular, 12).text(proposal.proteinDeuteration.hasDoneUnlabeledProteinExpression).moveDown().font(semibold, 13).text('Typical yield:').font(regular, 12).text(proposal.proteinDeuteration.typicalYield).moveDown().font(semibold, 13).text('Have you been able to purify the unlabeled protein?').font(italic, 12).text('Please include chromatogram & image of SDS-PAGE in proposal.').font(regular, 12).text(proposal.proteinDeuteration.hasPurifiedUnlabeledProtein).moveDown().font(semibold, 13).text('Have you tried to deuterate the protein yourself, even in small scale?').font(regular, 12).text(proposal.proteinDeuteration.hasProteinDeuterationExperience).moveDown().font(semibold, 13).text('Results?:').font(regular, 12).text(proposal.proteinDeuteration.proteinDeuterationResults).moveDown();
+				doc.addPage().font(semibold, 16).text('For proteins').moveDown().font(semibold, 13).text('Name of molecule to be deuterated (e.g. superoxide dismutase):').font(regular, 12).text(proposal.proteinDeuteration.moleculeName).moveDown().font(semibold, 13).text('FASTA sequence or Uniprot number:').font(regular, 12).text(proposal.proteinDeuteration.moleculeIdentifier).moveDown().font(semibold, 13).text('Oligomerizarion state? (e.g. homodimer, tetramer etc.):').font(regular, 12).text(proposal.proteinDeuteration.oligomerizationState).moveDown().font(semibold, 13).text('Does the protein have any co-factors or ligands required for expression? Specify: ').font(regular, 12).text(proposal.proteinDeuteration.expressionRequirements).font(semibold, 13).text('Origin of molecules (e.g. human, E. coli, S. cerevisiae):').font(regular, 12).text(proposal.proteinDeuteration.moleculeOrigin).moveDown().font(semibold, 13).text('Will you provide an expression plasmid?').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUser).moveDown().font(semibold, 13).text('If “yes”, please provide details (e.g. pET31b, C-terminal His-tag, Amp selection) If “no”, we will design & order a plasmid commercially)').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUserDetails).moveDown().font(semibold, 13).text('How much material do you need: ').font(regular, 12).text(proposal.proteinDeuteration.amountNeeded).moveDown().font(semibold, 13).text('Justify amount:').font(regular, 12).text(proposal.proteinDeuteration.amountNeededMotivation).moveDown().font(semibold, 13).text('Will you need DEMAX to purify the protein from deuterated biomass?').font(regular, 12).text(proposal.proteinDeuteration.needsPurificationSupport).moveDown().font(semibold, 13).text('Has expression been done for the unlabeled protein?').font(regular, 12).text(proposal.proteinDeuteration.hasDoneUnlabeledProteinExpression).moveDown().font(semibold, 13).text('Typical yield:').font(regular, 12).text(proposal.proteinDeuteration.typicalYield).moveDown().font(semibold, 13).text('Have you been able to purify the unlabeled protein?').font(italic, 12).text('Please include chromatogram & image of SDS-PAGE in proposal.').font(regular, 12).text(proposal.proteinDeuteration.hasDoneProteinPurification).moveDown().font(semibold, 13).text('Have you tried to deuterate the protein yourself, even in small scale?').font(regular, 12).text(proposal.proteinDeuteration.hasProteinDeuterationExperience).moveDown().font(semibold, 13).text('Results?:').font(regular, 12).text(proposal.proteinDeuteration.proteinDeuterationResults).moveDown();
 			}
 			if(proposal.wantsBiologicalDeuteration) {
 				doc.addPage().font(semibold, 18).text('Biosafety').moveDown().font(semibold, 13).text('1) Which biosafety containment level is required to work with your sample?').font(regular, 12).text(proposal.bioSafety.bioSafetyContainmentLevel).moveDown().font(semibold, 13).text('Is your organism a live virus, toxin-producing, or pose ay risk to human health and/or the environment?').font(regular, 12).text(proposal.bioSafety.organismRisk).moveDown().font(semibold, 13).text('If you chose “yes”, please provide details:').font(regular, 12).text(proposal.bioSafety.organismRiskDetails).moveDown();
@@ -304,47 +305,45 @@ connection.once('open', () => {
 			}
 
 			doc.save();
-			doc.pipe(fs.createWriteStream('./files/uploads/' + proposal.proposalId + '_generatedProposal.pdf'));
-			let generatedDoc = doc.pipe(fs.createWriteStream('./files/uploads/' + proposal.proposalId + '.pdf'));
+
+			let generatedDoc = await doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
 			doc.end();
-			doc.pipe(response);
 
-			await proposal.update({generatedProposal: `"${generatedDoc.path}"`});
-		}
-		catch(error) {
-			console.log(error);
-			return response.status(400).json({
-				error: error.message
-			});
-		}
-	});
+			await proposal.update({generatedProposal: {
+				name: proposal.proposalId + '.pdf',
+				path: `"${generatedDoc.path}"`,
+				generated: true
+				}});
 
+			let attachments = [];
 
-	app.get('/api/pdf/merge/:proposalId', async function(request, response) {
-		try {
-			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-			let attachments = [
-				proposal.proposalTemplate.path,
-				proposal.needByDateAttachment.path ];
-			console.log(typeof( attachments ));
-			/*
-			 if(proposal.wantsCrystallization) {
-			 attachments.push(proposal.pbdIdReferenceAttachment.path);
-			 }
-			 if(proposal.wantsBiomassDeuteration) {
-			 attachments.push(proposal.organismReferenceAttachment.path);
-			 }
-			 if(proposal.wantsProteinDeuteration) {
-			 attachments.push(proposal.needsPurificationSupportAttachment.path);
-			 }
+			if(proposal.generatedProposal.generated) {
+				attachments.push(proposal.generatedProposal.path);
+			}
+			if(proposal.proposalTemplate.uploaded) {
+				attachments.push(proposal.proposalTemplate.path);
+			}
+			if(proposal.needByDateAttachment.uploaded) {
+				attachments.push(proposal.needByDateAttachment.path);
+			}
 
-			 if(proposal.wantsChemicalDeuteration) {
-			 attachments.push(proposal.chemicalStructureAttachment.path);
-			 }
-			 if(proposal.chemicalDeuteration.hasPreparedMolecule) {
-			 attachments.push(proposal.moleculePreparationReferenceArticle);
-			 }
-			 */
+			if(proposal.pbdIdReferenceAttachment.uploaded) {
+				attachments.push(proposal.pbdIdReferenceAttachment.path);
+			}
+			if(proposal.organismReferenceAttachment.uploaded) {
+				attachments.push(proposal.organismReferenceAttachment.path);
+			}
+			if(proposal.needsPurificationSupportAttachment.uploaded) {
+				attachments.push(proposal.needsPurificationSupportAttachment.path);
+			}
+			if(proposal.chemicalStructureAttachment.uploaded) {
+				attachments.push(proposal.chemicalStructureAttachment.path);
+			}
+			if(proposal.moleculePreparationReferenceArticle.uploaded) {
+				attachments.push(proposal.moleculePreparationReferenceArticle.path);
+			}
+			console.log(attachments);
+
 			merge(attachments, `"./files/merged/${proposal.proposalId}.pdf"`,
 				function(error) {
 					if(error) {
@@ -360,7 +359,75 @@ connection.once('open', () => {
 					response.setHeader('Content-Disposition', 'attachment; filename=' + proposal.proposalId + '.pdf');
 					file.pipe(response);
 				});
-			await proposal.update({mergedProposal: `"./files/merged/${proposal.proposalId}.pdf"`});
+			await proposal.update({
+				mergedProposal: {
+					path: `"./files/merged/${proposal.proposalId}.pdf"`,
+					merged: true
+				}
+			});
+		} catch(error) {
+			console.log(error);
+			return response.status(400).json({
+				error: error.message
+			});
+		}
+	});
+
+
+	app.get('/api/pdf/merge/:proposalId', async function(request, response) {
+		try {
+			let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+
+			let attachments = [];
+
+			if(proposal.generatedProposal.uploaded) {
+				attachments.push(proposal.proposalTemplate.path);
+			}
+			if(proposal.proposalTemplate.uploaded) {
+				attachments.push(proposal.proposalTemplate.path);
+			}
+			if(proposal.needByDateAttachment.uploaded) {
+				attachments.push(proposal.needByDateAttachment.path);
+			}
+
+			if(proposal.pbdIdReferenceAttachment.uploaded) {
+				attachments.push(proposal.pbdIdReferenceAttachment.path);
+			}
+			if(proposal.organismReferenceAttachment.uploaded) {
+				attachments.push(proposal.organismReferenceAttachment.path);
+			}
+			if(proposal.needsPurificationSupportAttachment.uploaded) {
+				attachments.push(proposal.needsPurificationSupportAttachment.path);
+			}
+			if(proposal.chemicalStructureAttachment.uploaded) {
+				attachments.push(proposal.chemicalStructureAttachment.path);
+			}
+			if(proposal.moleculePreparationReferenceArticle.uploaded) {
+				attachments.push(proposal.moleculePreparationReferenceArticle.path);
+			}
+			console.log(attachments);
+
+			merge(attachments, `"./files/merged/${proposal.proposalId}.pdf"`,
+				function(error) {
+					if(error) {
+						console.log(error);
+						return response.status(400).json({
+							error: error.message
+						});
+					}
+					const file = fs.createReadStream("./files/merged/" + proposal.proposalId + '.pdf');
+					const stat = fs.statSync("./files/merged/" + proposal.proposalId + '.pdf');
+					response.setHeader('Content-Length', stat.size);
+					response.setHeader('Content-Type', 'application/pdf');
+					response.setHeader('Content-Disposition', 'attachment; filename=' + proposal.proposalId + '.pdf');
+					file.pipe(response);
+				});
+			await proposal.update({
+				mergedProposal: {
+					path: `"./files/merged/${proposal.proposalId}.pdf"`,
+					merged: true
+				}
+			});
 		} catch(error) {
 			console.log(error);
 			return response.status(400).json({
@@ -442,7 +509,7 @@ connection.once('open', () => {
 			});
 			response.status(201).json(newUser);
 		} catch(err) {
-			console.log(error)
+			console.log(error);
 			return response.status(400).json({
 				error: err.message
 			});
@@ -602,16 +669,17 @@ connection.once('open', () => {
 	});
 
 	const server = app.listen(process.env.PORT || 3000, async function() {
-		try{
-		const port = server.address().port;
-		console.log(
-			"\n" +
-			"STARTUP SUCCESS"
-			+ "\n" +
-			"SERVER RUNNING AT PORT " + port
-			+ "\n"
-		);
-	}catch(error){
-		console.log(error)}
+		try {
+			const port = server.address().port;
+			console.log(
+				"\n" +
+				"STARTUP SUCCESS"
+				+ "\n" +
+				"SERVER RUNNING AT PORT " + port
+				+ "\n"
+			);
+		} catch(error) {
+			console.log(error);
+		}
 	});
 });
