@@ -4,6 +4,8 @@ services:
     image: 'bitnami/mongodb:latest'
     ports:
     - "27017"
+    volumes:
+    - mongodb_data:/bitnami
   demax-server:
     build:
       context: .
@@ -18,3 +20,6 @@ services:
       dockerfile: 'Dockerfile-nginx'
     ports:
     - '8080:8080'
+volumes:
+  mongodb_data:
+    driver: local
