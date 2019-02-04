@@ -204,6 +204,7 @@ connection.once('open', () => {
 			}
 
 			response.send(attachments);
+			console.log(attachments)
 		} catch(error) {
 			console.log(error);
 			return response.status(400).json({
@@ -334,9 +335,9 @@ connection.once('open', () => {
 			doc.end();
 
 			await proposal.update({generatedProposal: {
-				name: proposal.proposalId + '.pdf',
-				path: `"${generatedDoc.path}"`,
-				generated: true
+					name: proposal.proposalId + '.pdf',
+					path: `"${generatedDoc.path}"`,
+					generated: true
 				}});
 
 			let attachments = [];

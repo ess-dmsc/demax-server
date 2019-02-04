@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/demax-client
 
 # dependencies
 /node_modules
