@@ -17,7 +17,7 @@ services:
   demax-client:
     build:
       context: "./demax-client"
-      dockerfile: 'Dockerfile'
+      dockerfile: 'Dockerfile-stage'
     ports:
     - '8080:8080'
 volumes:

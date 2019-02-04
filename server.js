@@ -31,7 +31,7 @@ global.__basedir = __dirname;
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 
-mongoose.connect(`mongodb://mongodb/ess`, {useNewUrlParser: true},
+mongoose.connect(`mongodb://localhost:27017/ess`, {useNewUrlParser: true},
 	function(error, client) {
 		if(error) {
 			console.log(error);
