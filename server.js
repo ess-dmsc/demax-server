@@ -465,6 +465,8 @@ connection.once('open', () => {
 
 		app.post('/api/users/register', async function(request, response) {
 
+			await findUserByEmail(request.body.email);
+
 			const userData = {
 				email: request.body.email,
 				password: request.body.password,
@@ -484,12 +486,9 @@ connection.once('open', () => {
 					console.log(newUser);
 					if(error) {
 						console.log(error);
-						response.status(501).json({
-							error: error.message
-						});
 					}
 				});
-				return response.status(201).json(newUser);
+				response.status(201).json(newUser);
 			} catch(err) {
 				console.log(error);
 				return response.status(400).json({
@@ -497,6 +496,19 @@ connection.once('open', () => {
 				});
 			}
 		});
+
+		function findUserByEmail(email) {
+			if(email) {
+				return new Promise((resolve, reject) => {
+					User.findOne({email: email}).exec((error, document) => {
+						if(error) return reject(error);
+						if(document) return reject(new Error('Email already exists. Please enter another email.'));
+						else return resolve(email);
+					});
+				});
+			}
+		}
+
 
 		app.get('/api/users/:email', async function(request, response) {
 			try {
