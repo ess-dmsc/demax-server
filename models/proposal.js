@@ -27,6 +27,7 @@ const proposalSchema = new mongoose.Schema({
 	needByDateMotivation: String,
 	lab: String,
 	linksWithIndustry: String,
+	linksWithIndustryDetails: String,
 	coProposerStudents: String,
 	workTowardsStudentsDegree: String,
 	wantsCrystallization: Boolean,
