@@ -340,7 +340,7 @@ connection.once('open', () => {
 				doc.end();
 				doc.pipe(response);
 
-				Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {
+				await proposal.update({
 					generatedProposal: {
 						name: proposal.proposalId + '.pdf',
 						path: `"${generatedDoc.path}"`,
