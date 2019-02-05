@@ -9,7 +9,7 @@ services:
   demax-server:
     build:
       context: .
-      dockerfile: 'Dockerfile'
+      dockerfile: 'Dockerfile-stage'
     ports:
     - '3000:3000'
     depends_on:
