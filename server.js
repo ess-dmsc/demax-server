@@ -418,36 +418,27 @@ connection.once('open', () => {
 		});
 
 
-		app.post('/api/users/login', async function(request, response) {
-
-
-			try {
-				User.findOne({
-					email: request.body.email
-				}, (err, user) => {
-					if(!user) {
+			app.post('/api/users/login', function(request, response) {
+			User.findOne({
+				email: request.body.email
+			}, (err, user) => {
+				if(!user) {
+					return response.sendStatus(403);
+				}
+				user.comparePassword(request.body.password, (error, isMatch) => {
+					if(!isMatch) {
 						return response.sendStatus(403);
 					}
-					user.comparePassword(request.body.password, (error, isMatch) => {
-						if(!isMatch) {
-							return response.sendStatus(403);
-						}
-						const token = jwt.sign({
-								user: user,
-								expiresIn: 5000
-							},
-							'3eb64519dc0e32eb7e99d645b44942b1b289970de5f64ffc49922b90d4b6ae58');
-						response.status(200).json({
-							token: token
-						});
+					const token = jwt.sign({
+							user: user,
+							expiresIn: 5000
+						},
+						'3eb64519dc0e32eb7e99d645b44942b1b289970de5f64ffc49922b90d4b6ae58');
+					response.status(200).json({
+						token: token
 					});
 				});
-			} catch(error) {
-				console.log(error);
-				return response.status(400).json({
-					error: error.message
-				});
-			}
+			});
 		});
 
 
@@ -485,12 +476,11 @@ connection.once('open', () => {
 				newUser.save(function(error) {
 					console.log(newUser);
 					if(error) {
-						console.log(error);
+						throw error;
 					}
 				});
 				response.status(201).json(newUser);
 			} catch(err) {
-				console.log(error);
 				return response.status(400).json({
 					error: err.message
 				});
