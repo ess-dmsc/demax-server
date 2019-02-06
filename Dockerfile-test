@@ -8,6 +8,7 @@ RUN npm config set proxy  $http_proxy
 RUN npm config set https-proxy  $http_proxy
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set strict-ssl false
+RUN apt-get update && apt-get install -y default-jdk
 COPY package.json /usr/src/app/package.json
 RUN npm install --save
 COPY . /usr/src/app
