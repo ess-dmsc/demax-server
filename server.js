@@ -418,7 +418,7 @@ connection.once('open', () => {
 		});
 
 
-			app.post('/api/users/login', function(request, response) {
+		app.post('/api/users/login', function(request, response) {
 			User.findOne({
 				email: request.body.email
 			}, (err, user) => {
@@ -540,7 +540,7 @@ connection.once('open', () => {
 			}
 		});
 
-		app.get('/api/admin/proposals', async function(request, response) {
+		app.get('/api/proposals', async function(request, response) {
 			try {
 				const docs = await Proposal.find({});
 				response.status(200).json(docs);
@@ -597,12 +597,12 @@ connection.once('open', () => {
 			}
 		});
 
-		app.get('/api/proposals/:id', async function(request, response) {
+		app.get('/api/proposals/proposal/:proposalId', async function(request, response) {
 			try {
-				const obj = await Proposal.findOne({
-					proposalId: request.params.id
-				});
-				response.status(200).json(obj);
+				const proposal = await Proposal.findOne(
+					{proposalId: request.params.proposalId
+					});
+				response.status(200).json(proposal);
 			} catch(error) {
 				console.log(error);
 				return response.status(500).json({
@@ -611,26 +611,28 @@ connection.once('open', () => {
 			}
 		});
 
+
 		app.put('/api/proposals/:id', async function(request, response) {
 			try {
 				await Proposal.findOneAndUpdate({
 					proposalId: request.params.id
 				}, request.body);
-				response.sendStatus(200);
+				response.status(200).json(request.params.id + ' was successfully saved.');
 			} catch(error) {
 				console.log(error);
-				return response.status(400).json({
+				return response.status(200).json({
 					error: error.message
 				});
 			}
 
 		});
+
 		app.delete('/api/proposals/:id', async function(request, response) {
 			try {
 				await Proposal.findOneAndDelete({
 					proposalId: request.params.id
 				});
-				response.sendStatus(200);
+				response.status(200).json(request.params.id + ' was successfully deleted.');
 			} catch(error) {
 				console.log(error);
 				return response.status(400).json({
