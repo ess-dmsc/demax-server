@@ -31,6 +31,7 @@ const proposalSchema = new mongoose.Schema({
 	coProposerStudents: String,
 	workTowardsStudentsDegree: String,
 	wantsCrystallization: Boolean,
+	wantsOtherDeuteration: Boolean,
 	wantsBiologicalDeuteration: Boolean,
 	wantsBiomassDeuteration: Boolean,
 	wantsProteinDeuteration: Boolean,
@@ -68,21 +69,29 @@ const proposalSchema = new mongoose.Schema({
 		moleculeName: String,
 		moleculeIdentifier: String,
 		molecularWeight: String,
+
 		oligomerizationState: String,
 		expressionRequirements: String,
 		moleculeOrigin: String,
+
 		expressionPlasmidProvidedByUser: String,
 		expressionPlasmidProvidedByUserDetails: String,
+
 		amountNeeded: String,
 		amountNeededMotivation: String,
+
 		deuterationLevelRequired: String,
 		deuterationLevelMotivation: String,
+
 		needsPurificationSupport: String,
 		hasDoneUnlabeledProteinExpression: String,
+
 		typicalYield: String,
 		hasDoneProteinPurification: String,
+
 		hasProteinDeuterationExperience: String,
 		proteinDeuterationResults: String,
+
 		other: String
 	},
 	bioSafety: {
@@ -117,7 +126,7 @@ const proposalSchema = new mongoose.Schema({
 	},
 	mergedProposal: {
 		name: String,
-		path: String,
+		path: {type: String, default: './files/error/moleculePreparationReferenceArticle.pdf'},
 		merged: {type: Boolean, default: false}
 	},
 	pbdIdReferenceAttachment: {
@@ -146,5 +155,6 @@ const proposalSchema = new mongoose.Schema({
 		uploaded: {type: Boolean, default: false}
 	},
 	submitted: {type: Boolean, default: false},
+	other: String
 });
 module.exports = mongoose.model('Proposal', proposalSchema);
