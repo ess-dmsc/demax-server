@@ -386,9 +386,10 @@ connection.once('open', () => {
 				if(proposal.moleculePreparationReferenceArticle.uploaded) {
 					attachments.push(proposal.moleculePreparationReferenceArticle.path);
 				}
-				console.log(attachments);
 
-				merge(attachments, `"./files/merged/${proposal.proposalId}.pdf"`,
+				let outputPath = __basedir + "/files/merged/" + proposal.proposalId + '.pdf'
+
+				merge(attachments, outputPath,
 					function(error) {
 						if(error) {
 							console.log(error);
@@ -396,12 +397,14 @@ connection.once('open', () => {
 								error: error.message
 							});
 						}
-						const file = fs.createReadStream("./files/merged/" + proposal.proposalId + '.pdf');
-						const stat = fs.statSync("./files/merged/" + proposal.proposalId + '.pdf');
+
+						const file = fs.createReadStream(outputPath);
+						const stat = fs.statSync(outputPath);
 						response.setHeader('Content-Length', stat.size);
 						response.setHeader('Content-Type', 'application/pdf');
 						response.setHeader('Content-Disposition', 'attachment; filename=' + proposal.proposalId + '.pdf');
 						file.pipe(response);
+
 					});
 				await proposal.update({
 					mergedProposal: {
