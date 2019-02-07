@@ -16,7 +16,6 @@ exports.getAllProposals = async function(request, response) {
 exports.getProposalsByEmail = async function(request, response) {
 	try {
 		const docs = await Proposal.find({"mainProposer.email": request.params.email});
-		console.log(docs);
 		response.status(200).json(docs);
 	} catch(error) {
 		console.log(error);
