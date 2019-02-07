@@ -8,7 +8,7 @@ RUN npm config set proxy  $http_proxy
 RUN npm config set https-proxy  $http_proxy
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set strict-ssl false
-
+RUN apk --update add openjdk7-jre
 COPY package.json /usr/src/app/package.json
 
 WORKDIR /usr/src/app

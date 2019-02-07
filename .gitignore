@@ -2,9 +2,10 @@
 
 # compiled output
 /dist
-/tmp
-/out-tsc
+/client
 /demax-client
+/out-tsc
+/tmp
 
 # dependencies
 /node_modules
@@ -41,8 +42,4 @@ testem.log
 .DS_Store
 Thumbs.db
 
-/client
-/uploads
-/merged
-/generated
-/files
+
