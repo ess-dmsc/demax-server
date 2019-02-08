@@ -19,7 +19,7 @@ services:
       context: "./demax-client"
       dockerfile: 'Dockerfile'
     ports:
-    - '3001:3001'
+    - '8080:8080'
 volumes:
   mongodb_data:
     driver: local
