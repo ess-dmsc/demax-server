@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
 const attachmentSchema = new mongoose.Schema({
-	nanoid: String,
-	fieldname: String,
 	originalname: String,
 	encoding: String,
 	mimetype: String,
@@ -10,7 +8,7 @@ const attachmentSchema = new mongoose.Schema({
 	path: String,
 	size: Number,
 	proposalId: String,
-	type: String,
+	attachmentType: String,
 	uploadedAt: {type: Date, default: Date.now()},
 });
 

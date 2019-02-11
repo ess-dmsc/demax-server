@@ -111,6 +111,7 @@ const proposalSchema = new mongoose.Schema({
 	},
 	proposalTemplate: {
 		name: String,
+		uniqureName: String,
 		path: String,
 		uploaded: {type: Boolean, default: false}
 	},
@@ -121,6 +122,7 @@ const proposalSchema = new mongoose.Schema({
 	},
 	needByDateAttachment: {
 		name: String,
+		uniqureName: String,
 		path: String,
 		uploaded: {type: Boolean, default: false}
 	},
@@ -131,30 +133,35 @@ const proposalSchema = new mongoose.Schema({
 	},
 	pbdIdReferenceAttachment: {
 		name: String,
+		uniqureName: String,
 		path: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	organismReferenceAttachment: {
 		name: String,
+		uniqureName: String,
 		path: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	needsPurificationSupportAttachment: {
 		name: String,
+		uniqureName: String,
 		path: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	chemicalStructureAttachment: {
 		name: String,
+		uniqureName: String,
 		path: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	moleculePreparationReferenceArticle: {
 		name: String,
+		uniqureName: String,
 		path: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	submitted: {type: Boolean, default: false},
-	other: String
+	other: String,
 });
 module.exports = mongoose.model('Proposal', proposalSchema);

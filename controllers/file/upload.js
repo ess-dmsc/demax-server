@@ -1,13 +1,19 @@
 const Proposal = require('../../models/proposal.js');
+const Attachment = require('../../models/attachment.js');
 
 exports.uploadAttachment = async function (request, response) {
 
 	let attachment = request.params.attachment;
-
 	let id = request.body.proposalId;
 	let path = `"./${request.file.path}"`;
 	let name = request.file.originalname;
-	let proposal = await Proposal.findOne({proposalId: id});
+	let proposal = await Proposal.findOne({proposalId: id})
+
+	console.log(attachment);
+	console.log(id);
+	console.log(path);
+	console.log(name);
+	console.log(proposal);
 
 	try {
 		switch(attachment) {
@@ -95,19 +101,17 @@ exports.uploadAttachment = async function (request, response) {
 	response.status(201).json('Successfully uploaded ' + request.file.originalname + '. The file has been added to proposal ' + proposal.proposalId);
 };
 
-exports.uploadFileAlternative = async function (request, response) {
+exports.attachFile = async function (request, response) {
 
 	const newAttachment = {
-		nanoid: nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8),
-		fieldname: request.file.fieldname,
 		originalname: request.file.originalname,
+		attachmentType: request.body.attachmentType,
 		encoding: request.file.encoding,
 		mimetype: request.file.mimetype,
 		filename: request.file.filename,
 		path: request.file.path,
 		size: request.file.size,
-		proposal: request.body.proposalId,
-		type: request.body.name,
+		proposal: request.params.proposalId,
 	};
 	try {
 		await new Attachment(newAttachment).save();

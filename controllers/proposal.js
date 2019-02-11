@@ -44,11 +44,10 @@ exports.getAllProposalMetaInformation = async function(request, response) {
 
 exports.submitNewProposal = async function(request, response) {
 	try {
-		console.log('this')
 		const newProposal = request.body;
 		newProposal.proposalId = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8);
 		await new Proposal(newProposal).save();
-		console.log(newProposal.proposalId);
+		console.log('Created proposal ' + newProposal.proposalId);
 		response.status(201).json(newProposal);
 	} catch(error) {
 		console.log(error);
@@ -60,10 +59,10 @@ exports.submitNewProposal = async function(request, response) {
 
 exports.getProposalByProposalId = async function(request, response) {
 	try {
-		const proposal = await Proposal.findOne(
-			{proposalId: request.params.proposalId
-			});
-		response.status(200).json(proposal);
+		console.log("request.params.proposalId: " + request.params.proposalId)
+		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+		console.log(proposal)
+		response.status(201).json(proposal);
 	} catch(error) {
 		console.log(error);
 		return response.status(500).json({
@@ -77,7 +76,7 @@ exports.editProposalByProposalId = async function(request, response) {
 		await Proposal.findOneAndUpdate({
 			proposalId: request.params.proposalId
 		}, request.body);
-		response.status(200).json(request.params.id + ' was successfully saved.');
+		response.status(200).json(request.params.proposalId + ' was successfully saved.');
 	} catch(error) {
 		console.log(error);
 		return response.status(200).json({

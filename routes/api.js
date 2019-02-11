@@ -25,8 +25,11 @@ const upload = multer({storage: storage});
 router.get('/merge/:proposalId', auth.checkToken, pdfMerger);
 router.get('/generate/:proposalId', auth.checkToken, pdfGenerator);
 
-router.get('/file/:proposalId', auth.checkToken, downloader.getUploadedAttachmentsByProposalId);
+router.get('/file/:proposalId', downloader.getUploadedAttachmentsByProposalId);
+router.get('/file/download/:uniqueName', downloader.getFileByUniqueName);
 router.post('/file/upload/:attachment', auth.checkToken, upload.single("file"), uploader.uploadAttachment);
+router.post('/proposals/:proposalId', upload.single('file'), uploader.attachFile);
+
 router.delete('/file/delete/:filename', auth.checkToken, fileManager.deleteFileByProposalIdAndAttachmentType);
 
 router.get('/admin/file/all', auth.checkToken, fileManager.getAll);
@@ -45,7 +48,7 @@ router.get('/proposals', auth.checkToken, proposalController.getAllProposals);
 router.get('/proposals/:email', auth.checkToken, auth.checkToken, proposalController.getProposalsByEmail);
 router.get('/proposals/meta', auth.checkToken, proposalController.getAllProposalMetaInformation);
 router.post('/proposals', auth.checkToken, proposalController.submitNewProposal);
-router.get('/proposals/:proposalId', auth.checkToken, proposalController.getProposalByProposalId);
+router.get('/proposals/getById/:proposalId', proposalController.getProposalByProposalId);
 router.put('/proposals/:proposalId', auth.checkToken, proposalController.editProposalByProposalId);
 router.delete('/proposals/:proposalId', auth.checkToken, proposalController.deleteProposalByProposalId);
 
