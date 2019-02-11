@@ -5,11 +5,9 @@ let secret = '3eb64519dc0e32eb7e99d645b44942b1b289970de5f64ffc49922b90d4b6ae58';
 exports.checkToken = async function(request, response, next){
 
 	let token = request.headers['authorization'];
-
 	if (token.startsWith('Bearer ')) {
 		token = token.slice(7, token.length);
 	}
-
 
 	if (token) {
 		jwt.verify(token, secret, (error, decoded) => {
@@ -23,6 +21,7 @@ exports.checkToken = async function(request, response, next){
 				next();
 			}
 		});
+
 	} else {
 		return response.json({
 			success: false,

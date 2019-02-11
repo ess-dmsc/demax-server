@@ -15,7 +15,7 @@ exports.getAllProposals = async function(request, response) {
 }
 
 exports.getProposalsByEmail = async function(request, response) {
-	
+
 	try {
 		const docs = await Proposal.find({"mainProposer.email": request.params.email});
 		response.status(200).json(docs);
@@ -75,7 +75,7 @@ exports.getProposalByProposalId = async function(request, response) {
 exports.editProposalByProposalId = async function(request, response) {
 	try {
 		await Proposal.findOneAndUpdate({
-			proposalId: request.params.id
+			proposalId: request.params.proposalId
 		}, request.body);
 		response.status(200).json(request.params.id + ' was successfully saved.');
 	} catch(error) {
@@ -90,9 +90,10 @@ exports.editProposalByProposalId = async function(request, response) {
 exports.deleteProposalByProposalId = async function(request, response) {
 	try {
 		await Proposal.findOneAndDelete({
-			proposalId: request.params.id
+			proposalId: request.params.proposalId
 		});
-		response.status(200).json(request.params.id + ' was successfully deleted.');
+		console.log(request.params.proposalId)
+		response.status(200).json(request.params.proposalId + ' was successfully deleted.');
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
