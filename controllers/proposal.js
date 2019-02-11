@@ -1,5 +1,6 @@
 const Proposal = require('../models/proposal.js');
 const nanoid = require('nanoid/generate');
+const jwt = require('jsonwebtoken');
 
 exports.getAllProposals = async function(request, response) {
 	try {
@@ -14,6 +15,7 @@ exports.getAllProposals = async function(request, response) {
 }
 
 exports.getProposalsByEmail = async function(request, response) {
+	
 	try {
 		const docs = await Proposal.find({"mainProposer.email": request.params.email});
 		response.status(200).json(docs);

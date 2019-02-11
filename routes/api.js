@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
@@ -10,8 +10,7 @@ const downloader = require('../controllers/file/download.js');
 const fileManager = require('../controllers/file/manager.js');
 
 const userManager = require('../controllers/user/admin.js');
-const loginUser = require('../controllers/user/login.js');
-const registerUser = require('../controllers/user/register.js');
+const auth = require('../controllers/user/auth.js');
 
 const userController = require('../controllers/user/user.js');
 const proposalController = require('../controllers/proposal.js');
@@ -23,32 +22,31 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage});
 
-router.get('/merge/:proposalId', pdfMerger);
-router.get('/generate/:proposalId', pdfGenerator);
+router.get('/merge/:proposalId', auth.checkToken, pdfMerger);
+router.get('/generate/:proposalId', auth.checkToken, pdfGenerator);
 
-router.get('/file/:proposalId', downloader.getUploadedAttachmentsByProposalId);
-router.post('/file/upload/:attachment', upload.single("file"), uploader.uploadAttachment);
-router.delete('/file/delete/:filename', fileManager.deleteFileByProposalIdAndAttachmentType);
+router.get('/file/:proposalId', auth.checkToken, downloader.getUploadedAttachmentsByProposalId);
+router.post('/file/upload/:attachment', auth.checkToken, upload.single("file"), uploader.uploadAttachment);
+router.delete('/file/delete/:filename', auth.checkToken, fileManager.deleteFileByProposalIdAndAttachmentType);
 
-router.get('/admin/file/all', fileManager.getAll);
-router.get('/admin/file/:filename', fileManager.getByFilename);
+router.get('/admin/file/all', auth.checkToken, fileManager.getAll);
+router.get('/admin/file/:filename', auth.checkToken, fileManager.getByFilename);
 
-router.post('/users/login', loginUser.login);
-router.post('/users/register', registerUser.register);
+router.post('/users/login', auth.login);
+router.post('/users/register', auth.register);
 
-router.get('/users/:email',userController.getUserByEmail);
-router.put('/users/:email', userController.editUserByEmail);
-router.delete('/users/:email', userController.deleteUserByEmail);
+router.get('/users/:email', auth.checkToken, userController.getUserByEmail);
+router.put('/users/:email', auth.checkToken, userController.editUserByEmail);
+router.delete('/users/:email', auth.checkToken, userController.deleteUserByEmail);
 
-router.get('/admin/users/', userManager.getAllUsers);
+router.get('/admin/users/', auth.checkToken, userManager.getAllUsers);
 
-router.get('/proposals',proposalController.getAllProposals);
-router.get('/proposals/:email',proposalController.getProposalsByEmail);
-router.get('/proposals/meta',proposalController.getAllProposalMetaInformation);
-router.post('/proposals',proposalController.submitNewProposal);
-router.get('/proposals/:proposalId',proposalController.getProposalByProposalId);
-router.put('/proposals/:proposalId',proposalController.editProposalByProposalId);
-router.delete('/proposals/:proposalId',proposalController.deleteProposalByProposalId);
-
+router.get('/proposals', auth.checkToken, proposalController.getAllProposals);
+router.get('/proposals/:email', auth.checkToken, auth.checkToken, proposalController.getProposalsByEmail);
+router.get('/proposals/meta', auth.checkToken, proposalController.getAllProposalMetaInformation);
+router.post('/proposals', auth.checkToken, proposalController.submitNewProposal);
+router.get('/proposals/:proposalId', auth.checkToken, proposalController.getProposalByProposalId);
+router.put('/proposals/:proposalId', auth.checkToken, proposalController.editProposalByProposalId);
+router.delete('/proposals/:proposalId', auth.checkToken, proposalController.deleteProposalByProposalId);
 
 module.exports = router;

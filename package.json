@@ -23,6 +23,7 @@
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
     "nanoid": "^2.0.1",
+    "nodemailer": "^5.1.1",
     "nodemon": "^1.18.7",
     "path": "^0.12.7",
     "pdfkit": "^0.8.3",
