@@ -22,8 +22,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage});
 
-router.get('/merge/:proposalId', auth.checkToken, pdfMerger);
-router.get('/generate/:proposalId', auth.checkToken, pdfGenerator);
+router.get('/merge/:proposalId', pdfMerger);
+router.get('/generate/:proposalId', pdfGenerator);
 
 router.get('/file/:proposalId', downloader.getUploadedAttachmentsByProposalId);
 router.get('/file/download/:uniqueName', downloader.getFileByUniqueName);
