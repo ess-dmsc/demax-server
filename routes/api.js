@@ -26,14 +26,16 @@ router.get('/merge/:proposalId', pdfMerger);
 router.get('/generate/:proposalId', pdfGenerator);
 
 router.get('/file/:proposalId', downloader.getUploadedAttachmentsByProposalId);
-router.get('/file/download/:uniqueName', downloader.getFileByUniqueName);
+router.get('/file/download/:filename', downloader.getFileByUniqueName);
 router.post('/file/upload/:attachment', auth.checkToken, upload.single("file"), uploader.uploadAttachment);
 router.post('/proposals/:proposalId', upload.single('file'), uploader.attachFile);
 
-router.delete('/file/delete/:filename', auth.checkToken, fileManager.deleteFileByProposalIdAndAttachmentType);
+router.delete('/file/delete/:proposalId/:attachmentType/:filename', fileManager.deleteFileByProposalIdAndAttachmentType);
 
-router.get('/admin/file/all', auth.checkToken, fileManager.getAll);
-router.get('/admin/file/:filename', auth.checkToken, fileManager.getByFilename);
+router.get('/admin/file/all', fileManager.getAll);
+router.get('/admin/file/download/:filename', fileManager.getByFilename);
+router.post('/admin/file/upload', upload.single('file'), fileManager.uploadFile);
+router.delete('/admin/file/delete/:filename', fileManager.deleteFileByFilename);
 
 router.post('/users/login', auth.login);
 router.post('/users/register', auth.register);

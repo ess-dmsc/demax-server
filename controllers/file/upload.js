@@ -5,15 +5,10 @@ exports.uploadAttachment = async function (request, response) {
 
 	let attachment = request.params.attachment;
 	let id = request.body.proposalId;
+	console.log(id)
 	let path = `"./${request.file.path}"`;
 	let name = request.file.originalname;
-	let proposal = await Proposal.findOne({proposalId: id})
-
-	console.log(attachment);
-	console.log(id);
-	console.log(path);
-	console.log(name);
-	console.log(proposal);
+	let proposal = await Proposal.findOne({proposalId: id});
 
 	try {
 		switch(attachment) {
@@ -21,8 +16,15 @@ exports.uploadAttachment = async function (request, response) {
 				attachment = 'needByDateAttachment';
 				await Proposal.findOneAndUpdate({proposalId: id}, {
 					needByDateAttachment: {
+						originalname: request.file.originalname,
+						name: request.body.proposalId + '_' + request.file.originalname,
+						encoding: request.file.encoding,
+						mimetype: request.file.mimetype,
+						filename: request.body.proposalId + '_' + request.file.originalname,
 						path: path,
-						name: request.file.originalname,
+						size: request.file.size,
+						proposalId: request.body.proposalId,
+						attachmentType: request.params.attachment,
 						uploaded: true
 					}
 				});
@@ -31,8 +33,15 @@ exports.uploadAttachment = async function (request, response) {
 				attachment = 'pbdIdReferenceAttachment';
 				await Proposal.findOneAndUpdate({proposalId: id}, {
 					pbdIdReferenceAttachment: {
+						originalname: request.file.originalname,
+						name: request.body.proposalId + '_' + request.file.originalname,
+						encoding: request.file.encoding,
+						mimetype: request.file.mimetype,
+						filename: request.body.proposalId + '_' + request.file.originalname,
 						path: path,
-						name: request.file.originalname,
+						size: request.file.size,
+						proposalId: request.body.proposalId,
+						attachmentType: request.params.attachment,
 						uploaded: true
 					}
 				});
@@ -41,8 +50,15 @@ exports.uploadAttachment = async function (request, response) {
 				attachment = 'organismReferenceAttachment';
 				await Proposal.findOneAndUpdate({proposalId: id}, {
 					organismReferenceAttachment: {
+						originalname: request.file.originalname,
+						name: request.body.proposalId + '_' + request.file.originalname,
+						encoding: request.file.encoding,
+						mimetype: request.file.mimetype,
+						filename: request.body.proposalId + '_' + request.file.originalname,
 						path: path,
-						name: request.file.originalname,
+						size: request.file.size,
+						proposalId: request.body.proposalId,
+						attachmentType: request.params.attachment,
 						uploaded: true
 					}
 				});
@@ -51,8 +67,15 @@ exports.uploadAttachment = async function (request, response) {
 				attachment = 'needsPurificationSupportAttachment';
 				await Proposal.findOneAndUpdate({proposalId: id}, {
 					needsPurificationSupportAttachment: {
+						originalname: request.file.originalname,
+						name: request.body.proposalId + '_' + request.file.originalname,
+						encoding: request.file.encoding,
+						mimetype: request.file.mimetype,
+						filename: request.body.proposalId + '_' + request.file.originalname,
 						path: path,
-						name: request.file.originalname,
+						size: request.file.size,
+						proposalId: request.body.proposalId,
+						attachmentType: request.params.attachment,
 						uploaded: true
 					}
 				});
@@ -62,8 +85,15 @@ exports.uploadAttachment = async function (request, response) {
 				attachment = 'chemicalStructureAttachment';
 				await Proposal.findOneAndUpdate({proposalId: id}, {
 					chemicalStructureAttachment: {
+						originalname: request.file.originalname,
+						name: request.body.proposalId + '_' + request.file.originalname,
+						encoding: request.file.encoding,
+						mimetype: request.file.mimetype,
+						filename: request.body.proposalId + '_' + request.file.originalname,
 						path: path,
-						name: request.file.originalname,
+						size: request.file.size,
+						proposalId: request.body.proposalId,
+						attachmentType: request.params.attachment,
 						uploaded: true
 					}
 				});
@@ -73,8 +103,15 @@ exports.uploadAttachment = async function (request, response) {
 				attachment = 'moleculePreparationReferenceArticle';
 				await Proposal.findOneAndUpdate({proposalId: id}, {
 					moleculePreparationReferenceArticle: {
+						originalname: request.file.originalname,
+						name: request.body.proposalId + '_' + request.file.originalname,
+						encoding: request.file.encoding,
+						mimetype: request.file.mimetype,
+						filename: request.body.proposalId + '_' + request.file.originalname,
 						path: path,
-						name: request.file.originalname,
+						size: request.file.size,
+						proposalId: request.body.proposalId,
+						attachmentType: request.params.attachment,
 						uploaded: true
 					}
 				});
@@ -84,8 +121,15 @@ exports.uploadAttachment = async function (request, response) {
 				attachment = 'proposalTemplate';
 				await Proposal.findOneAndUpdate({proposalId: id}, {
 					proposalTemplate: {
+						originalname: request.file.originalname,
+						name: request.body.proposalId + '_' + request.file.originalname,
+						encoding: request.file.encoding,
+						mimetype: request.file.mimetype,
+						filename: request.body.proposalId + '_' + request.file.originalname,
 						path: path,
-						name: request.file.originalname,
+						size: request.file.size,
+						proposalId: request.body.proposalId,
+						attachmentType: request.params.attachment,
 						uploaded: true
 					}
 				});

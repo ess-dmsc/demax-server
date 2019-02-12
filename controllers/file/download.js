@@ -5,7 +5,6 @@ exports.getUploadedAttachmentsByProposalId = async function (request, response) 
 
 	try {
 
-		console.log(proposal.proposalId);
 		let attachments = [];
 
 		if(proposal.proposalTemplate.uploaded) {
@@ -31,8 +30,8 @@ exports.getUploadedAttachmentsByProposalId = async function (request, response) 
 			attachments.push(proposal.moleculePreparationReferenceArticle);
 		}
 
-		response.send(attachments);
-		console.log(attachments);
+		response.status(200).send(attachments);
+
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({

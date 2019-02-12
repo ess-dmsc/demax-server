@@ -110,56 +110,98 @@ const proposalSchema = new mongoose.Schema({
 		other: String
 	},
 	proposalTemplate: {
+		originalname: String,
 		name: String,
-		uniqureName: String,
+		encoding: String,
+		mimetype: String,
+		filename: String,
 		path: String,
+		size: Number,
+		proposalId: String,
+		attachmentType: String,
+		uploaded: {type: Boolean, default: false}
+	},
+	needByDateAttachment: {
+		originalname: String,
+		name: String,
+		encoding: String,
+		mimetype: String,
+		filename: String,
+		path: String,
+		size: Number,
+		proposalId: String,
+		attachmentType: String,
+		uploaded: {type: Boolean, default: false}
+	},
+	pbdIdReferenceAttachment: {
+		originalname: String,
+		name: String,
+		encoding: String,
+		mimetype: String,
+		filename: String,
+		path: String,
+		size: Number,
+		proposalId: String,
+		attachmentType: String,
+		uploaded: {type: Boolean, default: false}
+	},
+	organismReferenceAttachment: {
+		originalname: String,
+		name: String,
+		encoding: String,
+		mimetype: String,
+		filename: String,
+		path: String,
+		size: Number,
+		proposalId: String,
+		attachmentType: String,
+		uploaded: {type: Boolean, default: false}
+	},
+	needsPurificationSupportAttachment: {
+		originalname: String,
+		name: String,
+		encoding: String,
+		mimetype: String,
+		filename: String,
+		path: String,
+		size: Number,
+		proposalId: String,
+		attachmentType: String,
+		uploaded: {type: Boolean, default: false}
+	},
+	chemicalStructureAttachment: {
+		originalname: String,
+		name: String,
+		encoding: String,
+		mimetype: String,
+		filename: String,
+		path: String,
+		size: Number,
+		proposalId: String,
+		attachmentType: String,
+		uploaded: {type: Boolean, default: false}
+	},
+	moleculePreparationReferenceArticle: {
+		originalname: String,
+		name: String,
+		encoding: String,
+		mimetype: String,
+		filename: String,
+		path: String,
+		size: Number,
+		proposalId: String,
+		attachmentType: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	generatedProposal: {
 		name: String,
-		path: String,
+		path: {type: String, default: './files/error/generatedProposalError.pdf'},
 		generated: {type: Boolean, default: false}
-	},
-	needByDateAttachment: {
-		name: String,
-		uniqureName: String,
-		path: String,
-		uploaded: {type: Boolean, default: false}
 	},
 	mergedProposal: {
 		name: String,
-		path: {type: String, default: './files/error/moleculePreparationReferenceArticle.pdf'},
+		path: {type: String, default: './files/error/mergedProposalError.pdf'},
 		merged: {type: Boolean, default: false}
-	},
-	pbdIdReferenceAttachment: {
-		name: String,
-		uniqureName: String,
-		path: String,
-		uploaded: {type: Boolean, default: false}
-	},
-	organismReferenceAttachment: {
-		name: String,
-		uniqureName: String,
-		path: String,
-		uploaded: {type: Boolean, default: false}
-	},
-	needsPurificationSupportAttachment: {
-		name: String,
-		uniqureName: String,
-		path: String,
-		uploaded: {type: Boolean, default: false}
-	},
-	chemicalStructureAttachment: {
-		name: String,
-		uniqureName: String,
-		path: String,
-		uploaded: {type: Boolean, default: false}
-	},
-	moleculePreparationReferenceArticle: {
-		name: String,
-		uniqureName: String,
-		path: String,
-		uploaded: {type: Boolean, default: false}
 	},
 	submitted: {type: Boolean, default: false},
 	other: String,
