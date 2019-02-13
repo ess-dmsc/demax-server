@@ -1,5 +1,5 @@
 git pull
-cd client
+cd demax-client
 git pull
 cd ..
 docker-compose up --build -d
