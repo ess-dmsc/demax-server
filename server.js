@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-const api = require('./routes/api.js');
+const api = require('./api.js');
 
 app.use(morgan('dev'));
 app.use(cors({origin: '*', optionsSuccessStatus: 200}));
@@ -22,7 +22,7 @@ app.use('/api', api);
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 
-mongoose.connect(`mongodb://mongodb/ess`, {useNewUrlParser: true},
+mongoose.connect(`mongodb://localhost:27017/ess`, {useNewUrlParser: true},
 	function(error, client) {
 		if(error) {
 			console.log(error);

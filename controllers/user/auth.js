@@ -68,6 +68,7 @@ exports.register = async function(request, response){
 		jobTitle: request.body.jobTitle,
 		hasConsentedToGdpr: request.body.hasConsentedToGdpr,
 		hasConsentedToEmails: request.body.hasConsentedToEmails,
+		role: request.body.role
 	};
 
 	try {

@@ -2,18 +2,18 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
-const pdfMerger = require('../controllers/pdf/merge.js');
-const pdfGenerator = require('../controllers/pdf/generate.js');
+const pdfMerger = require('./controllers/pdf/merge.js');
+const pdfGenerator = require('./controllers/pdf/generate.js');
 
-const uploader = require('../controllers/file/upload.js');
-const downloader = require('../controllers/file/download.js');
-const fileManager = require('../controllers/file/manager.js');
+const uploader = require('./controllers/file/upload.js');
+const downloader = require('./controllers/file/download.js');
+const fileManager = require('./controllers/file/manager.js');
 
-const userManager = require('../controllers/user/admin.js');
-const auth = require('../controllers/user/auth.js');
+const userManager = require('./controllers/user/admin.js');
+const auth = require('./controllers/user/auth.js');
 
-const userController = require('../controllers/user/user.js');
-const proposalController = require('../controllers/proposal.js');
+const userController = require('./controllers/user/user.js');
+const proposalController = require('./controllers/proposal.js');
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},
