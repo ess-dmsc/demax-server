@@ -40,13 +40,12 @@ exports.getUploadedAttachmentsByProposalId = async function (request, response) 
 	}
 };
 
-exports.getFileByUniqueName = async function(request, response){
-	let uniqueName = request.params.uniqueName;
-	console.log(uniqueName);
 
+exports.getByFileName = async function(request, response) {
 	try {
-		console.log(filename)
-		response.download(__basedir + '/files/uploads/' + uniqueName);
+		let filename = request.params.filename;
+		console.log(filename);
+		response.download(__basedir + '/files/uploads/' + filename);
 	}
 	catch(error) {
 		console.log(error);
@@ -54,5 +53,4 @@ exports.getFileByUniqueName = async function(request, response){
 			error: error.message
 		});
 	}
-
-}
+};

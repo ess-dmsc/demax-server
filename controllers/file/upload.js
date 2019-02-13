@@ -144,27 +144,3 @@ exports.uploadAttachment = async function (request, response) {
 	console.log(proposal.proposalId + ' - uploaded ' + request.file.originalname);
 	response.status(201).json('Successfully uploaded ' + request.file.originalname + '. The file has been added to proposal ' + proposal.proposalId);
 };
-
-exports.attachFile = async function (request, response) {
-
-	const newAttachment = {
-		originalname: request.file.originalname,
-		attachmentType: request.body.attachmentType,
-		encoding: request.file.encoding,
-		mimetype: request.file.mimetype,
-		filename: request.file.filename,
-		path: request.file.path,
-		size: request.file.size,
-		proposal: request.params.proposalId,
-	};
-	try {
-		await new Attachment(newAttachment).save();
-		await Proposal.findOneAndUpdate({proposalId: request.body.proposalId},
-			{"$push": {attachments: newAttachment._id}});
-		response.status(201).json(newAttachment);
-	} catch(error) {
-		return response.status(400).json({
-			error: error.message
-		});
-	}
-};
