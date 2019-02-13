@@ -1,10 +1,10 @@
-/*const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const config = require('./config');
 
 const {db: {host, port, name}} = config;
 const connectionString = `mongodb://${host}:${port}/${name}`;
 
-//mongoose.connect(connectionString);
+mongoose.connect(connectionString);
 
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
@@ -13,4 +13,3 @@ connection.once('open', function(error) {
 	console.log('DATABASE CONNECTION SUCCESS' + "\n" + "CONNECTED TO " + `mongodb://${host}:${port}/${name}`);
 	if(error) {console.log(error);}
 });
-	*/

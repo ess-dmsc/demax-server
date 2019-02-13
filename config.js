@@ -1,43 +1,42 @@
-/*const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV;
 
 const dev = {
 	app: {
-		port: parseInt(process.env.DEV_APP_PORT) || 3000
+		port: 3000
 	},
 	db: {
-		host: process.env.DEV_DB_HOST || 'localhost',
-		port: parseInt(process.env.DEV_DB_PORT) || 27017,
-		name: process.env.DEV_DB_NAME || 'ess'
+		host: 'localhost',
+		port: 27017,
+		name: 'ess'
 	}
 };
 
-const test = {
+const stage = {
 	app: {
-		port: parseInt(process.env.TEST_APP_PORT) || 3000
+		port: 3000
 	},
 	db: {
-		host: process.env.TEST_DB_HOST || 'localhost',
-		port: parseInt(process.env.TEST_DB_PORT) || 27017,
-		name: process.env.TEST_DB_NAME || 'ess'
+		host: 'mongodb',
+		port: '',
+		name: 'ess'
 	}
 };
 
 const prod = {
 	app: {
-		port: parseInt(process.env.PROD_APP_PORT) || 3000
+		port: 3000
 	},
 	db: {
-		host: process.env.PROD_DB_HOST || 'mongodb',
-		port: parseInt(process.env.PROD_DB_PORT) || '',
-		name: process.env.PROD_DB_NAME || 'ess'
+		host: 'mongodb',
+		port: '',
+		name: 'ess'
 	}
 }
 
 const config = {
 	dev,
-	test,
+	stage,
 	prod
 };
 
 module.exports = config[env];
-	*/

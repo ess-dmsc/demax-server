@@ -1,2 +1,2 @@
 sleep 5
-node server.js
+NODE_ENV=prod node server.js

@@ -4,6 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const mongoose = require('mongoose');
+const config = require('./config');
 
 const app = express();
 
@@ -21,19 +22,19 @@ app.use('/api', api);
 
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
+console.log(process.env.NODE_ENV)
 
-mongoose.connect(`mongodb://mongodb/ess`, {useNewUrlParser: true},
-	function(error, client) {
-		if(error) {
-			console.log(error);
-			process.exit(1);
-		}
-		console.log("Connected to database");
-	});
+const {db: {host, port, name}} = config;
+const connectionString = `mongodb://${host}:${port}/${name}`;
+
+console.log(config)
+console.log(connectionString)
+mongoose.connect(connectionString, { useNewUrlParser: true });
 
 connection.on('error', console.error.bind(console, 'connection error:'));
-connection.once('open', () => {
-		console.log('successful db connection');
+connection.once('open', function(error) {
+	console.log('DATABASE CONNECTION SUCCESS' + "\n" + "CONNECTED TO " + `mongodb://${host}:${port}/${name}`);
+	if(error) {console.log(error);}
 
 		console.log(path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx'))
 

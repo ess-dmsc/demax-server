@@ -35,7 +35,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "mocha tests",
-    "dev": "concurrently \"mongod\" \"nodemon server.js\"",
+    "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\"",
     "prod": "concurrently \"mongod\" \"ng build --aot --prod && tsc -p server && node dist/server/app.js\""
   },
   "repository": {
