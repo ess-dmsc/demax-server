@@ -16,7 +16,7 @@ services:
     - mongodb
   demax-client:
     build:
-      context: "./demax-client"
+      context: "./client"
       dockerfile: 'Dockerfile-dev'
     ports:
     - '8080:8080'

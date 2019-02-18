@@ -62,7 +62,7 @@ connection.once('open', function(error) {
 
 		app.get('/word/attachment', async function(request, response) {
 			try {
-				response.download(__basedir + '/files/resources/' + 'DEMAX_proposal_template.docx');
+				response.download('./files/resources/' + 'DEMAX_proposal_template.docx');
 			} catch(error) {
 				console.log(error);
 				return response.status(400).json({

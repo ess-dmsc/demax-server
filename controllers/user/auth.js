@@ -3,6 +3,8 @@ const Token = require('../../models/token.js');
 const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
+const nanoid = require('nanoid/generate');
+const bcrypt = require('bcryptjs');
 
 let secret = '3eb64519dc0e32eb7e99d645b44942b1b289970de5f64ffc49922b90d4b6ae58';
 
@@ -104,7 +106,33 @@ exports.register = async function(request, response){
 			error: err.message
 		});
 	}
-}
+};
+
+exports.forgotPassword = async function(request, response){
+
+	try{
+		const userEmail = request.params.email;
+		const newPassword = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8);
+		console.log(newPassword);
+
+		await User.findOneAndUpdate({email: userEmail},{password: newPassword});
+
+		bcrypt.genSalt(10, function(err, salt) {
+			if(err) { return next(err); }
+			bcrypt.hash(newPassword, salt, function(error, hash) {
+				if(error) { return next(error); }
+				user.password = hash;
+				next();
+			});
+		});
+
+		response.status(200).json(newPassword)
+	}catch(error){
+		console.log(error);
+		return response.status(400).json({error: error.message});
+	}
+
+};
 
 exports.confirmationGet = function (req, res, next) {
 	console.log("confirmation post");
