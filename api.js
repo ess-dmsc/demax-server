@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const fs = require('fs');
 global.__basedir = __dirname;
 
 const pdfMerger = require('./controllers/pdf/merge.js');
@@ -63,7 +64,7 @@ router.delete('/admin/file/delete/:filename', adminFileController.delete);
 
 router.get('/word/attachment', async function(request, response) {
 	try {
-		response.download('./files/resources/DEMAX_proposal_template.docx', {root: __dirname});
+		response.download('./files/resources/' + 'DEMAX_proposal_template.docx');
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
