@@ -35,8 +35,6 @@ connection.once('open', function(error) {
 	console.log('DATABASE CONNECTION SUCCESS' + "\n" + "CONNECTED TO " + `mongodb://${host}:${port}/${name}`);
 	if(error) {console.log(error);}
 
-		console.log(path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx'))
-
 		const server = app.listen(process.env.PORT || 3000, async function() {
 			try {
 				const port = server.address().port;
