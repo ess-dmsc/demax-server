@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+global.__basedir = __dirname;
 
 const pdfMerger = require('./controllers/pdf/merge.js');
 const pdfGenerator = require('./controllers/pdf/generate.js');
@@ -60,4 +61,35 @@ router.get('/admin/file/download/:filename', adminFileController.get);
 router.post('/admin/file/upload', upload.single('file'), adminFileController.uploadFile);
 router.delete('/admin/file/delete/:filename', adminFileController.delete);
 
+router.get('/word/attachment', async function(request, response) {
+	try {
+		response.download('./files/resources/DEMAX_proposal_template.docx', {root: __dirname});
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+});
+
+router.get('/', async function(request, response) {
+	try {response.sendFile('./files/resources/home.html', {root: __dirname});}
+	catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+});
+
+router.get('/help', async function(request, response) {
+	try {
+		response.sendFile('./files/resources/api.html', {root: __dirname});
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+});
 module.exports = router;
