@@ -17,7 +17,7 @@
     "formidable": "1.2.1",
     "fs": "0.0.1-security",
     "fs-temp": "1.1.2",
-    "jsonwebtoken": "^8.4.0",
+    "jsonwebtoken": "8.4.0",
     "mocha": "5.2.0",
     "mongodb": "3.1.10",
     "mongoose": "5.3.14",
@@ -30,13 +30,13 @@
     "pdfkit": "0.9.0",
     "rimraf": "2.6.3",
     "shortid": "2.2.14",
-    "sinon": "^7.1.1"
+    "sinon": "7.1.1"
   },
   "devDependencies": {},
   "scripts": {
     "start": "nodemon server.js",
     "test": "NODE_ENV=jenkins_test mocha tests --watch=false",
-    "local_test": "NODE_ENV=local_test mocha tests --watch=false",
+    "local_test": "concurrently \"mongod\" \"NODE_ENV=local_test mocha tests\"",
     "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\"",
     "prod": "concurrently \"mongod\" \"ng build --aot --prod && tsc -p server && node dist/server/app.js\""
   },

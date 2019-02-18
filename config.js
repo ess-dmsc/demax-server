@@ -16,8 +16,8 @@ const local_test = {
 		port: 3000
 	},
 	db: {
-		host: 'mongodb',
-		port: '',
+		host: 'localhost',
+		port: '27017',
 		name: 'ess'
 	}
 };

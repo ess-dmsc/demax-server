@@ -52,3 +52,4 @@ connection.once('open', function(error) {
 	}
 )
 ;
+module.exports = app;
