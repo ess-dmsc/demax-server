@@ -64,7 +64,8 @@ router.delete('/admin/file/delete/:filename', adminFileController.delete);
 
 router.get('/word/attachment', async function(request, response) {
 	try {
-		response.download('./files/resources/' + 'DEMAX_proposal_template.docx');
+		response.download(__dirname + '/files/resources/' + 'DEMAX_proposal_template.docx');
+		console.log(__dirname + '/files/resources/' + 'DEMAX_proposal_template.docx')
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
