@@ -115,14 +115,15 @@ exports.confirmationGet = function (req, res, next) {
 
     // Check for validation errors
     //var errors = req.validationErrors();
-    //if (errors) return res.status(400).send(errors);
+	//if (errors) return res.status(400).send(errors);
+	console.log(req.params.token);
 
-    // Find a matching token
-    Token.findOne({ token: req.body.token }, function (err, token) {
+    // Find a matching 	token
+    Token.findOne({ token: req.params.token }, function (err, token) {
         if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' });
 
         // If we found a token, find a matching user
-        User.findOne({ _id: token._userId, email: req.body.email }, function (err, user) {
+        User.findOne({ _id: token._userId }, function (err, user) {
             if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
             if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
 
