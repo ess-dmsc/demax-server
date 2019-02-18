@@ -1,6 +1,6 @@
 const PDFDocument = require('pdfkit');
 const Proposal = require('../../models/proposal.js');
-const fs = require('fs');
+const fs = require('file-system');
 
 const bold = './fonts/titillium-bold-webfont.woff';
 const regular = './fonts/titillium-regular-webfont.woff';
@@ -35,6 +35,9 @@ async function generate (request, response) {
 		.font(semibold, 12).text('Need-by-date: ').font(regular, 12).text(proposal.needByDate).moveDown()
 		.font(semibold, 14).text('Motivation: ').font(regular, 12).text(proposal.needByDateMotivation).moveDown()
 		.font(semibold, 14).text('Required deuteration methods').moveDown()
+
+
+
 		.font(semibold, 12).text('(A) Crystallization').font(regular, 12).text(proposal.wantsCrystallization).moveDown()
 		.font(semibold, 12).text('(B) Biological deuteration').font(regular, 12).text(proposal.wantsBiologicalDeuteration)
 		.font(regular, 12).text(proposal.wantsBiomassDeuteration)

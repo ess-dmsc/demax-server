@@ -73,13 +73,13 @@ exports.register = async function(request, response) {
 		employer: request.body.employer,
 		jobTitle: request.body.jobTitle,
 		hasConsentedToGdpr: request.body.hasConsentedToGdpr,
-		hasConsentedToEmails: request.body.hasConsentedToEmails
+		hasConsentedToEmails: request.body.hasConsentedToEmails,
+		role: 'user'
 	};
 
 	try {
 		const newUser = await new User(userData);
 		newUser.save(function(error) {
-			console.log(newUser);
 			if(error) {
 				throw error;
 			}
@@ -89,9 +89,9 @@ exports.register = async function(request, response) {
 			});
 
 			token.save(function(err) {
-				if(err) { return res.status(500).send({msg: err.message}); }
-
+				if(error) { return response.status(500).send({message: error.message}); }
 				let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
+
 				let mailOptions = {
 					from: 'noreply@esss.dk',
 					to: newUser.email,
@@ -142,12 +142,12 @@ margin-top: 5rem;
 </body>
 
 </html>`
-				};
-				console.log(mailOptions.text);
 
-				transporter.sendMail(mailOptions, function(err) {
-					if(err) { return response.status(500).send({msg: err.message}); }
-					response.status(200).send('A verification email has been sent to ' + user.email + '.');
+				};
+				transporter.sendMail(mailOptions, function(error) {
+					console.log('http://localhost:3000/api/confirmation/' + token.token)
+					if(err) { return response.status(500).send({message: error.message}); }
+					response.status(200).send('A verification email has been sent to ' + newUser.email + '.');
 				});
 			});
 

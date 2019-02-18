@@ -1,5 +1,27 @@
 const env = process.env.NODE_ENV;
 
+const jenkins_test = {
+	app:{
+		port: 3000
+	},
+	db:{
+		host: 'mongodb',
+		port: '',
+		name: 'ess'
+	}
+};
+
+const local_test = {
+	app: {
+		port: 3000
+	},
+	db: {
+		host: 'mongodb',
+		port: '',
+		name: 'ess'
+	}
+};
+
 const dev = {
 	app: {
 		port: 3000
@@ -34,6 +56,8 @@ const prod = {
 }
 
 const config = {
+	jenkins_test,
+	local_test,
 	dev,
 	stage,
 	prod

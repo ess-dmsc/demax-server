@@ -1,5 +1,5 @@
 const merge = require('easy-pdf-merge');
-const fs = require('fs');
+const fs = require('file-system');
 
 const Proposal = require('../../models/proposal.js');
 

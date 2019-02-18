@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const fs = require('fs');
 global.__basedir = __dirname;
 
 const pdfMerger = require('./controllers/pdf/merge.js');
 const pdfGenerator = require('./controllers/pdf/generate.js');
 
-const adminFileController = require('./controllers/admin/file.js');
-const adminProposalController = require('./controllers/admin/proposal.js');
-const adminUserController = require('./controllers/admin/user.js');
+const adminRouter = require('./admin.js');
 
 const auth = require('./controllers/user/auth.js');
 
@@ -26,6 +23,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage: storage});
+
+router.use('/admin', adminRouter);
 
 router.get('/email', proposalmail.testmail);
 
@@ -52,15 +51,6 @@ router.delete('/file/delete/:proposalId/:attachmentType/:filename', fileManager.
 
 router.get('/merge/:proposalId', pdfMerger);
 router.get('/generate/:proposalId', pdfGenerator);
-
-router.post('/admin/proposals/:proposalId', upload.single('file'), adminFileController.attachFile);
-router.get('/admin/proposals/meta', auth.checkToken, proposalController.getAllProposalMetaInformation);
-router.get('/admin/proposals', auth.checkToken, proposalController.getAllProposals);
-router.get('/admin/users', auth.checkToken, adminUserController.getAll);
-router.get('/admin/files', adminFileController.getAll);
-router.get('/admin/file/download/:filename', adminFileController.get);
-router.post('/admin/file/upload', upload.single('file'), adminFileController.uploadFile);
-router.delete('/admin/file/delete/:filename', adminFileController.delete);
 
 router.get('/word/attachment', async function(request, response) {
 	try {

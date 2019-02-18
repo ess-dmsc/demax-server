@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('file-system');
 const Proposal = require('../../models/proposal.js');
 const Attachment = require('../../models/attachment.js');
 

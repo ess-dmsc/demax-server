@@ -50,8 +50,8 @@ exports.put = async function(request, response) {
 			error: error.message
 		});
 	}
-
 };
+
 exports.delete = async function(request, response) {
 	try {
 		await User.findOneAndDelete({

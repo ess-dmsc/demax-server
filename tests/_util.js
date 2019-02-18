@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('file-system');
 const path = require('path');
 const stream = require('stream');
 const onFinished = require('on-finished');
