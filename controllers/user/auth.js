@@ -1,4 +1,5 @@
 const User = require('../../models/user.js');
+const Token = require('../../models/token.js');
 const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
@@ -80,7 +81,7 @@ exports.register = async function(request, response){
 			if(error) {
 				throw error;
 			}
-			        var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+			        var token = new Token ({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
 
 		});
 		response.status(201).json(newUser);
