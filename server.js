@@ -17,8 +17,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-global.__basedir = __dirname;
-
 app.use('/api', api);
 
 mongoose.Promise = global.Promise;
@@ -38,38 +36,6 @@ connection.once('open', function(error) {
 	if(error) {console.log(error);}
 
 		console.log(path.join(__dirname, './files/resources/', 'DEMAX_proposal_template.docx'))
-
-		app.get('/', async function(request, response) {
-			try {response.sendFile('./files/resources/home.html', {root: __dirname});}
-			catch(error) {
-				console.log(error);
-				return response.status(400).json({
-					error: error.message
-				});
-			}
-		});
-
-		app.get('/help', async function(request, response) {
-			try {
-				response.sendFile('./files/resources/api.html', {root: __dirname});
-			} catch(error) {
-				console.log(error);
-				return response.status(400).json({
-					error: error.message
-				});
-			}
-		});
-
-		app.get('/word/attachment', async function(request, response) {
-			try {
-				response.download('./files/resources/' + 'DEMAX_proposal_template.docx');
-			} catch(error) {
-				console.log(error);
-				return response.status(400).json({
-					error: error.message
-				});
-			}
-		});
 
 		const server = app.listen(process.env.PORT || 3000, async function() {
 			try {
