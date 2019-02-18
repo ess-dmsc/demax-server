@@ -1,23 +1,23 @@
 const User = require('../../models/user.js');
 const Token = require('../../models/token.js');
 const jwt = require('jsonwebtoken');
-var crypto = require('crypto');
-var nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const nanoid = require('nanoid/generate');
 const bcrypt = require('bcryptjs');
 
 let secret = '3eb64519dc0e32eb7e99d645b44942b1b289970de5f64ffc49922b90d4b6ae58';
 
-exports.checkToken = async function(request, response, next){
+exports.checkToken = async function(request, response, next) {
 
-	let token = request.headers['authorization'];
-	if (token.startsWith('Bearer ')) {
+	let token = request.headers[ 'authorization' ];
+	if(token.startsWith('Bearer ')) {
 		token = token.slice(7, token.length);
 	}
 
-	if (token) {
+	if(token) {
 		jwt.verify(token, secret, (error, decoded) => {
-			if (error) {
+			if(error) {
 				return response.json({
 					success: false,
 					message: 'Token is not valid'
@@ -59,7 +59,7 @@ exports.login = async function(request, response) {
 	});
 };
 
-exports.register = async function(request, response){
+exports.register = async function(request, response) {
 
 	await findUserByEmail(request.body.email);
 
@@ -83,19 +83,71 @@ exports.register = async function(request, response){
 			if(error) {
 				throw error;
 			}
-			var token = new Token ({ _userId: newUser._id, token: crypto.randomBytes(16).toString('hex') });
+			let token = new Token({
+				_userId: newUser._id,
+				token: crypto.randomBytes(16).toString('hex')
+			});
 
-			// Save the verification token
-			token.save(function (err) {
-				if (err) { return res.status(500).send({ msg: err.message }); }
-	
-				// Send the email
-				var transporter = nodemailer.createTransport({ host: "10.0.0.103", port: 25 });
-				var mailOptions = { from: 'noreply@esss.dk', to: newUser.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + request.headers.host + '\/api\/confirmation\/' + token.token + '.\n' };
+			token.save(function(err) {
+				if(err) { return res.status(500).send({msg: err.message}); }
+
+				let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
+				let mailOptions = {
+					from: 'noreply@esss.dk',
+					to: newUser.email,
+					subject: 'Account Verification Token',
+					html:
+						`
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+*{
+font-family: "Titillium Web", "Helvetica Neue", sans-serif;
+text-align: center;
+}
+button{
+padding: 1rem;
+width: 200px;
+color: white;
+background-color: #009EDD;
+}
+hr{
+background-color: #009EDD;
+border: solid #009EDD 1px;
+color: #009EDD;
+width: 80%;
+}
+footer{
+margin-top: 5rem;
+}
+</style>
+</head>
+
+<body>
+<header>
+<h3>DEMAX User portal Email confirmation</h3>
+</header>
+<hr>
+<a href="http://demaxapi.esss.dk/api/confirmation/${token.token}">
+<button>
+  Click to confirm email
+</button>
+</a>
+
+<footer>
+<small>You received this email because you registered an account at https://demax.esss.se.</small>
+</footer>
+</body>
+
+</html>`
+				};
 				console.log(mailOptions.text);
-				transporter.sendMail(mailOptions, function (err) {
-					if (err) { return response.status(500).send({ msg: err.message }); }
-					res.status(200).send('A verification email has been sent to ' + user.email + '.');
+
+				transporter.sendMail(mailOptions, function(err) {
+					if(err) { return response.status(500).send({msg: err.message}); }
+					response.status(200).send('A verification email has been sent to ' + user.email + '.');
 				});
 			});
 
@@ -108,14 +160,14 @@ exports.register = async function(request, response){
 	}
 };
 
-exports.forgotPassword = async function(request, response){
+exports.forgotPassword = async function(request, response) {
 
-	try{
+	try {
 		const userEmail = request.params.email;
 		const newPassword = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8);
 		console.log(newPassword);
 
-		await User.findOneAndUpdate({email: userEmail},{password: newPassword});
+		await User.findOneAndUpdate({email: userEmail}, {password: newPassword});
 
 		bcrypt.genSalt(10, function(err, salt) {
 			if(err) { return next(err); }
@@ -126,76 +178,87 @@ exports.forgotPassword = async function(request, response){
 			});
 		});
 
-		response.status(200).json(newPassword)
-	}catch(error){
+		response.status(200).json(newPassword);
+	} catch(error) {
 		console.log(error);
 		return response.status(400).json({error: error.message});
 	}
 
 };
 
-exports.confirmationGet = function (req, res, next) {
+exports.confirmationGet = function(req, res, next) {
 	console.log("confirmation post");
-    //req.assert('email', 'Email is not valid').isEmail();
-    //req.assert('email', 'Email cannot be blank').notEmpty();
-    //req.assert('token', 'Token cannot be blank').notEmpty();
-    //req.sanitize('email').normalizeEmail({ remove_dots: false });
+	//req.assert('email', 'Email is not valid').isEmail();
+	//req.assert('email', 'Email cannot be blank').notEmpty();
+	//req.assert('token', 'Token cannot be blank').notEmpty();
+	//req.sanitize('email').normalizeEmail({ remove_dots: false });
 
-    // Check for validation errors
-    //var errors = req.validationErrors();
+	// Check for validation errors
+	//var errors = req.validationErrors();
 	//if (errors) return res.status(400).send(errors);
 	console.log(req.params.token);
 
-    // Find a matching 	token
-    Token.findOne({ token: req.params.token }, function (err, token) {
-        if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' });
+	// Find a matching 	token
+	Token.findOne({token: req.params.token}, function(err, token) {
+		if(!token) return res.status(400).send({
+			type: 'not-verified',
+			msg: 'We were unable to find a valid token. Your token my have expired.'
+		});
 
-        // If we found a token, find a matching user
-        User.findOne({ _id: token._userId }, function (err, user) {
-            if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
-            if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
+		// If we found a token, find a matching user
+		User.findOne({_id: token._userId}, function(err, user) {
+			if(!user) return res.status(400).send({msg: 'We were unable to find a user for this token.'});
+			if(user.isVerified) return res.status(400).send({
+				type: 'already-verified',
+				msg: 'This user has already been verified.'
+			});
 
-            // Verify and save the user
-            user.isVerified = true;
-            user.save(function (err) {
-                if (err) { return res.status(500).send({ msg: err.message }); }
-                res.status(200).send("The account has been verified. Please log in.");
-            });
-        });
-    });
+			// Verify and save the user
+			user.isVerified = true;
+			user.save(function(err) {
+				if(err) { return res.status(500).send({msg: err.message}); }
+				res.status(200).send("The account has been verified. Please log in.");
+			});
+		});
+	});
 };
 
 
-exports.resendTokenPost = function (req, res, next) {
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('email', 'Email cannot be blank').notEmpty();
-    req.sanitize('email').normalizeEmail({ remove_dots: false });
+exports.resendTokenPost = function(req, res, next) {
+	req.assert('email', 'Email is not valid').isEmail();
+	req.assert('email', 'Email cannot be blank').notEmpty();
+	req.sanitize('email').normalizeEmail({remove_dots: false});
 
-    // Check for validation errors
-    var errors = req.validationErrors();
-    if (errors) return res.status(400).send(errors);
+	// Check for validation errors
+	var errors = req.validationErrors();
+	if(errors) return res.status(400).send(errors);
 
-    User.findOne({ email: req.body.email }, function (err, user) {
-        if (!user) return res.status(400).send({ msg: 'We were unable to find a user with that email.' });
-        if (user.isVerified) return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
+	User.findOne({email: req.body.email}, function(err, user) {
+		if(!user) return res.status(400).send({msg: 'We were unable to find a user with that email.'});
+		if(user.isVerified) return res.status(400).send({msg: 'This account has already been verified. Please log in.'});
 
-        // Create a verification token, save it, and send email
-        var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+		// Create a verification token, save it, and send email
+		var token = new Token({_userId: user._id, token: crypto.randomBytes(16).toString('hex')});
 
-        // Save the token
-        token.save(function (err) {
-            if (err) { return res.status(500).send({ msg: err.message }); }
+		// Save the token
+		token.save(function(err) {
+			if(err) { return res.status(500).send({msg: err.message}); }
 
-            // Send the email
-            var transporter = nodemailer.createTransport({ host: "10.0.0.3", port: 25 });
-            var mailOptions = { from: 'noreply@esss.dk', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/confirmation\/' + token.token + '   \n' };
-            transporter.sendMail(mailOptions, function (err) {
-                if (err) { return res.status(500).send({ msg: err.message }); }
-                res.status(200).send('A verification email has been sent to ' + user.email + '.');
-            });
-        });
+			// Send the email
+			var transporter = nodemailer.createTransport({host: "10.0.0.3", port: 25});
+			var mailOptions = {
+				from: 'noreply@esss.dk',
+				to: user.email,
+				subject: 'Account Verification Token',
+				text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/confirmation\/' + token.token + '   \n'
+			};
+			transporter.sendMail(mailOptions, function(err) {
+				if(err) { return res.status(500).send({msg: err.message}); }
+				res.status(200).send('A verification email has been sent to ' + user.email + '.');
+			});
+		});
 
-    });
+	});
 };
 
 

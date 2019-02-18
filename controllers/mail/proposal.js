@@ -10,8 +10,8 @@ exports.testmail = async function(request, response) {
 			port: 465,
 			secure: true,
 			auth: {
-				user: 'username/email',
-				pass: 'password'
+				user: 'data@ethfruktogront.se',
+				pass: 'hanjah07'
 			}
 		});
 
@@ -27,17 +27,7 @@ exports.testmail = async function(request, response) {
 					path: './files/merged/57XTBGDS.pdf'
 				}
 			],
-			html: `
-			<header>
-			<h1>Headline h1</h1>
-</header>
-<main>
-<h2>H2 Headline</h2>
-<p>
-Vad är Lorem Ipsum?
-Lorem Ipsum är en utfyllnadstext från tryck- och förlagsindustrin. Lorem ipsum har varit standard ända sedan 1500-talet, när en okänd boksättare tog att antal bokstäver och blandade dem för att göra ett provexemplar av en bok. Lorem ipsum har inte bara överlevt fem århundraden, utan även övergången till elektronisk typografi utan större förändringar. Det blev allmänt känt på 1960-talet i samband med lanseringen av Letraset-ark med avsnitt av Lorem Ipsum, och senare med mjukvaror som Aldus PageMaker.
-</p>
-</main>`
+			html: `test`
 		};
 
 		transporter.sendMail(mailOptions);

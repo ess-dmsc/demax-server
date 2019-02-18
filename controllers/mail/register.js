@@ -10,8 +10,8 @@ exports.testmail = async function (request, response){
 			port: 465,
 			secure: true,
 			auth: {
-				user: 'data@ethfruktogront.se',
-				pass: 'hanjah07'
+				user: 'username/email',
+				pass: 'password'
 			}
 		});
 
@@ -55,8 +55,8 @@ exports.sendGeneratedProposal = async function(request, response){
 			port: 465,
 			secure: true,
 			auth: {
-				user: 'jeremias.hillerberg',
-				pass: 'hanjah07'
+				user: 'username/email',
+				pass: 'password'
 			}
 		});
 
