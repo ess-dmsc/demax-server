@@ -92,7 +92,7 @@ exports.register = async function(request, response){
 				var mailOptions = { from: 'noreply@esss.dk', to: newUser.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + request.headers.host + '\/confirmation\/' + token.token + '.\n' };
 				console.log(mailOptions.text);
 				transporter.sendMail(mailOptions, function (err) {
-					if (err) { return res.status(500).send({ msg: err.message }); }
+					if (err) { return response.status(500).send({ msg: err.message }); }
 					res.status(200).send('A verification email has been sent to ' + user.email + '.');
 				});
 			});
@@ -107,6 +107,7 @@ exports.register = async function(request, response){
 }
 
 exports.confirmationPost = function (req, res, next) {
+	console.log("confirmation post");
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('email', 'Email cannot be blank').notEmpty();
     req.assert('token', 'Token cannot be blank').notEmpty();
@@ -157,8 +158,8 @@ exports.resendTokenPost = function (req, res, next) {
             if (err) { return res.status(500).send({ msg: err.message }); }
 
             // Send the email
-            var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-            var mailOptions = { from: 'no-reply@codemoto.io', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' };
+            var transporter = nodemailer.createTransport({ host: "10.0.0.3", port: 25 });
+            var mailOptions = { from: 'no-reply@esss.dk', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' };
             transporter.sendMail(mailOptions, function (err) {
                 if (err) { return res.status(500).send({ msg: err.message }); }
                 res.status(200).send('A verification email has been sent to ' + user.email + '.');

@@ -28,7 +28,7 @@ router.get('/users/:email', auth.checkToken, userController.getUserByEmail);
 router.post('/users/register', auth.register);
 router.post('/users/login', auth.login);
 router.put('/users/:email', auth.checkToken, userController.editUserByEmail);
-router.post('/confirmation', auth.confirmationPost);
+router.get('/confirmation', auth.confirmationPost);
 router.post('/resend', auth.resendTokenPost);
 router.delete('/users/:email', auth.checkToken, userController.deleteUserByEmail);
 
