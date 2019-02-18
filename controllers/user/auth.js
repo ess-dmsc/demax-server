@@ -89,7 +89,7 @@ exports.register = async function(request, response){
 	
 				// Send the email
 				var transporter = nodemailer.createTransport({ host: "10.0.0.103", port: 25 });
-				var mailOptions = { from: 'noreply@esss.dk', to: newUser.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + request.headers.host + '\/confirmation\/' + token.token + '.\n' };
+				var mailOptions = { from: 'noreply@esss.dk', to: newUser.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + request.headers.host + '\/api\/confirmation\/' + token.token + '.\n' };
 				console.log(mailOptions.text);
 				transporter.sendMail(mailOptions, function (err) {
 					if (err) { return response.status(500).send({ msg: err.message }); }
@@ -106,16 +106,16 @@ exports.register = async function(request, response){
 	}
 }
 
-exports.confirmationPost = function (req, res, next) {
+exports.confirmationGet = function (req, res, next) {
 	console.log("confirmation post");
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('email', 'Email cannot be blank').notEmpty();
-    req.assert('token', 'Token cannot be blank').notEmpty();
-    req.sanitize('email').normalizeEmail({ remove_dots: false });
+    //req.assert('email', 'Email is not valid').isEmail();
+    //req.assert('email', 'Email cannot be blank').notEmpty();
+    //req.assert('token', 'Token cannot be blank').notEmpty();
+    //req.sanitize('email').normalizeEmail({ remove_dots: false });
 
     // Check for validation errors
-    var errors = req.validationErrors();
-    if (errors) return res.status(400).send(errors);
+    //var errors = req.validationErrors();
+    //if (errors) return res.status(400).send(errors);
 
     // Find a matching token
     Token.findOne({ token: req.body.token }, function (err, token) {
@@ -159,7 +159,7 @@ exports.resendTokenPost = function (req, res, next) {
 
             // Send the email
             var transporter = nodemailer.createTransport({ host: "10.0.0.3", port: 25 });
-            var mailOptions = { from: 'no-reply@esss.dk', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' };
+            var mailOptions = { from: 'noreply@esss.dk', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/confirmation\/' + token.token + '.\n' };
             transporter.sendMail(mailOptions, function (err) {
                 if (err) { return res.status(500).send({ msg: err.message }); }
                 res.status(200).send('A verification email has been sent to ' + user.email + '.');
