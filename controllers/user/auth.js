@@ -81,7 +81,21 @@ exports.register = async function(request, response){
 			if(error) {
 				throw error;
 			}
-			        var token = new Token ({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+			var token = new Token ({ _userId: newUser._id, token: crypto.randomBytes(16).toString('hex') });
+
+			// Save the verification token
+			token.save(function (err) {
+				if (err) { return res.status(500).send({ msg: err.message }); }
+	
+				// Send the email
+				var transporter = nodemailer.createTransport({ host: "10.0.0.103", port: 25 });
+				var mailOptions = { from: 'noreply@esss.dk', to: newUser.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + request.headers.host + '\/confirmation\/' + token.token + '.\n' };
+				console.log(mailOptions.text);
+				transporter.sendMail(mailOptions, function (err) {
+					if (err) { return res.status(500).send({ msg: err.message }); }
+					res.status(200).send('A verification email has been sent to ' + user.email + '.');
+				});
+			});
 
 		});
 		response.status(201).json(newUser);
