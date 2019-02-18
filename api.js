@@ -33,6 +33,8 @@ router.post('/users/login', auth.login);
 
 router.get('/users/:email', auth.checkToken, userController.getUserByEmail);
 router.put('/users/:email', auth.checkToken, userController.editUserByEmail);
+router.get('/confirmation/:token', auth.confirmationGet);
+router.post('/resend', auth.resendTokenPost);
 router.delete('/users/:email', auth.checkToken, userController.deleteUserByEmail);
 
 router.get('/proposals/:email', auth.checkToken, auth.checkToken, proposalController.getProposalsByEmail);
