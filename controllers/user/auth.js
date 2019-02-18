@@ -160,7 +160,7 @@ exports.resendTokenPost = function (req, res, next) {
 
             // Send the email
             var transporter = nodemailer.createTransport({ host: "10.0.0.3", port: 25 });
-            var mailOptions = { from: 'noreply@esss.dk', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/confirmation\/' + token.token + '.\n' };
+            var mailOptions = { from: 'noreply@esss.dk', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/confirmation\/' + token.token + '   \n' };
             transporter.sendMail(mailOptions, function (err) {
                 if (err) { return res.status(500).send({ msg: err.message }); }
                 res.status(200).send('A verification email has been sent to ' + user.email + '.');
