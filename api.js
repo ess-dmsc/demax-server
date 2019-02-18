@@ -17,7 +17,6 @@ const fileManager = require('./controllers/file/manager.js');
 const userController = require('./controllers/user/user.js');
 const proposalController = require('./controllers/proposal.js');
 const proposalmail = require('./controllers/mail/proposal.js');
-const forgotPassword = require('./controllers/mail/forgotPassword.js');
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},

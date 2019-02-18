@@ -75,7 +75,7 @@ exports.sendGeneratedProposal = async function(request, response) {
 			]
 		};
 
-		return response.status(200).('Proposal successfully generated');
+		return response.status(200).json('Proposal successfully generated');
 	} catch(error) {
 		console.log(error);
 	}
