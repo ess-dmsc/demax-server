@@ -6,7 +6,7 @@ const jenkins_test = {
 	},
 	db:{
 		host: 'mongodb',
-		port: '',
+		port: '27017',
 		name: 'ess'
 	}
 };
