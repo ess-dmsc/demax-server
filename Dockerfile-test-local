@@ -5,8 +5,7 @@ RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set strict-ssl false
 RUN apk --update add openjdk7-jre
 COPY package.json /usr/src/app/package.json
-RUN npm install --save
-RUN npm install -g mocha
-COPY . /usr/src/app
 WORKDIR /usr/src/app
+RUN npm install --save
+COPY . /usr/src/app
 CMD ["sh", "./local-test.sh"]
