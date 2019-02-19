@@ -1,2 +1,2 @@
 sleep 5
-NODE_ENV=local_test npm test
+NODE_ENV=stage npm test
