@@ -31,6 +31,8 @@ before_install:
   # one we specified). This is not to be confused with the version we printed
   # before doing the update.
   - docker-compose --version
+  - git clone https://github.com/ess-dmsc/demax-client
+
 
   # Setup your application stack. You may need to tweak these commands if you
   # doing out-of-the-ordinary docker-compose builds.
@@ -40,7 +42,6 @@ before_install:
   # whatever reason it's best to report that now before your tests start
   # otherwise it can be really tricky to debug why tests are failing sometimes.
   - docker ps
-  - git clone https://github.com/ess-dmsc/demax-client
 
 script:
   - docker-compose run demax-server npm test
