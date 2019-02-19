@@ -26,6 +26,19 @@ exports.getProposalsByEmail = async function(request, response) {
 		});
 	}
 }
+exports.downloadProposal = async function(request, response){
+	try {
+		console.log("request.params.proposalId: " + request.params.proposalId);
+		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+		console.log(proposal.mergedProposal.path);
+		response.status(201).download(proposal.mergedProposal.path);
+	} catch(error) {
+		console.log(error);
+		return response.status(500).json({
+			error: error.message
+		});
+	}
+}
 exports.getAllProposalMetaInformation = async function(request, response) {
 	try {
 		const proposals = await Proposal.find({});

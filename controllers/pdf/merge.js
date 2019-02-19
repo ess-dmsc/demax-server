@@ -56,7 +56,8 @@ async function mergeByProposalId(request, response) {
 			});
 		await proposal.update({
 			mergedProposal: {
-				path: `"./files/merged/${proposal.proposalId}.pdf"`,
+				name: proposal.proposalId + '.pdf',
+				path: outputPath,
 				merged: true
 			}
 		});
