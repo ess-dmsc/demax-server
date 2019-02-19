@@ -7,7 +7,7 @@ const regular = './fonts/titillium-regular-webfont.woff';
 const italic = './fonts/titillium-regularitalic-webfont.woff';
 const semibold = './fonts/titillium-semibold-webfont.woff';
 
-async function generate (request, response) {
+async function generate (request, response, next) {
 	try {
 		const doc = new PDFDocument();
 
@@ -62,10 +62,9 @@ async function generate (request, response) {
 			doc.addPage().font(semibold, 18).text('(C) CHEMICAL DEUTERATION').moveDown().font(semibold, 13).text('Molecule/s to be deuterated (name):').font(regular, 12).text(proposal.chemicalDeuteration.moleculeName).moveDown().font(semibold, 13).text('Amount of material required (mass):').font(regular, 12).text(proposal.chemicalDeuteration.amount).moveDown().font(semibold, 13).text('Justify amount:').font(regular, 12).text(proposal.chemicalDeuteration.amountMotivation).moveDown().font(semibold, 13).text('Indicate percentage and location of deuteration:').font(regular, 12).text(proposal.chemicalDeuteration.deuterationLocationAndPercentege).moveDown().font(semibold, 13).text('Justify level of deuteration:').font(regular, 12).text(proposal.chemicalDeuteration.deuterationLevelMotivation).moveDown().font(semibold, 13).text('Has this molecule (or an unlabeled/isotopic analogue) been prepared by yourself or others?').font(regular, 12).text(proposal.chemicalDeuteration.hasPreparedMolecule).moveDown();
 		}
 		doc.save();
-		doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '_generatedProposal.pdf'));
+		doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
 		let generatedDoc = await doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
 		doc.end();
-		doc.pipe(response);
 
 		await proposal.update({
 			generatedProposal: {
@@ -74,7 +73,7 @@ async function generate (request, response) {
 				generated: true
 			}
 		});
-
+		next();
 	} catch(error) {
 		console.log(error);
 	}

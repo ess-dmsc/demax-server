@@ -51,7 +51,7 @@ router.post('/file/upload/:attachment', auth.checkToken, upload.single("file"), 
 router.delete('/file/delete/:proposalId/:attachmentType/:filename', fileManager.deleteFileByProposalIdAndAttachmentType);
 
 router.get('/merge/:proposalId', pdfMerger);
-router.get('/generate/:proposalId', pdfGenerator);
+router.get('/generate/:proposalId', pdfGenerator, pdfMerger);
 
 router.get('/word/attachment', async function(request, response) {
 	try {
