@@ -26,6 +26,7 @@ router.get('/files/:filename', fileController.get);
 router.post('/files/upload', upload.single('file'), fileController.uploadFile);
 router.delete('/files/:filename', fileController.delete);
 
+router.put('/users/changepassword/:email', userController.changePassword);
 router.get('/users', auth.checkToken, userController.getAll);
 router.get('/users/:email', userController.get);
 router.put('/users/:email', userController.put);
