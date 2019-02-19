@@ -120,6 +120,7 @@ const proposalSchema = new mongoose.Schema({
 		size: Number,
 		proposalId: String,
 		attachmentType: {type: String, default: "DEMAX Proposal"},
+		attachmentName: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	needByDateAttachment: {
@@ -132,6 +133,7 @@ const proposalSchema = new mongoose.Schema({
 		size: Number,
 		proposalId: String,
 		attachmentType: {type: String, default: "Beamtime proposal"},
+		attachmentName: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	pbdIdReferenceAttachment: {
@@ -144,6 +146,7 @@ const proposalSchema = new mongoose.Schema({
 		size: Number,
 		proposalId: String,
 		attachmentType: {type: String, default: "Primary reference(crystallization)"},
+		attachmentName: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	organismReferenceAttachment: {
@@ -156,6 +159,7 @@ const proposalSchema = new mongoose.Schema({
 		size: Number,
 		proposalId: String,
 		attachmentType: {type: String, default: "Primary reference(biomass)"},
+		attachmentName: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	needsPurificationSupportAttachment: {
@@ -168,6 +172,7 @@ const proposalSchema = new mongoose.Schema({
 		size: Number,
 		proposalId: String,
 		attachmentType: {type: String, default: "Primary reference(proteins)"},
+		attachmentName: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	chemicalStructureAttachment: {
@@ -180,6 +185,7 @@ const proposalSchema = new mongoose.Schema({
 		size: Number,
 		proposalId: String,
 		attachmentType: {type: String, default: "Chemical structure"},
+		attachmentName: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	moleculePreparationReferenceArticle: {
@@ -192,6 +198,7 @@ const proposalSchema = new mongoose.Schema({
 		size: Number,
 		proposalId: String,
 		attachmentType: {type: String, default: "Protocol for sample preparation"},
+		attachmentName: String,
 		uploaded: {type: Boolean, default: false}
 	},
 	generatedProposal: {

@@ -33,7 +33,7 @@ describe('proposal', function() {
 	});
 
 	it('should get all the proposals', done => {
-		chai.request(app).get('/api/proposals/all').end((error, response) => {
+		chai.request(app).get('/api/proposals/').end((error, response) => {
 			response.should.have.status(200);
 			response.body.should.be.a('array');
 			response.body.length.should.be.eql(0);
@@ -42,7 +42,7 @@ describe('proposal', function() {
 	});
 
 	it('should get proposals count', done => {
-		chai.request(app).get('/api//proposals/count').end((error, response) => {
+		chai.request(app).get('/api/proposals/count').end((error, response) => {
 			response.should.have.status(200);
 			response.body.should.be.a('number');
 			response.body.should.be.eql(0);

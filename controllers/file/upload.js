@@ -25,6 +25,7 @@ exports.uploadAttachment = async function (request, response) {
 						size: request.file.size,
 						proposalId: request.body.proposalId,
 						attachmentType: "Beamtime proposal",
+						attachmentName: attachment,
 						uploaded: true
 					}
 				});
@@ -42,6 +43,7 @@ exports.uploadAttachment = async function (request, response) {
 						size: request.file.size,
 						proposalId: request.body.proposalId,
 						attachmentType: "Primary reference(crystallization)",
+						attachmentName: attachment,
 						uploaded: true
 					}
 				});
@@ -59,6 +61,7 @@ exports.uploadAttachment = async function (request, response) {
 						size: request.file.size,
 						proposalId: request.body.proposalId,
 						attachmentType: "Primary reference(biomass)",
+						attachmentName: attachment,
 						uploaded: true
 					}
 				});
@@ -76,6 +79,7 @@ exports.uploadAttachment = async function (request, response) {
 						size: request.file.size,
 						proposalId: request.body.proposalId,
 						attachmentType: "Primary reference(proteins)",
+						attachmentName: attachment,
 						uploaded: true
 					}
 				});
@@ -94,6 +98,7 @@ exports.uploadAttachment = async function (request, response) {
 						size: request.file.size,
 						proposalId: request.body.proposalId,
 						attachmentType: "Chemical structure",
+						attachmentName: attachment,
 						uploaded: true
 					}
 				});
@@ -112,6 +117,7 @@ exports.uploadAttachment = async function (request, response) {
 						size: request.file.size,
 						proposalId: request.body.proposalId,
 						attachmentType: "Primary reference(chemical)",
+						attachmentName: attachment,
 						uploaded: true
 					}
 				});
@@ -130,6 +136,7 @@ exports.uploadAttachment = async function (request, response) {
 						size: request.file.size,
 						proposalId: request.body.proposalId,
 						attachmentType: "DEMAX Proposal",
+						attachmentName: attachment,
 						uploaded: true
 					}
 				});
