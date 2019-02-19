@@ -33,7 +33,6 @@ before_install:
   - docker-compose --version
   - git clone https://github.com/ess-dmsc/demax-client
 
-
   # Setup your application stack. You may need to tweak these commands if you
   # doing out-of-the-ordinary docker-compose builds.
   - docker-compose build
