@@ -8,7 +8,6 @@ const app = require('../server.js');
 const User = require('../models/user.js');
 chai.use(require('chai-http')).should();
 const promiseWrapper = require('./request-promise');
-/*
 describe('sample tests:', function() {
 	it('promise correct', function() {
 		return promiseWrapper.get('http://localhost:3000/api/admin/users').then(function(response) {
@@ -74,4 +73,4 @@ describe('user', function() {
 		});
 	});
 });
- */
+ 

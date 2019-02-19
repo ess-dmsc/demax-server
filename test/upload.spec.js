@@ -1,4 +1,4 @@
-/*const assert = require('assert');
+const assert = require('assert');
 const util = require('./_util');
 const multer = require('multer');
 const temp = require('fs-temp');
@@ -69,7 +69,7 @@ describe('Upload', function () {
 		})
 	})
 
-	/*it('should rename the destination directory to a different directory', function (done) {
+	it('should rename the destination directory to a different directory', function (done) {
 		const storage = multer.diskStorage({
 			destination: function (request, file, callback) {
 				temp.template('testforme-%s').mkdir(function (error, uploadDir) {
@@ -98,4 +98,4 @@ describe('Upload', function () {
 		})
 	})
 
-})*/
+})

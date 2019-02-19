@@ -1,4 +1,4 @@
-/*const expect = require('chai').expect;
+const expect = require('chai').expect;
 const chai = require('chai');
 const describe = require('mocha').describe;
 const it = require('mocha').it;
@@ -17,4 +17,4 @@ describe('merged proposal', function() {
 			done();
 		});
 	});
-});*/
+});
