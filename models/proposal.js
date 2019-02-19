@@ -119,7 +119,7 @@ const proposalSchema = new mongoose.Schema({
 		path: String,
 		size: Number,
 		proposalId: String,
-		attachmentType: String,
+		attachmentType: {type: String, default: "DEMAX Proposal"},
 		uploaded: {type: Boolean, default: false}
 	},
 	needByDateAttachment: {
@@ -131,7 +131,7 @@ const proposalSchema = new mongoose.Schema({
 		path: String,
 		size: Number,
 		proposalId: String,
-		attachmentType: String,
+		attachmentType: {type: String, default: "Beamtime proposal"},
 		uploaded: {type: Boolean, default: false}
 	},
 	pbdIdReferenceAttachment: {
@@ -143,7 +143,7 @@ const proposalSchema = new mongoose.Schema({
 		path: String,
 		size: Number,
 		proposalId: String,
-		attachmentType: String,
+		attachmentType: {type: String, default: "Primary reference(crystallization)"},
 		uploaded: {type: Boolean, default: false}
 	},
 	organismReferenceAttachment: {
@@ -155,7 +155,7 @@ const proposalSchema = new mongoose.Schema({
 		path: String,
 		size: Number,
 		proposalId: String,
-		attachmentType: String,
+		attachmentType: {type: String, default: "Primary reference(biomass)"},
 		uploaded: {type: Boolean, default: false}
 	},
 	needsPurificationSupportAttachment: {
@@ -167,7 +167,7 @@ const proposalSchema = new mongoose.Schema({
 		path: String,
 		size: Number,
 		proposalId: String,
-		attachmentType: String,
+		attachmentType: {type: String, default: "Primary reference(proteins)"},
 		uploaded: {type: Boolean, default: false}
 	},
 	chemicalStructureAttachment: {
@@ -179,7 +179,7 @@ const proposalSchema = new mongoose.Schema({
 		path: String,
 		size: Number,
 		proposalId: String,
-		attachmentType: String,
+		attachmentType: {type: String, default: "Chemical structure"},
 		uploaded: {type: Boolean, default: false}
 	},
 	moleculePreparationReferenceArticle: {
@@ -191,7 +191,7 @@ const proposalSchema = new mongoose.Schema({
 		path: String,
 		size: Number,
 		proposalId: String,
-		attachmentType: String,
+		attachmentType: {type: String, default: "Protocol for sample preparation"},
 		uploaded: {type: Boolean, default: false}
 	},
 	generatedProposal: {

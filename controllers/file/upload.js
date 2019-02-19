@@ -24,7 +24,7 @@ exports.uploadAttachment = async function (request, response) {
 						path: path,
 						size: request.file.size,
 						proposalId: request.body.proposalId,
-						attachmentType: request.params.attachment,
+						attachmentType: "Beamtime proposal",
 						uploaded: true
 					}
 				});
@@ -41,7 +41,7 @@ exports.uploadAttachment = async function (request, response) {
 						path: path,
 						size: request.file.size,
 						proposalId: request.body.proposalId,
-						attachmentType: request.params.attachment,
+						attachmentType: "Primary reference(crystallization)",
 						uploaded: true
 					}
 				});
@@ -58,7 +58,7 @@ exports.uploadAttachment = async function (request, response) {
 						path: path,
 						size: request.file.size,
 						proposalId: request.body.proposalId,
-						attachmentType: request.params.attachment,
+						attachmentType: "Primary reference(biomass)",
 						uploaded: true
 					}
 				});
@@ -75,7 +75,7 @@ exports.uploadAttachment = async function (request, response) {
 						path: path,
 						size: request.file.size,
 						proposalId: request.body.proposalId,
-						attachmentType: request.params.attachment,
+						attachmentType: "Primary reference(proteins)",
 						uploaded: true
 					}
 				});
@@ -93,7 +93,7 @@ exports.uploadAttachment = async function (request, response) {
 						path: path,
 						size: request.file.size,
 						proposalId: request.body.proposalId,
-						attachmentType: request.params.attachment,
+						attachmentType: "Chemical structure",
 						uploaded: true
 					}
 				});
@@ -111,7 +111,7 @@ exports.uploadAttachment = async function (request, response) {
 						path: path,
 						size: request.file.size,
 						proposalId: request.body.proposalId,
-						attachmentType: request.params.attachment,
+						attachmentType: "Primary reference(chemical)",
 						uploaded: true
 					}
 				});
@@ -129,7 +129,7 @@ exports.uploadAttachment = async function (request, response) {
 						path: path,
 						size: request.file.size,
 						proposalId: request.body.proposalId,
-						attachmentType: request.params.attachment,
+						attachmentType: "DEMAX Proposal",
 						uploaded: true
 					}
 				});
