@@ -49,7 +49,7 @@ router.get('/file/download/:filename', downloader.getByFileName);
 router.get('/file/:proposalId', downloader.getUploadedAttachmentsByProposalId);
 router.post('/file/upload/:attachment', auth.checkToken, upload.single("file"), uploader.uploadAttachment);
 router.delete('/file/delete/:proposalId/:attachmentType/:filename', fileManager.deleteFileByProposalIdAndAttachmentType);
-
+router.post('/file/upload2', upload.single('file'), uploader.upload);
 router.get('/merge/:proposalId', pdfMerger);
 router.get('/generate/:proposalId', pdfGenerator, pdfMerger);
 
