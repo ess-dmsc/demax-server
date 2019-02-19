@@ -3,9 +3,10 @@ LABEL maintainer="jeremias.hillerberg@esss.se"
 ENV no_proxy "localhost, 127.0.0.1"
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set strict-ssl false
-RUN apt-get update && apt-get install -y default-jdk
+RUN apk --update add openjdk7-jre
 COPY package.json /usr/src/app/package.json
 RUN npm install --save
+RUN npm install -g mocha
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 CMD ["sh", "./local-test.sh"]
