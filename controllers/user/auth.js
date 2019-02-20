@@ -161,11 +161,11 @@ margin-top: 5rem;
 							error: error.message
 						});
 					}
+					return response.status(201).json(newUser);
 				});
 			});
 
 		});
-		return response.status(201).json(newUser);
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
