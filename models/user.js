@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema({
 	industry: String,
 	jobTitle: String,
 	hasConsentedToGdpr: String,
-	hasConsentedToEmails: String
+	hasConsentedToEmails: String,
+	hasConsentedToCookies: String
 });
 
 userSchema.pre('save', function(next) {
