@@ -81,16 +81,22 @@ exports.register = async function(request, response) {
 		const newUser = await new User(userData);
 		newUser.save(function(error) {
 			if(error) {
-				throw error;
+				console.log(error);
+				return response.status(500).json({
+					error: error.message
+				});
 			}
 			let token = new Token({
 				_userId: newUser._id,
 				token: crypto.randomBytes(16).toString('hex')
 			});
 
-			token.save(function(err) {
+			token.save(function(error) {
 				if(error) {
-					return response.status(500).send({message: error.message});
+					console.log(error);
+					return response.status(500).json({
+						error: error.message
+					});
 				}
 
 				let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
@@ -148,16 +154,18 @@ margin-top: 5rem;
 
 				};
 				transporter.sendMail(mailOptions, function(error) {
-					console.log(token.token)
+					console.log('Token:' + token.token);
 					if(error) {
-						return response.status(500).send(
-							{message: error.message});
+						console.log(error);
+						return response.status(500).json({
+							error: error.message
+						});
 					}
 				});
 			});
 
 		});
-		response.status(201).json(newUser);
+		return response.status(201).json(newUser);
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
