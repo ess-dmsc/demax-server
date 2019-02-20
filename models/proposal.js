@@ -129,7 +129,7 @@ const proposalSchema = new mongoose.Schema({
 		encoding: String,
 		mimetype: String,
 		filename: String,
-		path: String,
+		path: {type: String, default: './files/error/needByDateAttachmentError.pdf'},
 		size: Number,
 		proposalId: String,
 		attachmentType: {type: String, default: "Beamtime proposal"},

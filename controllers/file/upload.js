@@ -6,6 +6,7 @@ exports.uploadAttachment = async function (request, response) {
 	let attachment = request.params.attachment;
 	let id = request.body.proposalId;
 	console.log(id)
+	console.log(request.file.path)
 	let path = `"./${request.file.path}"`;
 	let name = request.file.originalname;
 	let proposal = await Proposal.findOne({proposalId: id});
@@ -159,6 +160,7 @@ exports.upload = async function(request, response){
 	let path = `"./${request.file.path}"`;
 	let name = request.file.originalname;
 	let proposal = await Proposal.findOne({proposalId: id});
+	console.log(request.file.path)
 
 	try {
 		switch(attachment) {
