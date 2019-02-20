@@ -89,7 +89,10 @@ exports.register = async function(request, response) {
 			});
 
 			token.save(function(err) {
-				if(error) { return response.status(500).send({message: error.message}); }
+				if(error) {
+					return response.status(500).send({message: error.message});
+				}
+
 				let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
 
 				let mailOptions = {
@@ -145,17 +148,20 @@ margin-top: 5rem;
 
 				};
 				transporter.sendMail(mailOptions, function(error) {
-					console.log('http://localhost:3000/api/confirmation/' + token.token)
-					if(err) { return response.status(500).send({message: error.message}); }
-					response.status(200).send('A verification email has been sent to ' + newUser.email + '.');
+					console.log(token.token)
+					if(error) {
+						return response.status(500).send(
+							{message: error.message});
+					}
 				});
 			});
 
 		});
 		response.status(201).json(newUser);
-	} catch(err) {
+	} catch(error) {
+		console.log(error);
 		return response.status(400).json({
-			error: err.message
+			error: error.message
 		});
 	}
 };
