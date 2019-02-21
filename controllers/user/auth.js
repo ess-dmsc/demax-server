@@ -39,7 +39,7 @@ exports.checkToken = async function(request, response, next) {
 exports.login = async function(request, response) {
 	User.findOne({
 		email: request.body.email
-	}, (err, user) => {
+	}, (error, user) => {
 		if(!user) {
 			return response.sendStatus(403);
 		}
@@ -82,9 +82,7 @@ exports.register = async function(request, response) {
 		newUser.save(function(error) {
 			if(error) {
 				console.log(error);
-				return response.status(500).json({
-					error: error.message
-				});
+				throw error;
 			}
 			let token = new Token({
 				_userId: newUser._id,
@@ -94,9 +92,7 @@ exports.register = async function(request, response) {
 			token.save(function(error) {
 				if(error) {
 					console.log(error);
-					return response.status(500).json({
-						error: error.message
-					});
+					throw error;
 				}
 
 				let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
@@ -157,9 +153,8 @@ margin-top: 5rem;
 					console.log('Token:' + token.token);
 					if(error) {
 						console.log(error);
-						return response.status(500).json({
-							error: error.message
-						});
+						throw error;
+
 					}
 					return response.status(201).json(newUser);
 				});
@@ -238,37 +233,37 @@ exports.confirmationGet = function(req, res, next) {
 };
 
 
-exports.resendTokenPost = function(req, res, next) {
-	req.assert('email', 'Email is not valid').isEmail();
-	req.assert('email', 'Email cannot be blank').notEmpty();
-	req.sanitize('email').normalizeEmail({remove_dots: false});
+exports.resendTokenPost = function(request, response, next) {
+	request.assert('email', 'Email is not valid').isEmail();
+	request.assert('email', 'Email cannot be blank').notEmpty();
+	request.sanitize('email').normalizeEmail({remove_dots: false});
 
 	// Check for validation errors
-	var errors = req.validationErrors();
-	if(errors) return res.status(400).send(errors);
+	var errors = request.validationErrors();
+	if(errors) return response.status(400).send(errors);
 
-	User.findOne({email: req.body.email}, function(err, user) {
-		if(!user) return res.status(400).send({msg: 'We were unable to find a user with that email.'});
+	User.findOne({email: request.body.email}, function(error, user) {
+		if(!user) return response.status(400).send({msg: 'We were unable to find a user with that email.'});
 		if(user.isVerified) return res.status(400).send({msg: 'This account has already been verified. Please log in.'});
 
 		// Create a verification token, save it, and send email
-		var token = new Token({_userId: user._id, token: crypto.randomBytes(16).toString('hex')});
+		let token = new Token({_userId: user._id, token: crypto.randomBytes(16).toString('hex')});
 
 		// Save the token
-		token.save(function(err) {
-			if(err) { return res.status(500).send({msg: err.message}); }
+		token.save(function(error) {
+			if(error) { return response.status(500).send({message: error.message}); }
 
 			// Send the email
-			var transporter = nodemailer.createTransport({host: "10.0.0.3", port: 25});
-			var mailOptions = {
+			let transporter = nodemailer.createTransport({host: "10.0.0.3", port: 25});
+			let mailOptions = {
 				from: 'noreply@esss.dk',
 				to: user.email,
 				subject: 'Account Verification Token',
 				text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/confirmation\/' + token.token + '   \n'
 			};
-			transporter.sendMail(mailOptions, function(err) {
-				if(err) { return res.status(500).send({msg: err.message}); }
-				res.status(200).send('A verification email has been sent to ' + user.email + '.');
+			transporter.sendMail(mailOptions, function(error) {
+				if(error) { return response.status(500).send({msg: err.message}); }
+				response.status(200).send('A verification email has been sent to ' + user.email + '.');
 			});
 		});
 
@@ -280,9 +275,18 @@ function findUserByEmail(email) {
 	if(email) {
 		return new Promise((resolve, reject) => {
 			User.findOne({email: email}).exec((error, document) => {
-				if(error) return reject(error);
-				if(document) return reject(new Error('Email already exists. Please enter another email.'));
-				else return resolve(email);
+				if(error) {
+					console.log('MongoDB lookup error. Error message: ' + error);
+					return reject(error);
+				}
+				if(document) {
+					console.log(document.email)
+					return reject(new Error('Email already exists. Please enter another email.'));
+				}
+				else {
+					console.log(email)
+					return resolve(email);
+				}
 			});
 		});
 	}
