@@ -1,6 +1,7 @@
 const Proposal = require('../models/proposal.js');
 const nanoid = require('nanoid/generate');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
 exports.getAllProposals = async function(request, response) {
 	try {
@@ -12,7 +13,7 @@ exports.getAllProposals = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
 
 exports.getProposalsByEmail = async function(request, response) {
 
@@ -25,8 +26,8 @@ exports.getProposalsByEmail = async function(request, response) {
 			error: error.message
 		});
 	}
-}
-exports.downloadProposal = async function(request, response){
+};
+exports.downloadProposal = async function(request, response) {
 	try {
 		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
@@ -38,7 +39,7 @@ exports.downloadProposal = async function(request, response){
 			error: error.message
 		});
 	}
-}
+};
 exports.getAllProposalMetaInformation = async function(request, response) {
 	try {
 		const proposals = await Proposal.find({});
@@ -53,7 +54,7 @@ exports.getAllProposalMetaInformation = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
 
 exports.submitNewProposal = async function(request, response) {
 	try {
@@ -68,13 +69,14 @@ exports.submitNewProposal = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
+
 
 exports.getProposalByProposalId = async function(request, response) {
 	try {
-		console.log("request.params.proposalId: " + request.params.proposalId)
+		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-		console.log(proposal)
+		console.log(proposal);
 		response.status(201).json(proposal);
 	} catch(error) {
 		console.log(error);
@@ -82,7 +84,7 @@ exports.getProposalByProposalId = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
 
 exports.editProposalByProposalId = async function(request, response) {
 	try {
@@ -97,14 +99,44 @@ exports.editProposalByProposalId = async function(request, response) {
 		});
 	}
 
-}
+};
+
+
+exports.submitProposal = async function(request, response) {
+	try {
+		let proposal = await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, request.body);
+		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {submitted: true});
+		console.log(proposal.proposalId)
+		let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
+
+		let mailOptions = {
+			from: 'noreply@demax.esss.se',
+			to: proposal.mainProposer.email,
+			subject: 'Submitted proposal ' + request.params.proposalId,
+			html: `Proposal ${proposal.proposalId} has been submitted.`
+
+		};
+		transporter.sendMail(mailOptions, function(error) {
+			if(error) {
+				console.log(error);
+				throw error;
+			}
+			return response.status(201).json('Submitted!');
+		});
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
 
 exports.deleteProposalByProposalId = async function(request, response) {
 	try {
 		await Proposal.findOneAndDelete({
 			proposalId: request.params.proposalId
 		});
-		console.log(request.params.proposalId)
+		console.log(request.params.proposalId);
 		response.status(200).json(request.params.proposalId + ' was successfully deleted.');
 	} catch(error) {
 		console.log(error);
@@ -112,4 +144,4 @@ exports.deleteProposalByProposalId = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};

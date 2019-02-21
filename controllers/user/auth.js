@@ -98,7 +98,7 @@ exports.register = async function(request, response) {
 				let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
 
 				let mailOptions = {
-					from: 'noreply@esss.dk',
+					from: 'noreply@demax.esss.se',
 					to: newUser.email,
 					subject: 'Account Verification Token',
 					html:

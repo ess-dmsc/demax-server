@@ -41,8 +41,9 @@ router.delete('/users/:email', auth.checkToken, userController.deleteUserByEmail
 router.get('/proposals/:email', auth.checkToken, auth.checkToken, proposalController.getProposalsByEmail);
 router.post('/proposals', auth.checkToken, proposalController.submitNewProposal);
 router.get('/proposals/getById/:proposalId', proposalController.getProposalByProposalId);
-router.get('/proposals/download/:proposalId', proposalController.downloadProposal)
+router.get('/proposals/download/:proposalId', proposalController.downloadProposal);
 router.put('/proposals/:proposalId', auth.checkToken, proposalController.editProposalByProposalId);
+router.put('/proposals/submit/:proposalId', auth.checkToken, proposalController.submitProposal);
 router.delete('/proposals/:proposalId', auth.checkToken, proposalController.deleteProposalByProposalId);
 
 router.get('/file/download/:filename', downloader.getByFileName);
