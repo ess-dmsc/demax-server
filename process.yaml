@@ -1,0 +1,12 @@
+apps:
+  - script   : ./server.js
+    name     : 'DEMAX Server'
+    instances: 1
+    max_memory_restart: '260M'
+    ignore_watch : ['node_modules']
+    exec_mode: fork
+    watch  : true
+    env    :
+      NODE_ENV: "dev"
+    env_production:
+      NODE_ENV: "prod"
