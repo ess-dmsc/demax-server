@@ -36,15 +36,15 @@ async function mergeByProposalId(request, response) {
 		}
 
 		let outputPath = __basedir + "/files/merged/" + proposal.proposalId + '.pdf';
+		console.log(attachments);
 
 		merge(attachments, outputPath,
 			function(error) {
 				if(error) {
-					console.log(error);
-					return response.status(400).json({
-						error: error.message
-					});
+					console.log(error)
+					throw error;
 				}
+				else{
 
 				const file = fs.createReadStream(outputPath);
 				const stat = fs.statSync(outputPath);
@@ -52,7 +52,7 @@ async function mergeByProposalId(request, response) {
 				response.setHeader('Content-Type', 'application/pdf');
 				response.setHeader('Content-Disposition', 'attachment; filename=' + proposal.proposalId + '.pdf');
 				file.pipe(response);
-
+}
 			});
 		await proposal.update({
 			mergedProposal: {
@@ -63,9 +63,8 @@ async function mergeByProposalId(request, response) {
 		});
 	} catch(error) {
 		console.log(error);
-		return response.status(400).json({
-			error: error.message
-		});
+		console.log('hello');
+		return response.status(400).json('Error: missing files');
 	}
 };
 
