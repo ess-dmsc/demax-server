@@ -1,0 +1,10 @@
+apps:
+  - script   : 'server.js'
+    name     : 'DEMAX Server'
+    exec_mode: 'cluster'
+    instances: 1
+  - script   : 'worker.js'
+    env      : { "NODE_ENV": "production"  }
+    _env     : { "NODE_ENV": "production"  }
+                
+    
