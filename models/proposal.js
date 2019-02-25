@@ -213,5 +213,20 @@ const proposalSchema = new mongoose.Schema({
 	},
 	submitted: {type: Boolean, default: false},
 	other: String,
+	tsf: [
+		{
+			recommendation: {type: String, default: "no"},
+			score: Number,
+			author: String
+		}
+	],
+	scienceScore: Number,
+	comments: [
+		{
+			author: String,
+			comment: String,
+			dateCreated: {type: Date, default: Date.now()}
+		}
+	]
 });
 module.exports = mongoose.model('Proposal', proposalSchema);
