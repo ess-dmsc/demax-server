@@ -1,2 +1,2 @@
 sleep 5
-npm test
+NODE_ENV=jenkins_test npm test
