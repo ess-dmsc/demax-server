@@ -21,4 +21,4 @@ COPY . /usr/src/app
 
 EXPOSE 3000
 
-CMD ["pm2-runtime", "start", "process.yaml"]
+CMD ["sh", "pm2.sh"]
