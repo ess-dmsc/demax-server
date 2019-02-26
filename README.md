@@ -1,5 +1,7 @@
 # demax-server
 
+[![Build Status](https://travis-ci.org/ess-dmsc/demax-server.svg?branch=master)](https://travis-ci.org/ess-dmsc/demax-server)
+
 This repository constitutes the backend server of the DEMAX User Office website. The frontend part can be found <a href="https://github.com/ess-dmsc/demax-client">here.</a>
 
 The <a href="https://europeanspallationsource.se/science-support-systems/demax">Deuteration and Macromolecular Crystallisation (DEMAX)</a> platform supports life science and soft matter research users of ESS. 
