@@ -11,4 +11,4 @@ services:
   - mongodb
 
 script:
-  - npm run local_test
+  - npm run travis_test

@@ -35,6 +35,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "NODE_ENV=jenkins_test mocha --exit",
+    "travis_test": "NODE_ENV=travis_test mocha --exit",
     "local_test": "concurrently \"mongod\" \"NODE_ENV=local_test mocha --exit\"",
     "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\""
   },
