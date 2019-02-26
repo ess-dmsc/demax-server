@@ -1,3 +1,3 @@
 sleep 5
-mocha --exit
+npm test
 mongod --shutdown
