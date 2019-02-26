@@ -1,5 +1,4 @@
 node('docker') {stage('Checkout'){checkout scm}
                 stage('Unit Test User Office '){
-                sh "docker build -f Dockerfile-test  -t uo ."
-                sh 'docker run  -t uo npm test'
+                sh "docker-compose -f docker-compose-test.yaml up --build"
 }}
