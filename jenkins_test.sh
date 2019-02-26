@@ -1,3 +1,2 @@
 sleep 5
-npm test
-docker-compose down
+NODE_ENV=jenkins_test mocha --exit
