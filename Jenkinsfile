@@ -5,7 +5,7 @@ node('docker') {
   stage('Unit Test User Office '){
     sh "docker-compose -f docker-compose-test.yaml up"
   }
-  stage('Finished'){
+  stage('Cleanup'){
   sh "docker-compose down"
   }
 }
