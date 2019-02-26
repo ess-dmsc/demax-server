@@ -36,8 +36,8 @@
   "devDependencies": {},
   "scripts": {
     "start": "nodemon server.js",
-    "test": "NODE_ENV=jenkins_test mocha",
-    "local_test": "concurrently \"NODE_ENV=local_test mocha \"",
+    "test": "NODE_ENV=jenkins_test mocha --exit",
+    "local_test": "concurrently \"NODE_ENV=local_test mocha --exit\"",
     "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\"",
     "prod": "concurrently \"mongod\" \"ng build --aot --prod && tsc -p server && node dist/server/app.js\""
   },
