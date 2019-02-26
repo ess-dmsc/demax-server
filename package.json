@@ -1,6 +1,6 @@
 {
   "name": "demax-server",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "",
   "main": "server.js",
   "dependencies": {
@@ -8,14 +8,11 @@
     "body-parser": "1.18.3",
     "chai": "4.2.0",
     "chai-http": "4.2.0",
-    "concurrently": "4.1.0",
     "cors": "2.8.5",
     "dotenv": "6.2.0",
     "easy-pdf-merge": "0.2.0",
     "express": "4.16.4",
     "file-system": "2.2.2",
-    "formidable": "1.2.1",
-    "fs": "0.0.1-security",
     "fs-temp": "1.1.2",
     "jsonwebtoken": "8.4.0",
     "mocha": "5.2.0",
@@ -25,28 +22,28 @@
     "multer": "1.4.1",
     "nanoid": "2.0.1",
     "nodemailer": "5.1.1",
-    "nodemon": "1.18.7",
     "path": "0.12.7",
     "pdfkit": "0.9.0",
     "rimraf": "2.6.3",
     "shortid": "2.2.14",
     "sinon": "7.1.1",
-    "supertest": "3.4.2"
+    "supertest": "3.4.2",
+    "nodemon": "1.18.7",
+    "concurrently": "4.1.0"
   },
   "devDependencies": {},
   "scripts": {
     "start": "nodemon server.js",
     "test": "NODE_ENV=jenkins_test mocha --exit",
-    "local_test": "concurrently \"NODE_ENV=local_test mocha --exit\"",
+    "local_test": "concurrently \"mongod\" \"NODE_ENV=local_test mocha --exit\"",
     "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\"",
-    "prod": "concurrently \"mongod\" \"ng build --aot --prod && tsc -p server && node dist/server/app.js\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ess-dmsc/demax-server.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/ess-dmsc/demax-server/issues"
   },
