@@ -14,12 +14,3 @@ services:
     - '8080:8080'
     depends_on:
     - mongodb
-  demax-client:
-    build:
-      context: "./demax-client"
-      dockerfile: 'Dockerfile-test'
-    ports:
-    - '80:443'
-volumes:
-  mongodb_data:
-    driver: local
