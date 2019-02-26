@@ -30,7 +30,8 @@
     "pdfkit": "0.9.0",
     "rimraf": "2.6.3",
     "shortid": "2.2.14",
-    "sinon": "7.1.1"
+    "sinon": "7.1.1",
+    "supertest": "3.4.2"
   },
   "devDependencies": {},
   "scripts": {
