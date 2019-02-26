@@ -25,7 +25,6 @@ const upload = multer({storage: storage});
 
 router.use('/admin', adminRouter);
 
-
 router.post('/users/register', auth.register);
 router.get('/users/forgotpassword/:email', auth.forgotPassword);
 router.post('/users/login', auth.login);
