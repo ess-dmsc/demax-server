@@ -8,4 +8,4 @@ apps:
     NODE_ENV: dev
   env_production:
     NODE_ENV: prod
-  ignore_watch: ["./node_modules","./files"]
+  ignore_watch: ["./node_modules","./files","./tests","./demax-client"]
