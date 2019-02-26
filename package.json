@@ -36,7 +36,7 @@
     "start": "nodemon server.js",
     "test": "NODE_ENV=jenkins_test mocha --exit",
     "local_test": "concurrently \"mongod\" \"NODE_ENV=local_test mocha --exit\"",
-    "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\"",
+    "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\""
   },
   "repository": {
     "type": "git",
