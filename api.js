@@ -15,7 +15,6 @@ const downloader = require('./controllers/file/download.js');
 const fileManager = require('./controllers/file/manager.js');
 const userController = require('./controllers/user/user.js');
 const proposalController = require('./controllers/proposal.js');
-const proposalmail = require('./controllers/mail/proposal.js');
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},
@@ -25,8 +24,6 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 router.use('/admin', adminRouter);
-
-router.get('/email', proposalmail.testmail);
 
 router.post('/users/register', auth.register);
 router.get('/users/forgotpassword/:email', auth.forgotPassword);
