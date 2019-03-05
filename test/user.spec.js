@@ -45,11 +45,27 @@ describe("user", function() {
 			done();
 		});
 	});
-	it('can not login if unauthenticated', function(done){
-		const testUser = new User({
-			email: "test.test@test.test",
-			firstName: "Firstname"
-		});
-
+	it('can not login using $gt operator', function(done){
+		request(app).post('/api/users/login').send({
+			"email" : {"$gt":""},
+			"password" : {"$gt":""}
+		}).end((error, response) =>{
+			token = response.body.token;
+			console.log(token);
+			done();
+		})
 	})
+
+	it('can not login using $gt:undefined', function(done){
+
+		request(app).post('/api/users/login').send({
+			"email" : {"$gt": undefined},
+			"password" : {"$gt": undefined}
+		}).end((error, response) =>{
+			token = response.body.token;
+			console.log(token);
+			done();
+		})
+	})
+
 });

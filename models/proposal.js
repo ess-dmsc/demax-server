@@ -34,6 +34,7 @@ const proposalSchema = new mongoose.Schema({
 	wantsOtherDeuteration: Boolean,
 	wantsBiologicalDeuteration: Boolean,
 	wantsBiomassDeuteration: Boolean,
+	wantsYeastDeuteration: Boolean,
 	wantsProteinDeuteration: Boolean,
 	wantsChemicalDeuteration: Boolean,
 	crystallization: {

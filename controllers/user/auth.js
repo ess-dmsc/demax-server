@@ -37,13 +37,13 @@ exports.checkToken = async function(request, response, next) {
 };
 
 exports.login = async function(request, response) {
-	User.findOne({
-		email: request.body.email
-	}, (error, user) => {
+	let email = request.body.email;
+	let password = request.body.password;
+	User.findOne({'email': { $in: [email] }}, (error, user) => {
 		if(!user) {
 			return response.sendStatus(403);
 		}
-		user.comparePassword(request.body.password, (error, isMatch) => {
+		user.comparePassword(password, (error, isMatch) => {
 			if(!isMatch) {
 				return response.sendStatus(403);
 			}
