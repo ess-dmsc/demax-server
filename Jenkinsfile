@@ -3,6 +3,6 @@ node('docker') {
     checkout scm
   }
   stage('DEMAX Backend tests'){
-    sh "docker-compose -f "./CI/dockerfiles/docker-compose-test.yaml" up --build --abort-on-container-exit"
+    sh "docker-compose -f ./CI/dockerfiles/docker-compose-test.yaml up --build --abort-on-container-exit"
   }
 }
