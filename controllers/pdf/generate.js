@@ -2,10 +2,10 @@ const PDFDocument = require('pdfkit');
 const Proposal = require('../../models/proposal.js');
 const fs = require('file-system');
 
-const bold = '../../resources/fonts/titillium-bold-webfont.woff';
-const regular = '../../resources/fonts/titillium-regular-webfont.woff';
-const italic = '../../resources/fonts/titillium-regularitalic-webfont.woff';
-const semibold = '../../resources/fonts/titillium-semibold-webfont.woff';
+const bold = './resources/fonts/titillium-bold-webfont.woff';
+const regular = './resources/fonts/titillium-regular-webfont.woff';
+const italic = './resources/fonts/titillium-regularitalic-webfont.woff';
+const semibold = './resources/fonts/titillium-semibold-webfont.woff';
 
 async function generate (request, response, next) {
 	try {
