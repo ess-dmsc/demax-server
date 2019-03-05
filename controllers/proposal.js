@@ -101,35 +101,68 @@ exports.editProposalByProposalId = async function(request, response) {
 
 };
 
-
-exports.submitProposal = async function(request, response) {
-	try {
-		let proposal = await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, request.body);
-		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {submitted: true});
-		console.log(proposal.proposalId)
-		let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
-
-		let mailOptions = {
-			from: 'noreply@demax.esss.se',
-			to: proposal.mainProposer.email,
-			subject: 'Submitted proposal ' + request.params.proposalId,
-			html: `Proposal ${proposal.proposalId} has been submitted.`
-
-		};
-		transporter.sendMail(mailOptions, function(error) {
-			if(error) {
-				console.log(error);
-				throw error;
+async function editProposal(proposalId, body){
+	try{
+		await Proposal.findOneAndUpdate({proposalId: proposalId}, body, function(error){
+			if(error){throw error}
+			else{
+				return
 			}
-			return response.status(201).json('Submitted!');
-		});
-	} catch(error) {
+		})
+	}catch(error){
+		return error
+	}
+}
+exports.submitProposal = async function(request, response) {
+
+	try {
+		let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+
+		if(!proposal.proposalTemplate.uploaded) {
+			throw new Error("DEMAX proposal");
+		}
+		else if(!proposal.needByDateAttachment.uploaded) {
+			throw new Error("beamtime proposal");
+		}
+		else if(proposal.wantsChemicalDeuteration && !proposal.chemicalStructureAttachment.uploaded) {
+			throw new Error("chemical structure");
+		}
+		else if(proposal.wantsChemicalDeuteration && proposal.chemicalDeuteration.hasPreparedMolecule && !proposal.moleculePreparationReferenceArticle.uploaded) {
+			throw new Error("primary reference (chemical deuteration)");
+		}
+		else if(proposal.wantsBiomassDeuteration && !proposal.organismReferenceAttachment.uploaded) {
+			throw new Error("primary reference (biomass)");
+		}
+		else if(proposal.wantsProteinDeuteration && proposal.proteinDeuteration.needsPurificationSupport === "yes" && !proposal.needsPurificationSupportAttachment.uploaded) {
+			throw new Error("primary reference (proteins)");
+		}
+		else {
+			let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
+
+			let mailOptions = {
+				from: 'noreply@demax.esss.se',
+				to: proposal.mainProposer.email,
+				subject: 'Submitted proposal ' + request.params.proposalId,
+				html: `Proposal ${proposal.proposalId} has been submitted.`
+
+			};
+			transporter.sendMail(mailOptions, function(error) {
+				if(error) {
+					console.log(error);
+					throw error;
+				}
+				Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {submitted: true});
+				return response.status(201).json('Submitted!');
+			});
+		}
+
+	}
+	catch(error) {
 		console.log(error);
-		return response.status(400).json({
-			error: error.message
-		});
+		return response.status(400).json(error.message);
 	}
 };
+
 
 exports.deleteProposalByProposalId = async function(request, response) {
 	try {
@@ -144,4 +177,22 @@ exports.deleteProposalByProposalId = async function(request, response) {
 			error: error.message
 		});
 	}
+};
+
+throwError = (code, errorType, errorMessage) => error => {
+	if(!error) error = new Error(errorMessage || 'Default Error');
+	error.code = code;
+	error.errorType = errorType;
+	throw error;
+};
+
+cess = (res, message) => data => {
+	res.status(200).json({type: 'success', message, data});
+};
+sendError = (res, status, message) => error => {
+	res.status(status || error.status).json({
+		type: 'error',
+		message: message || error.message,
+		error
+	});
 };
