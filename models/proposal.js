@@ -71,30 +71,28 @@ const proposalSchema = new mongoose.Schema({
 		moleculeName: String,
 		moleculeIdentifier: String,
 		molecularWeight: String,
-
 		oligomerizationState: String,
 		expressionRequirements: String,
 		moleculeOrigin: String,
-
 		expressionPlasmidProvidedByUser: String,
 		expressionPlasmidProvidedByUserDetails: String,
-
 		amountNeeded: String,
 		amountNeededMotivation: String,
-
 		deuterationLevelRequired: String,
 		deuterationLevelMotivation: String,
-
 		needsPurificationSupport: String,
 		hasDoneUnlabeledProteinExpression: String,
-
 		typicalYield: String,
 		hasDoneProteinPurification: String,
-
 		hasProteinDeuterationExperience: String,
 		proteinDeuterationResults: String,
-
 		other: String
+	},
+	yeastDeuteration:{
+		amountNeeded: String,
+		amountMotivation: String,
+		deuterationLevelRequired: String,
+		deuterationLevelMotivation: String
 	},
 	bioSafety: {
 		bioSafetyContainmentLevel: String,

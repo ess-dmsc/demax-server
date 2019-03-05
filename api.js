@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const nanoid = require('nanoid/generate');
+
 global.__basedir = __dirname;
 
 const pdfMerger = require('./controllers/pdf/merge.js');
@@ -18,7 +20,9 @@ const proposalController = require('./controllers/proposal.js');
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},
-	filename: (request, file, callback) => {callback(null, file.originalname);}
+	filename: (request, file, callback) => {callback(null,
+		nanoid('0123456789', 8) + '_' + file.originalname.replace(/\s|&;\$%@"<>\(\)\+,/g, "-"))
+	}
 });
 
 const upload = multer({storage: storage});
