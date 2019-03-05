@@ -24,7 +24,7 @@ router.delete('/proposals/:proposalid', auth.checkToken, proposalController.dele
 router.get('/files', fileController.getAll);
 router.get('/files/:filename', fileController.get);
 router.post('/files/upload', upload.single('file'), fileController.uploadFile);
-router.delete('/files/:filename', fileController.delete);
+router.delete('/file/delete/:filename', fileController.delete);
 
 router.put('/users/changepassword/:email/:password', userController.changePassword);
 router.get('/users', auth.checkToken, userController.getAll);

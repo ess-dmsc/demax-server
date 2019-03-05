@@ -45,4 +45,11 @@ describe("user", function() {
 			done();
 		});
 	});
+	it('can not login if unauthenticated', function(done){
+		const testUser = new User({
+			email: "test.test@test.test",
+			firstName: "Firstname"
+		});
+
+	})
 });
