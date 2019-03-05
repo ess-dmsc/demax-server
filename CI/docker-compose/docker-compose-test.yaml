@@ -6,8 +6,8 @@ services:
     - "27017"
   demax-server:
     build:
-      context: .
-      dockerfile: 'Dockerfile-test'
+      context: ../..
+      dockerfile: './CI/Dockerfile-test'
     ports:
     - '8080:8080'
     depends_on:

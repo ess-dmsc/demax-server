@@ -19,4 +19,4 @@ COPY . /usr/src/app
 
 EXPOSE 3000
 
-CMD ["sh", "wait.sh"]
+CMD ["sh", "./CI/scripts/wait.sh"]

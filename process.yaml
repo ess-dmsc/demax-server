@@ -1,5 +1,5 @@
 apps:
-- script   : "./pm2.sh"
+- script   : "./pm2.scripts"
   name     : 'DEMAX Server'
   instances: 1
   exec_mode: fork

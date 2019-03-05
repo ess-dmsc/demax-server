@@ -8,8 +8,8 @@ services:
     - /data/mongodb:/bitnami
   demax-server:
     build:
-      context: .
-      dockerfile: 'Dockerfile-pm2'
+      context: ../..
+      dockerfile: '../dockerfiles/Dockerfile-pm2'
     ports:
     - '3000:3000'
     depends_on:
@@ -18,7 +18,7 @@ services:
     - /data/mongodb/files:/usr/src/app/files
   demax-client:
     build:
-      context: "./demax-client"
+      context: "../../demax-client"
       dockerfile: 'Dockerfile'
     ports:
     - '8080:8080'
