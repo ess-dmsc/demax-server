@@ -7,7 +7,7 @@ services:
   demax-server:
     build:
       context: ../..
-      dockerfile: '../dockerfiles/Dockerfile-test-local'
+      dockerfile: './CI/dockerfiles/Dockerfile-test-local'
     ports:
     - '3000:3000'
     depends_on:
