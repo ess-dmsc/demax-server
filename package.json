@@ -33,7 +33,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "test": "NODE_ENV=jenkins_test mocha --exit",
     "travis_test": "NODE_ENV=travis_test mocha --exit",
     "local_test": "NODE_ENV=local_test mocha --exit",

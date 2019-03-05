@@ -1,2 +1,2 @@
-sleep 5
+sleep 10
 NODE_ENV=prod npm start
