@@ -15,4 +15,4 @@ WORKDIR /usr/src/app
 RUN npm install --save
 COPY . /usr/src/app
 EXPOSE 3000
-CMD ["sh", "../scripts/jenkins_test.sh"]
+CMD ["sh", "./CI/scripts/jenkins_test.sh"]
