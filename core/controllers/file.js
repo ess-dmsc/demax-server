@@ -45,7 +45,7 @@ exports.getByFileName = async function(request, response) {
 	try {
 		let filename = request.params.filename;
 		console.log(filename);
-		response.download('../../files/uploads/' + filename);
+		response.download('./files/uploads/' + filename);
 	}
 	catch(error) {
 		console.log(error);
@@ -62,7 +62,7 @@ exports.uploadFile = async function(request, response) {
 exports.getAll = async function(request, response) {
 
 	try {
-		fs.readdir('../../files/uploads/', (err, files) => {
+		fs.readdir('./files/uploads/', (err, files) => {
 			for(let i = 0; i < files.length; ++i) {
 				files[ i ] = files[ i ];
 			}
@@ -81,7 +81,7 @@ exports.getByFilename = async function(request, response) {
 	try {
 		let filename = request.params.filename;
 		console.log(filename);
-		response.download('../../files/uploads/' + filename);
+		response.download('./files/uploads/' + filename);
 	}
 	catch(error) {
 		console.log(error);
@@ -97,7 +97,7 @@ exports.deleteFileByFilename = async function(request, response) {
 
 	try {
 
-		fs.unlink('../../files/uploads/' + filename, function(error) {
+		fs.unlink('./files/uploads/' + filename, function(error) {
 			if(error) {
 				console.log(error);
 			}
@@ -249,7 +249,7 @@ exports.deleteFileByProposalIdAndAttachmentType = async function(request, respon
 				});
 				break;
 		}
-		fs.unlink(__basedir + '/files/uploads/' + request.params.filename, function(error) {
+		fs.unlink('./files/uploads/' + request.params.filename, function(error) {
 			if(error) {
 				console.log(error);
 				return response.status(400).json({
