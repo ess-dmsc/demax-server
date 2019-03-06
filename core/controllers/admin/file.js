@@ -9,7 +9,7 @@ exports.uploadFile = async function(request, response) {
 exports.getAll = async function(request, response) {
 
 	try {
-		fs.readdir('../../../files/uploads/', (err, files) => {
+		fs.readdir('./files/uploads/', (err, files) => {
 			for(let i = 0; i < files.length; ++i) {
 				files[ i ] = files[ i ];
 			}
@@ -52,7 +52,7 @@ exports.get = async function(request, response) {
 	try {
 		let filename = request.params.filename;
 		console.log(filename);
-		response.download('../../../files/uploads/' + filename);
+		response.download('./files/uploads/' + filename);
 	}
 	catch(error) {
 		console.log(error);
@@ -68,7 +68,7 @@ exports.delete = async function(request, response) {
 
 	try {
 
-		fs.unlink('../../../files/uploads/' + filename, function(error) {
+		fs.unlink('./files/uploads/' + filename, function(error) {
 			if(error) {
 				console.log(error);
 			}
