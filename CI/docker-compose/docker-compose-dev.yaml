@@ -4,8 +4,6 @@ services:
     image: 'bitnami/mongodb:latest'
     ports:
     - "27017"
-    volumes:
-    - /data/mongodb:/bitnami
   demax-server:
     build:
       context: ../..

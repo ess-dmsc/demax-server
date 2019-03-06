@@ -8,7 +8,7 @@ const config = require('./config');
 
 const app = express();
 
-const api = require('./core/routes/api.js');
+const api = require('./api.js');
 
 app.use(morgan('dev'));
 app.use(cors({origin: '*', optionsSuccessStatus: 200}));

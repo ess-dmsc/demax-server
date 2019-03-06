@@ -3,17 +3,15 @@ const router = express.Router();
 const multer = require('multer');
 const nanoid = require('nanoid/generate');
 
-global.__basedir = __dirname;
+const pdfMerger = require('./core/controllers/merge.js');
+const pdfGenerator = require('./core/controllers/generate.js');
 
-const pdfMerger = require('../controllers/merge.js');
-const pdfGenerator = require('../controllers/generate.js');
+const adminRouter = require('./core/routes/admin.js');
 
-const adminRouter = require('./admin.js');
-
-const auth = require('../controllers/auth.js');
-const fileController = require('../controllers/file.js');
-const userController = require('../controllers/user.js');
-const proposalController = require('../controllers/proposal.js');
+const auth = require('./core/controllers/auth.js');
+const fileController = require('./core/controllers/file.js');
+const userController = require('./core/controllers/user.js');
+const proposalController = require('./core/controllers/proposal.js');
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},
@@ -64,7 +62,7 @@ router.get('/word/attachment', async function(request, response) {
 });
 
 router.get('/', async function(request, response) {
-	try {response.sendFile('./resources/html/home.html', {root: __dirname});}
+	try {response.sendFile(__dirname + '/resources/html/home.html');}
 	catch(error) {
 		console.log(error);
 		return response.status(400).json({

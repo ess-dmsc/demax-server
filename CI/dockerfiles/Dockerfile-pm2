@@ -4,8 +4,8 @@ ENV http_proxy "http://172.18.12.30:8123"
 ENV https_proxy $http_proxy
 ENV no_proxy "localhost, 127.0.0.1"
 
-ENV PM2_PUBLIC_KEY env.NODE_ENV.PM2_PUBLIC_KEY
-ENV PM2_SECRET_KEY env.NODE_ENV.PM2_SECRET_KEY
+ENV PM2_PUBLIC_KEY bsdqsp68s8fmpt0
+ENV PM2_SECRET_KEY 11hpeh8h86sdh9v
 
 RUN npm config set proxy  $http_proxy
 RUN npm config set https-proxy  $http_proxy
@@ -24,4 +24,5 @@ COPY . /usr/src/app
 
 EXPOSE 3000
 
+CMD ["sh", "./CI/scripts/pm2.sh"]
 CMD ["sh", "./CI/scripts/pm2.sh"]

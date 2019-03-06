@@ -34,12 +34,14 @@
   "devDependencies": {},
   "scripts": {
     "start": "node server.js",
+    "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\"",
+    "prod": "NODE_ENV=prod node server.js",
     "test": "NODE_ENV=jenkins_test mocha --exit",
     "travis_test": "NODE_ENV=travis_test mocha --exit",
     "local_test": "NODE_ENV=local_test mocha --exit",
-    "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\"",
-    "pm2": "pm2 start ecosystem.config.js --env development",
-    "pm2_production": "pm2 start ecosystem.config.js --env production"
+    "pm2": "pm2 start ecosystem.config.js",
+    "pm2_dev": "concurrently \"mongod\" \"pm2 start ecosystem.config.js --env development\"",
+    "pm2_prod": "pm2 start ecosystem.config.js --env production"
   },
   "repository": {
     "type": "git",
