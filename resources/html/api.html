@@ -1,0 +1,74 @@
+<!DOCTYPE html><html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<style>
+		*{
+			box-sizing: border-box;
+		}
+		header{
+			padding: 2rem;
+		}
+		main{
+			width: 800px;
+			margin: 2rem auto;
+		}
+		thead td{
+			font-weight: bold;
+		}
+	</style>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<title>DEMAX API</title>
+</head>
+<body>
+<div class="card mb-3">
+	<aside></aside>
+	<main>
+		<header>
+			<h4 class="card-header">API guide</h4>
+		</header>
+		<div class="card-body">
+			<table class="table table-bordered">
+				<thead class="thead-light">
+				<tr>
+					<td>Endpoint</td>
+					<td>Method</td>
+					<td>Resources</td>
+				</tr>
+				</thead>
+				<tbody>
+				<tr><td><h5>Proposals</h5></td></tr>
+				<tr><td>/api/proposals</td><td>GET</td><td>Get an array of all proposals</td></tr>
+				<tr><td>/api/proposals/meta</td><td>GET</td><td>Get an array of all proposal metadata</td></tr>
+				<tr><td>/api/proposals/ID</td><td>GET</td><td>Get a single proposal</td></tr>
+				<tr><td>/api/proposals/count</td><td>GET</td><td>Get the total number of proposals</td></tr>
+				<tr><td>/api/proposals</td><td>POST</td><td>Post a new proposal</td></tr>
+				<tr><td>/api/proposals/ID</td><td>PUT</td><td>Edit an existing proposal</td></tr>
+				<tr><td>/api/proposals/ID</td><td>DELETE</td><td>Delete a proposal</td></tr>
+				<tr><td><h5>Users</h5></td></tr>
+				<tr><td>/api/users/all</td><td>GET</td><td>Get an array of all users</td></tr>
+				<tr><td>/api/users/ID</td><td>GET</td><td>Get a single user</td></tr>
+				<tr><td>/api/users/count</td><td>GET</td><td>Get the total number of users</td></tr>
+				<tr><td>/api/users/register</td><td>POST</td><td>Register a new user</td></tr>
+				<tr><td>/api/users/login</td><td>POST</td><td>Authenticate and sign in an existing user - returns a JSON Web Token</td></tr>
+				<tr><td>/api/users/ID</td><td>PUT</td><td>Edit an existing user</td></tr>
+				<tr><td>/api/users/ID</td><td>DELETE</td><td>Delete a user</td></tr>
+				<tr><td><h5>Attachment management</h5></td></tr>
+				<tr><td>/api/file/all</td><td>GET</td><td>Get an array of all files</td></tr>
+				<tr><td>/api/file/filename</td><td>GET</td><td>Download a single file</td></tr>
+				<tr><td>/api/file/upload/attachment-type</td><td>POST</td><td>Upload a file</td></tr>
+				<tr><td>/api/file/filename</td><td>DELETE</td><td>Delete a file</td></tr>
+				<tr><td><h5>PDF management</h5></td></tr>
+				<tr><td>/api/pdf/proposalID</td><td>GET</td><td>Generate a PDF from a proposal</td></tr>
+				<tr><td>/api/pdf/merge/proposalID</td><td>GET</td><td>Merge all attachments in a proposal</td></tr>
+				</tbody>
+		</div>
+</div>
+</main>
+<aside>
+</aside>
+
+</body>
+
+</html>

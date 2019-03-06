@@ -5,18 +5,18 @@ services:
     ports:
     - "27017"
     volumes:
-    - mongodb_data:/bitnami
+    - /data/mongodb:/bitnami
   demax-server:
     build:
-      context: .
-      dockerfile: 'Dockerfile-stage'
+      context: ../..
+      dockerfile: './CI/dockerfiles/Dockerfile-stage'
     ports:
     - '3000:3000'
     depends_on:
     - mongodb
   demax-client:
     build:
-      context: "./demax-client"
+      context: "../../demax-client"
       dockerfile: 'Dockerfile-stage'
     ports:
     - '8080:8080'

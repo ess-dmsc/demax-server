@@ -57,7 +57,7 @@ router.get('/generate/:proposalId', pdfGenerator, pdfMerger);
 
 router.get('/word/attachment', async function(request, response) {
 	try {
-		response.download('./DEMAX_proposal_template.docx');
+		response.download('./resources/documents/DEMAX_proposal_template.docx');
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
@@ -67,7 +67,7 @@ router.get('/word/attachment', async function(request, response) {
 });
 
 router.get('/', async function(request, response) {
-	try {response.sendFile('./files/resources/home.html', {root: __dirname});}
+	try {response.sendFile('./resources/html/home.html', {root: __dirname});}
 	catch(error) {
 		console.log(error);
 		return response.status(400).json({
@@ -78,7 +78,7 @@ router.get('/', async function(request, response) {
 
 router.get('/help', async function(request, response) {
 	try {
-		response.sendFile('./files/resources/api.html', {root: __dirname});
+		response.sendFile('./resources/html/api.html', {root: __dirname});
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({

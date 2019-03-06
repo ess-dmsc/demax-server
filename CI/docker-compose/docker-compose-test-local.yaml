@@ -6,9 +6,9 @@ services:
     - "27017"
   demax-server:
     build:
-      context: .
-      dockerfile: 'Dockerfile-test'
+      context: ../..
+      dockerfile: './CI/dockerfiles/Dockerfile-test-local'
     ports:
-    - '8080:8080'
+    - '3000:3000'
     depends_on:
     - mongodb

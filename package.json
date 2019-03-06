@@ -37,7 +37,9 @@
     "test": "NODE_ENV=jenkins_test mocha --exit",
     "travis_test": "NODE_ENV=travis_test mocha --exit",
     "local_test": "NODE_ENV=local_test mocha --exit",
-    "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\""
+    "dev": "concurrently \"mongod\" \"NODE_ENV=dev nodemon server.js\"",
+    "pm2": "pm2 start ecosystem.config.js --env development",
+    "pm2_production": "pm2 start ecosystem.config.js --env production"
   },
   "repository": {
     "type": "git",
