@@ -3,11 +3,11 @@ const router = express.Router();
 const multer = require('multer');
 global.__basedir = __dirname;
 
-const fileController = require('./controllers/admin/file.js');
-const proposalController = require('./controllers/admin/proposal.js');
-const userController = require('./controllers/admin/user.js');
+const fileController = require('../controllers/admin/file.js');
+const proposalController = require('../controllers/admin/proposal.js');
+const userController = require('../controllers/admin/user.js');
 
-const auth = require('./controllers/user/auth.js');
+const auth = require('../controllers/auth.js');
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},

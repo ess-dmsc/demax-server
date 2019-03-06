@@ -6,8 +6,8 @@ chai.use(require("chai-http")).should();
 
 const app = require("../server");
 const request = require('supertest');
-const User = require('../models/user.js');
-const Proposal = require("../models/proposal.js");
+const User = require('../core/models/user.js');
+const Proposal = require("../core/models/proposal.js");
 
 let token;
 

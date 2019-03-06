@@ -2,8 +2,8 @@ const expect = require('chai').expect;
 const chai = require('chai');
 const describe = require('mocha').describe;
 const it = require('mocha').it;
-const mergePdf = require('../controllers/pdf/merge.js');
-const Proposal = require('../models/proposal.js');
+const mergePdf = require('../core/controllers/merge.js');
+const Proposal = require('../core/models/proposal.js');
 
 chai.use(require('chai-http')).should();
 

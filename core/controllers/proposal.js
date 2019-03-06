@@ -159,7 +159,7 @@ exports.submitProposal = async function(request, response) {
 	}
 	catch(error) {
 		console.log(error);
-		return response.status(400).json(error.message);
+		return response.status(400).json(error);
 	}
 };
 
