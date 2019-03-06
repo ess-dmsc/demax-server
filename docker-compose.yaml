@@ -9,7 +9,7 @@ services:
   demax-server:
     build:
       context: .
-      dockerfile: './CI/dockerfiles/Dockerfile-pm2'
+      dockerfile: 'Dockerfile'
     ports:
     - '3000:3000'
     depends_on:
