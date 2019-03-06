@@ -20,6 +20,7 @@ WORKDIR /usr/src/app
 
 RUN npm install
 
+RUN pm2 link 11hpeh8h86sdh9v bsdqsp68s8fmpt0 DEMAX_SERVER
 COPY . /usr/src/app
 
 EXPOSE 3000
