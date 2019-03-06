@@ -1,5 +1,5 @@
 const PDFDocument = require('pdfkit');
-const Proposal = require('../../models/proposal.js');
+const Proposal = require('../models/proposal.js');
 const fs = require('file-system');
 
 const bold = './resources/fonts/titillium-bold-webfont.woff';
@@ -66,6 +66,7 @@ async function generate (request, response, next) {
 		doc.save();
 		doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
 		let generatedDoc = await doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
+		console.log(generatedDoc.path)
 		doc.end();
 
 		await proposal.update({

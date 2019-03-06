@@ -1,7 +1,7 @@
 const merge = require('easy-pdf-merge');
 const fs = require('file-system');
 
-const Proposal = require('../../models/proposal.js');
+const Proposal = require('../models/proposal.js');
 
 async function mergeByProposalId(request, response) {
 	try {
@@ -35,7 +35,7 @@ async function mergeByProposalId(request, response) {
 			attachments.push(proposal.moleculePreparationReferenceArticle.path);
 		}
 
-		let outputPath = __basedir + "/files/merged/" + proposal.proposalId + '.pdf';
+		let outputPath = './files/merged/' + proposal.proposalId + '.pdf';
 		console.log(attachments);
 
 		merge(attachments, outputPath,

@@ -5,18 +5,15 @@ const nanoid = require('nanoid/generate');
 
 global.__basedir = __dirname;
 
-const pdfMerger = require('./controllers/pdf/merge.js');
-const pdfGenerator = require('./controllers/pdf/generate.js');
+const pdfMerger = require('../controllers/merge.js');
+const pdfGenerator = require('../controllers/generate.js');
 
 const adminRouter = require('./admin.js');
 
-const auth = require('./controllers/user/auth.js');
-
-const uploader = require('./controllers/file/upload.js');
-const downloader = require('./controllers/file/download.js');
-const fileManager = require('./controllers/file/manager.js');
-const userController = require('./controllers/user/user.js');
-const proposalController = require('./controllers/proposal.js');
+const auth = require('../controllers/auth.js');
+const fileController = require('../controllers/file.js');
+const userController = require('../controllers/user.js');
+const proposalController = require('../controllers/proposal.js');
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},
@@ -47,11 +44,11 @@ router.put('/proposals/:proposalId', auth.checkToken, proposalController.editPro
 router.put('/proposals/submit/:proposalId', auth.checkToken, proposalController.submitProposal);
 router.delete('/proposals/:proposalId', auth.checkToken, proposalController.deleteProposalByProposalId);
 
-router.get('/file/download/:filename', downloader.getByFileName);
-router.get('/file/:proposalId', downloader.getUploadedAttachmentsByProposalId);
-router.post('/file/upload/:attachment', auth.checkToken, upload.single("file"), uploader.uploadAttachment);
-router.delete('/file/delete/:proposalId/:attachmentType/:filename', fileManager.deleteFileByProposalIdAndAttachmentType);
-router.post('/file/upload2', upload.single('file'), uploader.upload);
+router.get('/file/download/:filename', fileController.getByFileName);
+router.get('/file/:proposalId', fileController.getUploadedAttachmentsByProposalId);
+router.post('/file/upload/:attachment', auth.checkToken, upload.single("file"), fileController.uploadAttachment);
+router.delete('/file/delete/:proposalId/:attachmentType/:filename', fileController.deleteFileByProposalIdAndAttachmentType);
+router.post('/file/upload2', upload.single('file'), fileController.upload);
 router.get('/merge/:proposalId', pdfMerger);
 router.get('/generate/:proposalId', pdfGenerator, pdfMerger);
 
