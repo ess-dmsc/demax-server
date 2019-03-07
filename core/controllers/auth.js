@@ -39,13 +39,13 @@ exports.checkToken = async function(request, response, next) {
 exports.login = async function(request, response) {
 	let email = request.body.email;
 	let password = request.body.password;
-	User.findOne({'email': { $in: [email] }}, (error, user) => {
+	User.findOne({'email': {$in: [ email ]}}, (error, user) => {
 		if(!user) {
-			return response.sendStatus(403);
+			return response.status(401).json('Unknown email address. No active account found with email ' + email);
 		}
 		user.comparePassword(password, (error, isMatch) => {
 			if(!isMatch) {
-				return response.sendStatus(403);
+				return response.status(401).json('Invalid password');
 			}
 			const token = jwt.sign({
 					user: user,
@@ -172,28 +172,65 @@ margin-top: 5rem;
 exports.forgotPassword = async function(request, response) {
 
 	try {
-		const userEmail = request.params.email;
-		const newPassword = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8);
-		console.log(newPassword);
+		let email = request.params.email;
+		User.findOne({'email': {$in: [ email ]}}, (error, user) => {
+			if(!user) {
+				return response.status(401).json('Unknown email address. No active account found with email ' + email);
+			}
+			bcrypt.genSalt(10, function(error, salt) {
+				if(error) {
+					console.log(error);
+					return next(error);
+				}
+				const newPassword = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZabcdefghjklmnpqrstuvxyz', 8);
 
-		await User.findOneAndUpdate({email: userEmail}, {password: newPassword});
+				bcrypt.hash(newPassword, salt, function(error, hash) {
+					if(error) {
+						console.log(error);
+					}
+					changePassword(request.params.email, hash);
+					let transporter = nodemailer.createTransport({host: "10.0.0.103", port: 25});
 
-		bcrypt.genSalt(10, function(err, salt) {
-			if(err) { return next(err); }
-			bcrypt.hash(newPassword, salt, function(error, hash) {
-				if(error) { return next(error); }
-				user.password = hash;
-				next();
+					let mailOptions = {
+						from: 'noreply@demax.esss.se',
+						to: request.params.email,
+						subject: 'Request to reset your DEMAX User portal password',
+						html: `<!DOCTYPE html><html>
+<h4>Password reset</h4>
+<p>You have requested a password reset.</p>
+<p>Your new password is: <strong>${newPassword}</strong></p>
+<br>
+<p>Click <a href="https://demax.esss.se">here</a> to login.</p>
+<footer>
+<small>If you have any questions about this e-mail, please contact us at <a href="mailto:demax@esss.se">demax@esss.se</a></small>
+</footer>
+</html>`
+					};
+					transporter.sendMail(mailOptions, function(error) {
+						if(error) {
+							console.log(error);
+							throw error;
+						}
+						return response.status(200).json('A new password has been sent to ' + request.params.email);
+					});
+				});
 			});
 		});
+	}
+	catch(error) {
+		console.log(error);
+	}
+};
 
-		response.status(200).json(newPassword);
+async function changePassword(email, password) {
+	try {
+		await User.findOneAndUpdate({email: email}, {password: password});
+
 	} catch(error) {
 		console.log(error);
-		return response.status(400).json({error: error.message});
+		throw error;
 	}
-
-};
+}
 
 exports.confirmationGet = function(req, res, next) {
 	console.log("confirmation post");
@@ -280,11 +317,11 @@ function findUserByEmail(email) {
 					return reject(error);
 				}
 				if(document) {
-					console.log(document.email)
+					console.log(document.email);
 					return reject(new Error('Email already exists. Please enter another email.'));
 				}
 				else {
-					console.log(email)
+					console.log(email);
 					return resolve(email);
 				}
 			});
