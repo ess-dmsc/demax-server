@@ -54,7 +54,14 @@ exports.put = async function(request, response) {
 	try {
 		await User.findOneAndUpdate({
 			email: request.params.email
-		}, request.body);
+		}, request.body, function(error){
+			if(error) {
+				console.log(error);
+
+				return next(error);
+			}
+			return response.status(200).json('Saved!');
+		});
 	} catch(error) {
 		return response.status(400).json({
 			error: error.message
