@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const nanoid = require('nanoid/generate');
 
-const pdfMerger = require('./core/controllers/merge.js');
+const pdfMerge = require('./core/controllers/merge.js');
 const pdfGenerator = require('./core/controllers/generate.js');
 
 const adminRouter = require('./core/routes/admin.js');
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage});
 
-router.use('/admin', adminRouter);
+router.use('/admin', auth.checkPermission, adminRouter);
 
 router.post('/users/register', auth.register);
 router.get('/users/forgotpassword/:email', auth.forgotPassword);
@@ -48,8 +48,7 @@ router.get('/file/:proposalId', fileController.getUploadedAttachmentsByProposalI
 router.post('/file/upload/:attachment', auth.checkToken, upload.single("file"), fileController.uploadAttachment);
 router.delete('/file/delete/:proposalId/:attachmentType/:filename', fileController.deleteFileByProposalIdAndAttachmentType);
 router.post('/file/upload2', upload.single('file'), fileController.upload);
-router.get('/merge/:proposalId', pdfMerger);
-router.get('/generate/:proposalId', pdfGenerator, pdfMerger);
+router.get('/generate/:proposalId', pdfGenerator, pdfMerge.mergeByProposalId, pdfMerge.sendmergedPdf);
 
 router.get('/word/attachment', async function(request, response) {
 	try {

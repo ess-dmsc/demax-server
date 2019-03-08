@@ -16,10 +16,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage});
 
-router.get('/proposals', auth.checkToken, proposalController.getAll);
-router.get('/proposals/meta', auth.checkToken, proposalController.getMeta);
-router.get('/proposals/:proposalId', auth.checkToken, proposalController.get);
-router.delete('/proposals/:proposalid', auth.checkToken, proposalController.delete);
+router.get('/proposals', proposalController.getAll);
+router.get('/proposals/meta',proposalController.getMeta);
+router.get('/proposals/:proposalId', proposalController.get);
+router.delete('/proposals/:proposalid', proposalController.delete);
 
 router.get('/files', fileController.getAll);
 router.get('/files/:filename', fileController.get);
@@ -27,7 +27,7 @@ router.post('/files/upload', upload.single('file'), fileController.uploadFile);
 router.delete('/file/delete/:filename', fileController.delete);
 
 router.put('/users/changepassword/:email/:password', userController.changePassword);
-router.get('/users', auth.checkToken, userController.getAll);
+router.get('/users', userController.getAll);
 router.get('/users/:email', userController.get);
 router.put('/users/:email', userController.put);
 router.delete('/users/:email', userController.delete);

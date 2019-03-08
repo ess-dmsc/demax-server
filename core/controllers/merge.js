@@ -3,7 +3,7 @@ const fs = require('file-system');
 
 const Proposal = require('../models/proposal.js');
 
-async function mergeByProposalId(request, response) {
+exports.mergeByProposalId = async function(request, response, next) {
 	try {
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
 
@@ -36,36 +36,38 @@ async function mergeByProposalId(request, response) {
 		}
 
 		let outputPath = './files/merged/' + proposal.proposalId + '.pdf';
-		console.log(attachments);
-
 		merge(attachments, outputPath,
 			function(error) {
 				if(error) {
-					console.log(error)
 					throw error;
 				}
-				else{
-
-				const file = fs.createReadStream(outputPath);
-				const stat = fs.statSync(outputPath);
-				response.setHeader('Content-Length', stat.size);
-				response.setHeader('Content-Type', 'application/pdf');
-				response.setHeader('Content-Disposition', 'attachment; filename=' + proposal.proposalId + '.pdf');
-				file.pipe(response);
-}
+				next();
 			});
-		await proposal.update({
+	} catch(error) {
+		console.log(error);
+		return response.status(406).json('Failed to merge PDFS')
+	}
+};
+
+exports.sendmergedPdf = async function(request, response){
+	try{
+		const file = fs.createReadStream(outputPath);
+		const stat = fs.statSync(outputPath);
+		response.setHeader('Content-Disposition', 'attachment; filename=' + request.params.proposalId + '.pdf');
+		response.setHeader('Content-type', 'application/pdf');
+		response.setHeader('Access-Control-Allow-Origin', '*');
+		response.setHeader('Content-Length', stat.size);
+		response.status(200);
+		file.pipe(response);
+		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId},{
 			mergedProposal: {
-				name: proposal.proposalId + '.pdf',
+				name: request.params.proposalId + '.pdf',
 				path: outputPath,
 				merged: true
 			}
 		});
-	} catch(error) {
-		console.log(error);
-		console.log('hello');
-		return response.status(400).json('Error: missing files');
 	}
-};
-
-module.exports = mergeByProposalId;
+	catch(error){
+		console.log(error);
+	}
+}

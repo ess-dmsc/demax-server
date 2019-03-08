@@ -98,7 +98,7 @@ async function generate(request, response, next) {
 		});
 		next();
 	} catch(error) {
-		console.log(error);
+		console.log('PDF Generation error');
 	}
 };
 
