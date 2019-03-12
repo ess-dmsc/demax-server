@@ -95,6 +95,12 @@ const proposalSchema = new mongoose.Schema({
 		deuterationLevelMotivation: String
 	},
 	bioSafety: {
+		proteinIsRecombinant: String,
+		sampleIsToxin: String,
+		sampleIsVirulenceFactor: String,
+		sampleIsPrionProtein: String,
+		sampleHasHazardousLigand: String,
+		sampleActivity: String,
 		bioSafetyContainmentLevel: String,
 		organismRisk: String,
 		organismRiskDetails: String,
