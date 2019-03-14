@@ -62,7 +62,7 @@ exports.sendmergedPdf = async function(request, response){
 		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId},{
 			mergedProposal: {
 				name: request.params.proposalId + '.pdf',
-				path: outputPath,
+				path: `"./files/merged/${request.params.proposalId}.pdf"`,
 				merged: true
 			}
 		});
