@@ -110,7 +110,7 @@ const proposalSchema = new mongoose.Schema({
 		moleculeName: String,
 		amount: String,
 		amountMotivation: String,
-		deuterationLocationAndPercentege: String,
+		deuterationLocationAndPercentage: String,
 		deuterationLevelMotivation: String,
 		hasPreparedMolecule: String,
 		other: String
