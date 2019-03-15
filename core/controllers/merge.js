@@ -51,8 +51,8 @@ exports.mergeByProposalId = async function(request, response, next) {
 
 exports.sendmergedPdf = async function(request, response){
 	try{
-		const file = fs.createReadStream(outputPath);
-		const stat = fs.statSync(outputPath);
+		const file = fs.createReadStream('./files/merged/' + request.params.proposalId + '.pdf');
+		const stat = fs.statSync('./files/merged/' + request.params.proposalId + '.pdf');
 		response.setHeader('Content-Disposition', 'attachment; filename=' + request.params.proposalId + '.pdf');
 		response.setHeader('Content-type', 'application/pdf');
 		response.setHeader('Access-Control-Allow-Origin', '*');
@@ -62,7 +62,7 @@ exports.sendmergedPdf = async function(request, response){
 		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId},{
 			mergedProposal: {
 				name: request.params.proposalId + '.pdf',
-				path: outputPath,
+				path: `"./files/merged/${request.params.proposalId}.pdf"`,
 				merged: true
 			}
 		});

@@ -101,16 +101,16 @@ exports.editProposalByProposalId = async function(request, response) {
 
 };
 
-async function editProposal(proposalId, body){
-	try{
-		await Proposal.findOneAndUpdate({proposalId: proposalId}, body, function(error){
-			if(error){throw error}
-			else{
-				return
+async function editProposal(proposalId, body) {
+	try {
+		await Proposal.findOneAndUpdate({proposalId: proposalId}, body, function(error) {
+			if(error) {throw error;}
+			else {
+				return;
 			}
-		})
-	}catch(error){
-		return error
+		});
+	} catch(error) {
+		return error;
 	}
 }
 exports.submitProposal = async function(request, response) {
@@ -163,6 +163,25 @@ exports.submitProposal = async function(request, response) {
 	}
 };
 
+exports.syncProposal = async function(request, response) {
+	try {
+		await Proposal.findOneAndUpdate({
+			proposalId: request.params.proposalId
+		}, request.body, async function(){
+			try {
+				const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+				response.status(201).json(proposal);
+			}catch(error){
+				throw error;
+			}
+		});
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
 
 exports.deleteProposalByProposalId = async function(request, response) {
 	try {
