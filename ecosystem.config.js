@@ -17,8 +17,8 @@ module.exports = {
 		env_staging: {
 			NODE_ENV: 'staging'
 		},
-		output: '/usr/src/app/files/pm2/-out.log',
-		error: '/usr/src/app/files/pm2/-error.err',
+		output: '/usr/src/app/files/pm2/out.log',
+		error: '/usr/src/app/files/pm2/error.log',
 		log_type: 'json',
 		log_date_format: 'YYYY-MM-DD HH:mm Z'
 	} ],
