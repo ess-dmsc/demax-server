@@ -12,10 +12,9 @@ const Proposal = require("../core/models/proposal.js");
 let token;
 
 beforeEach((done) => {
-
 	request(app).post('/api/users/login').send({
-		email: 'test@test.com',
-		password: 'password',
+		email: 'firstname.lastname@domain.topleveldomain',
+		password: 'Password2020',
 	}).end((err, response) => {
 		token = response.body.token;
 		done();

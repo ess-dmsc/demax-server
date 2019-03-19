@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 let secret = '3eb64519dc0e32eb7e99d645b44942b1b289970de5f64ffc49922b90d4b6ae58';
 
-exports.checkPermission = async function(request, response, next) {
+exports.checkPermission = function(request, response, next) {
 	let token = request.headers[ 'authorization' ];
 	if(token.startsWith('Bearer ')) {
 		token = token.slice(7, token.length);
@@ -16,22 +16,19 @@ exports.checkPermission = async function(request, response, next) {
 	if(token) {
 		jwt.verify(token, secret, (error, decoded) => {
 			if(error) {
-				return response.json({
-					success: false,
-					message: 'Token is not valid'
-				});
-			} else {
-				request.decoded = decoded;
-				if(request.decoded.user.role==='admin'){
-					next();
-				}
+				console.log(error);
+				return response.status(401).json('Unauthorized');
 			}
-		});
+			request.decoded = decoded;
+			console.log(request.decoded.user.role);
 
-	} else {
-		return response.json({
-			success: false,
-			message: 'Auth token is not supplied'
+			if(request.decoded.user.role === 'admin') {
+				next();
+			}
+			else {
+				console.log(error);
+				return response.status(401).json('Unauthorized');
+			}
 		});
 	}
 };

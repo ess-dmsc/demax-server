@@ -16,6 +16,10 @@ module.exports = {
 		},
 		env_staging: {
 			NODE_ENV: 'staging'
-		}
+		},
+		output: '/data/mongodb/pm2/-out.log',
+		error: '/data/mongodb/pm2/-error.err',
+		log_type: 'json',
+		log_date_format: 'YYYY-MM-DD HH:mm Z'
 	} ],
 };
