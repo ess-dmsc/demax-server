@@ -21,22 +21,6 @@ beforeEach((done) => {
 	});
 });
 
-describe('POST /api/proposals', function() {
-
-	it('should respond with 201 when created', function(done) {
-		let newProposal = {
-			"experimentTitle": "test",
-			"briefSummary": "test",
-			"linksWithIndustry": "no"
-		};
-
-		request(app).post('/api/proposals').send(newProposal).set('Accept', 'application/json').set('Authorization', token).expect('Content-Type', /json/).expect(201).end((err) => {
-			if(err) return done(err);
-			done();
-		});
-	});
-});
-
 describe("proposal", function() {
 	it("should have an experiment title", function(done) {
 		const testProposal = new Proposal({
