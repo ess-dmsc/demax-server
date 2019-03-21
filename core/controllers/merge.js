@@ -41,6 +41,13 @@ exports.mergeByProposalId = async function(request, response, next) {
 				if(error) {
 					throw error;
 				}
+			Proposal.findOneAndUpdate({proposalId: request.params.proposalId},{
+					mergedProposal: {
+						name: request.params.proposalId + '.pdf',
+						path: `"./files/merged/${request.params.proposalId}.pdf"`,
+						merged: true
+					}
+				});
 				next();
 			});
 	} catch(error) {
