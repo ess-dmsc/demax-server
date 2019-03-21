@@ -151,9 +151,10 @@ exports.submitProposal = async function(request, response) {
 					console.log(error);
 					throw error;
 				}
-				Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {submitted: true});
-				return response.status(201).json('Submitted!');
 			});
+			console.log('here')
+			await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {submitted: true});
+			return response.status(201).json('Submitted!');
 		}
 
 	}
