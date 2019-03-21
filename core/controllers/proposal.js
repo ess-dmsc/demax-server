@@ -31,8 +31,7 @@ exports.downloadProposal = async function(request, response) {
 	try {
 		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-		console.log(proposal.mergedProposal.path);
-		response.status(201).download(proposal.mergedProposal.path);
+		response.status(201).download('./files/merged/' + proposal.proposalId + '.pdf');
 	} catch(error) {
 		console.log(error);
 		return response.status(500).json({
