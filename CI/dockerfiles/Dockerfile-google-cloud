@@ -14,6 +14,7 @@ RUN npm -i install pm2 -g
 
 ENV PM2_PUBLIC_KEY bsdqsp68s8fmpt0
 ENV PM2_SECRET_KEY 11hpeh8h86sdh9v
+ENV APP_ENV gcloud
 
 RUN pm2 link 11hpeh8h86sdh9v bsdqsp68s8fmpt0 DEMAX_SERVER
 COPY . /usr/src/app
