@@ -31,6 +31,7 @@ exports.downloadProposal = async function(request, response) {
 	try {
 		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+		console.log(proposal.mergedProposal.path);
 		response.status(201).download('./files/merged/' + proposal.proposalId + '.pdf');
 	} catch(error) {
 		console.log(error);
@@ -126,7 +127,7 @@ exports.submitProposal = async function(request, response) {
 		else if(proposal.wantsChemicalDeuteration && !proposal.chemicalStructureAttachment.uploaded) {
 			throw new Error("chemical structure");
 		}
-		else if(proposal.wantsChemicalDeuteration && proposal.chemicalDeuteration.hasPreparedMolecule && !proposal.moleculePreparationReferenceArticle.uploaded) {
+		else if(proposal.wantsChemicalDeuteration && proposal.chemicalDeuteration.hasPreparedMolecule === 'yes' && !proposal.moleculePreparationReferenceArticle.uploaded) {
 			throw new Error("primary reference (chemical deuteration)");
 		}
 		else if(proposal.wantsBiomassDeuteration && !proposal.organismReferenceAttachment.uploaded) {
@@ -165,19 +166,13 @@ exports.submitProposal = async function(request, response) {
 
 exports.syncProposal = async function(request, response) {
 	try {
-		await Proposal.findOneAndUpdate({
-			proposalId: request.params.proposalId
-		}, request.body, async function(){
-			try {
-				const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-				response.status(201).json(proposal);
-			}catch(error){
-				throw error;
-			}
-		});
+		console.log("request.params.proposalId: " + request.params.proposalId);
+		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+		console.log(proposal);
+		response.status(201).json(proposal);
 	} catch(error) {
 		console.log(error);
-		return response.status(400).json({
+		return response.status(500).json({
 			error: error.message
 		});
 	}
