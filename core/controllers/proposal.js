@@ -127,13 +127,13 @@ exports.submitProposal = async function(request, response) {
 		else if(proposal.wantsChemicalDeuteration && !proposal.chemicalStructureAttachment.uploaded) {
 			throw new Error("chemical structure");
 		}
-		else if(proposal.wantsChemicalDeuteration && proposal.chemicalDeuteration.hasPreparedMolecule === 'yes' && !proposal.moleculePreparationReferenceArticle.uploaded) {
+		else if(proposal.chemicalDeuteration.hasPreparedMolecule === 'yes' && !proposal.moleculePreparationReferenceArticle.uploaded) {
 			throw new Error("primary reference (chemical deuteration)");
 		}
 		else if(proposal.wantsBiomassDeuteration && !proposal.organismReferenceAttachment.uploaded) {
 			throw new Error("primary reference (biomass)");
 		}
-		else if(proposal.wantsProteinDeuteration && proposal.proteinDeuteration.needsPurificationSupport === "yes" && !proposal.needsPurificationSupportAttachment.uploaded) {
+		else if(proposal.proteinDeuteration.needsPurificationSupport === "yes" && !proposal.needsPurificationSupportAttachment.uploaded) {
 			throw new Error("primary reference (proteins)");
 		}
 		else {
