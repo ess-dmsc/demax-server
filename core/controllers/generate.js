@@ -22,27 +22,17 @@ async function generate(request, response, next) {
 		doc.info[ 'Title' ] = proposal.proposalId + '.pdf';
 		doc.info[ 'Author' ] = proposal.mainProposer.firstName + ' ' + proposal.mainProposer.lastName;
 
-		doc.font(semibold, 16).text(proposal.experimentTitle).moveDown()
-		.fontSize(12).text('Brief summary: ').font(regular, 12).text(proposal.briefSummary)
-		.moveDown().font(semibold, 14).text('Main proposer:').font(regular, 12).text(proposal.mainProposer.firstName + ' ' + proposal.mainProposer.lastName)
-		.text(proposal.mainProposer.email).text(proposal.mainProposer.phone)
-		.text(proposal.mainProposer.employer).text(proposal.mainProposer.jobTitle).moveDown()
-		.font(semibold, 12).text('Co-proposers:')
+		doc.font(semibold, 16).text(proposal.experimentTitle).moveDown().fontSize(12).text('Brief summary: ').font(regular, 12).text(proposal.briefSummary).moveDown().font(semibold, 14).text('Main proposer:').font(regular, 12).text(proposal.mainProposer.firstName + ' ' + proposal.mainProposer.lastName).text(proposal.mainProposer.email).text(proposal.mainProposer.phone).text(proposal.mainProposer.employer).text(proposal.mainProposer.jobTitle).moveDown().font(semibold, 12).text('Co-proposers:');
 
 		if(proposal.coProposers.length > 0) {
-			for(let i=0; i < proposal.coProposers.length; i++) {
-				doc.font(regular, 12).text(proposal.coProposers[i].firstName + ' ' + proposal.coProposers[i].lastName + ', ' + proposal.coProposers[i].affiliation)
-					.text(proposal.coProposers[i].email)
+			for(let i = 0; i < proposal.coProposers.length; i++) {
+				doc.font(regular, 12).text(proposal.coProposers[ i ].firstName + ' ' + proposal.coProposers[ i ].lastName + ', ' + proposal.coProposers[ i ].affiliation).text(proposal.coProposers[ i ].email);
 			}
 		}
 
-		doc.moveDown().font(semibold, 12).text('Indicators')
-		.font(semibold, 12).text('Links with industry:   ' + proposal.linksWithIndustry)
-		.font(semibold, 12).text('Are any of the co-proposers students?   ' + proposal.coProposerStudents)
-		.font(semibold, 12).text('Does the proposal work towards a students degree?   ' + proposal.workTowardsStudentsDegree).moveDown()
-		.font(semibold, 12).text('Need-by-date:   ' + proposal.needByDate.slice(0,10))
-		.font(semibold, 12).text('Motivation:').font(regular, 12).text(proposal.needByDateMotivation).moveDown()
-		.font(semibold, 12).text('Required deuteration methods')
+		doc.moveDown().font(semibold, 12).text('Indicators').font(semibold, 12).text('Links with industry:   ' + proposal.linksWithIndustry)
+		.font(semibold, 12).text('Details:    ' + proposal.linksWithIndustryDetails)
+		.font(semibold, 12).text('Are any of the co-proposers students?   ' + proposal.coProposerStudents).font(semibold, 12).text('Does the proposal work towards a students degree?   ' + proposal.workTowardsStudentsDegree).moveDown().font(semibold, 12).text('Need-by-date:   ' + proposal.needByDate.slice(0, 10)).font(semibold, 12).text('Motivation:').font(regular, 12).text(proposal.needByDateMotivation).moveDown().font(semibold, 12).text('Required deuteration methods');
 
 		if(proposal.wantsCrystallization) {
 			doc.font(semibold, 12).text('(A) Crystallization');
@@ -77,27 +67,14 @@ async function generate(request, response, next) {
 		if(proposal.wantsProteinDeuteration) {
 			doc.addPage().font(semibold, 16).text('For proteins').moveDown().font(semibold, 13).text('Name of molecule to be deuterated (e.g. superoxide dismutase):').font(regular, 12).text(proposal.proteinDeuteration.moleculeName).moveDown().font(semibold, 13).text('FASTA sequence or Uniprot number:').font(regular, 12).text(proposal.proteinDeuteration.moleculeIdentifier).moveDown().font(semibold, 13).text('Oligomerizarion state? (e.g. homodimer, tetramer etc.):').font(regular, 12).text(proposal.proteinDeuteration.oligomerizationState).moveDown().font(semibold, 13).text('Does the protein have any co-factors or ligands required for expression? Specify: ').font(regular, 12).text(proposal.proteinDeuteration.expressionRequirements).font(semibold, 13).text('Origin of molecules (e.g. human, E. coli, S. cerevisiae):').font(regular, 12).text(proposal.proteinDeuteration.moleculeOrigin).moveDown().font(semibold, 13).text('Will you provide an expression plasmid?').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUser).moveDown().font(semibold, 13).text('If “yes”, please provide details (e.g. pET31b, C-terminal His-tag, Amp selection) If “no”, we will design & order a plasmid commercially)').font(regular, 12).text(proposal.proteinDeuteration.expressionPlasmidProvidedByUserDetails).moveDown().font(semibold, 13).text('How much material do you need: ').font(regular, 12).text(proposal.proteinDeuteration.amountNeeded).moveDown().font(semibold, 13).text('Justify amount:').font(regular, 12).text(proposal.proteinDeuteration.amountNeededMotivation).moveDown().font(semibold, 13).text('Level of deuteration required: ').font(regular, 12).text(proposal.proteinDeuteration.deuterationLevelRequired).moveDown().font(semibold, 13).text('Justify level of D incorporation:').font(regular, 12).text(proposal.proteinDeuteration.deuterationLevelMotivation).moveDown().font(semibold, 13).text('Will you need DEMAX to purify the protein from deuterated biomass?').font(regular, 12).text(proposal.proteinDeuteration.needsPurificationSupport).moveDown().font(semibold, 13).text('Has expression been done for the unlabeled protein?').font(regular, 12).text(proposal.proteinDeuteration.hasDoneUnlabeledProteinExpression).moveDown().font(semibold, 13).text('Typical yield:').font(regular, 12).text(proposal.proteinDeuteration.typicalYield).moveDown().font(semibold, 13).text('Have you been able to purify the unlabeled protein?').font(italic, 12).text('Please include chromatogram & image of SDS-PAGE in proposal.').font(regular, 12).text(proposal.proteinDeuteration.hasDoneProteinPurification).moveDown().font(semibold, 13).text('Have you tried to deuterate the protein yourself, even in small scale?').font(regular, 12).text(proposal.proteinDeuteration.hasProteinDeuterationExperience).moveDown().font(semibold, 13).text('Results?:').font(regular, 12).text(proposal.proteinDeuteration.proteinDeuterationResults).moveDown();
 		}
-		if(proposal.wantsYeastDeuteration){
-			doc.addPage().font(semibold, 16).text('For yeast').moveDown()
-			.font(semibold, 13).text('How much material do you need?').font(regular, 12).text(proposal.yeastDeuteration.amountNeeded).moveDown()
-			.font(semibold, 13).text('Justify amount:').font(regular, 12).text(proposal.yeastDeuteration.amountNeededMotivation).moveDown()
-			.font(semibold, 13).text('Level of deuteration required:').font(regular, 12).text(proposal.yeastDeuteration.deuterationLevelRequired).moveDown()
-			.font(semibold, 13).text('Justify level of D incorporation:').font(regular, 12).text(proposal.yeastDeuteration.deuterationLevelMotivation).moveDown()
+		if(proposal.wantsYeastDeuteration) {
+			doc.addPage().font(semibold, 16).text('For yeast').moveDown().font(semibold, 13).text('How much material do you need?').font(regular, 12).text(proposal.yeastDeuteration.amountNeeded).moveDown().font(semibold, 13).text('Justify amount:').font(regular, 12).text(proposal.yeastDeuteration.amountNeededMotivation).moveDown().font(semibold, 13).text('Level of deuteration required:').font(regular, 12).text(proposal.yeastDeuteration.deuterationLevelRequired).moveDown().font(semibold, 13).text('Justify level of D incorporation:').font(regular, 12).text(proposal.yeastDeuteration.deuterationLevelMotivation).moveDown();
 		}
 		if(proposal.wantsOtherDeuteration) {
 			doc.addPage().moveDown().font(semibold, 16).text('Biological deuteration - other:').moveDown().font(regular, 12).text(proposal.other);
 		}
-		if(proposal.wantsBiologicalDeuteration){
-			doc.addPage().moveDown().font(semibold, 16).text('Biosafety').moveDown()
-			.font(semibold, 13).text('Which biosafety containment level is required to work with your sample?').font(regular, 12).text(proposal.bioSafety.bioSafetyContainmentLevel).moveDown()
-			.font(semibold, 13).text('Is your organism a live virus, toxin-producing, or pose ay risk to human health and/or the environment?').font(regular, 12).text(proposal.bioSafety.organismRisk).moveDown()
-			.font(semibold, 13).text('Is the protein recombinant?').font(regular, 12).text(proposal.bioSafety.proteinIsRecombinant).moveDown()
-			.font(semibold, 13).text('Is the sample a toxin?').font(regular, 12).text(proposal.bioSafety.sampleIsToxin).moveDown()
-			.font(semibold, 13).text('Is the sample a virulence factor?').font(regular, 12).text(proposal.bioSafety.sampleIsVirulenceFactor).moveDown()
-			.font(semibold, 13).text('Is the sample a prion protein?').font(regular, 12).text(proposal.bioSafety.sampleIsPrionProtein).moveDown()
-			.font(semibold, 13).text('Does the sample have a hazardous ligand (e.g. heavy metal, toxic molecule etc.)?').font(regular, 12).text(proposal.bioSafety.sampleHasHazardousLigand).moveDown()
-			.font(semibold, 13).text('If the sample is a a bacteria or virus, specificy whether it is inactive/active:').font(regular, 12).text(proposal.bioSafety.sampleActivity).moveDown()
-			.font(semibold, 13).text('If you answered "yes" to any of the above, please explan:').font(regular, 12).text(proposal.bioSafety.other).moveDown();
+		if(proposal.wantsBiologicalDeuteration) {
+			doc.addPage().moveDown().font(semibold, 16).text('Biosafety').moveDown().font(semibold, 13).text('Which biosafety containment level is required to work with your sample?').font(regular, 12).text(proposal.bioSafety.bioSafetyContainmentLevel).moveDown().font(semibold, 13).text('Is your organism a live virus, toxin-producing, or pose ay risk to human health and/or the environment?').font(regular, 12).text(proposal.bioSafety.organismRisk).moveDown().font(semibold, 13).text('Is the protein recombinant?').font(regular, 12).text(proposal.bioSafety.proteinIsRecombinant).moveDown().font(semibold, 13).text('Is the sample a toxin?').font(regular, 12).text(proposal.bioSafety.sampleIsToxin).moveDown().font(semibold, 13).text('Is the sample a virulence factor?').font(regular, 12).text(proposal.bioSafety.sampleIsVirulenceFactor).moveDown().font(semibold, 13).text('Is the sample a prion protein?').font(regular, 12).text(proposal.bioSafety.sampleIsPrionProtein).moveDown().font(semibold, 13).text('Does the sample have a hazardous ligand (e.g. heavy metal, toxic molecule etc.)?').font(regular, 12).text(proposal.bioSafety.sampleHasHazardousLigand).moveDown().font(semibold, 13).text('If the sample is a a bacteria or virus, specificy whether it is inactive/active:').font(regular, 12).text(proposal.bioSafety.sampleActivity).moveDown().font(semibold, 13).text('If you answered "yes" to any of the above, please explan:').font(regular, 12).text(proposal.bioSafety.other).moveDown();
 		}
 		if(proposal.wantsChemicalDeuteration) {
 			doc.addPage().font(semibold, 18).text('(C) CHEMICAL DEUTERATION').moveDown().font(semibold, 13).text('Molecule/s to be deuterated (name):').font(regular, 12).text(proposal.chemicalDeuteration.moleculeName).moveDown().font(semibold, 13).text('Amount of material required (mass):').font(regular, 12).text(proposal.chemicalDeuteration.amount).moveDown().font(semibold, 13).text('Justify amount:').font(regular, 12).text(proposal.chemicalDeuteration.amountMotivation).moveDown().font(semibold, 13).text('Indicate percentage and location of deuteration:').font(regular, 12).text(proposal.chemicalDeuteration.deuterationLocationAndPercentage).moveDown().font(semibold, 13).text('Justify level of deuteration:').font(regular, 12).text(proposal.chemicalDeuteration.deuterationLevelMotivation).moveDown().font(semibold, 13).text('Has this molecule (or an unlabeled/isotopic analogue) been prepared by yourself or others?').font(regular, 12).text(proposal.chemicalDeuteration.hasPreparedMolecule).moveDown();
