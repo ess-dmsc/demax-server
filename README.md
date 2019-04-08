@@ -8,6 +8,9 @@ The <a href="https://europeanspallationsource.se/science-support-systems/demax">
 
 The DEMAX User Office is used for submission, management and administration of proposals and requests for deuterated material production. 
 
+A live version of the backend server can be found at https://demaxapi.esss.dk.
+A live version of the frontend can be found at https://demax.esss.se.
+
 ### Project facts:
 * Language: [JavaScript](https://www.ecma-international.org/publications/standards/Ecma-262.htm)
 * Runtime: [Node.js](https://nodejs.org)
