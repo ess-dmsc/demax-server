@@ -5,6 +5,20 @@ const morgan = require('morgan');
 const path = require('path');
 const mongoose = require('mongoose');
 const config = require('./config');
+const graphqlHTTP = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+var root = {
+	hello: () => {
+		return 'Hello world!';
+	},
+};
 
 const app = express();
 
@@ -16,8 +30,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
 app.use('/api', api);
+app.use('/graphql', graphqlHTTP({
+	schema: schema,
+	rootValue: root,
+	graphiql: true,
+}));
 
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
