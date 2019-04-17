@@ -17,6 +17,16 @@ export const resolvers = {
             input
         }) {
             return await Proposal.create(input);
-        }
+        },
+         async editProposal(root, {
+            input
+        }) {
+            return await Proposal.update(input);
+        },
+         async deleteProposal(root, {
+            input
+        }) {
+            return await Proposal.findOneAndDelete(input);
+        },
     }
 };
