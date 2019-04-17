@@ -27,6 +27,6 @@ export const resolvers = {
             input
         }) {
             return await Proposal.findOneAndDelete(input);
-        },
+        }
     }
 };
