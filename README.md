@@ -1,6 +1,7 @@
 # demax-server
 
 [![Build Status](https://travis-ci.org/ess-dmsc/demax-server.svg?branch=master)](https://travis-ci.org/ess-dmsc/demax-server)
+[![DeepScan grade](https://deepscan.io/api/teams/3527/projects/5200/branches/40430/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=3527&pid=5200&bid=40430)
 
 This repository constitutes the backend server of the DEMAX User Office website. The frontend part can be found <a href="https://github.com/ess-dmsc/demax-client">here.</a>
 
