@@ -1,6 +1,7 @@
 const Proposal = require('../../models/proposal.js');
 const nanoid = require('nanoid/generate');
 const jwt = require('jsonwebtoken');
+const Comment = require('../../models/comment.js');
 
 exports.getAll = async function(request, response) {
 	try {
@@ -12,7 +13,7 @@ exports.getAll = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
 
 exports.getByEmail = async function(request, response) {
 
@@ -25,7 +26,40 @@ exports.getByEmail = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
+
+exports.getComments = async function(request, response) {
+	try {
+		let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+		return response.status(201).json(proposal.comments);
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
+exports.addComment = async function(request, response) {
+	try {
+		const newComment = {
+			comment: request.body.comment,
+			author: request.body.author
+		};
+		console.log(request.params.proposalId);
+		await Proposal.findOneAndUpdate(
+			{proposalId: request.params.proposalId},
+			{$push: {comments: newComment}}
+		);
+		response.status(201).json('Success');
+
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
+
 exports.getMeta = async function(request, response) {
 	try {
 		const proposals = await Proposal.find({});
@@ -40,7 +74,7 @@ exports.getMeta = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
 
 exports.post = async function(request, response) {
 	try {
@@ -55,13 +89,13 @@ exports.post = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
 
 exports.get = async function(request, response) {
 	try {
-		console.log("request.params.proposalId: " + request.params.proposalId)
+		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-		console.log(proposal)
+		console.log(proposal);
 		response.status(201).json(proposal);
 	} catch(error) {
 		console.log(error);
@@ -69,7 +103,7 @@ exports.get = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};
 
 exports.edit = async function(request, response) {
 	try {
@@ -84,14 +118,14 @@ exports.edit = async function(request, response) {
 		});
 	}
 
-}
+};
 
 exports.delete = async function(request, response) {
 	try {
 		await Proposal.findOneAndDelete({
 			proposalId: request.params.proposalId
 		});
-		console.log(request.params.proposalId)
+		console.log(request.params.proposalId);
 		response.status(200).json(request.params.proposalId + ' was successfully deleted.');
 	} catch(error) {
 		console.log(error);
@@ -99,4 +133,4 @@ exports.delete = async function(request, response) {
 			error: error.message
 		});
 	}
-}
+};

@@ -75,7 +75,7 @@ exports.submitNewProposal = async function(request, response) {
 exports.getProposalByProposalId = async function(request, response) {
 	try {
 		console.log("request.params.proposalId: " + request.params.proposalId);
-		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+		const proposal = await Proposal.findOne({proposalId: request.params.proposalId}).select("-comments");
 		console.log(proposal);
 		response.status(201).json(proposal);
 	} catch(error) {

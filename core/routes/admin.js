@@ -21,6 +21,9 @@ router.get('/proposals/meta',proposalController.getMeta);
 router.get('/proposals/:proposalId', proposalController.get);
 router.delete('/proposals/:proposalid', proposalController.delete);
 
+router.get('/proposals/comments/:proposalId', proposalController.getComments);
+router.post('/proposals/comment/:proposalId', proposalController.addComment);
+
 router.get('/files', fileController.getAll);
 router.get('/files/:filename', fileController.get);
 router.post('/files/upload', upload.single('file'), fileController.uploadFile);

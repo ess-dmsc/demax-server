@@ -1,6 +1,7 @@
 const shortid = require('shortid');
 const mongoose = require('mongoose');
-
+const Schema = mongoose.Schema;
+const Comment = require('./comment.js');
 const proposalSchema = new mongoose.Schema({
 	proposalId: {type: String, unique: true},
 	dateCreated: {type: Date, default: Date.now()},
@@ -88,7 +89,7 @@ const proposalSchema = new mongoose.Schema({
 		proteinDeuterationResults: String,
 		other: String
 	},
-	yeastDeuteration:{
+	yeastDeuteration: {
 		amountNeeded: String,
 		amountMotivation: String,
 		deuterationLevelRequired: String,
@@ -226,6 +227,7 @@ const proposalSchema = new mongoose.Schema({
 		}
 	],
 	scienceScore: Number,
+	commentsV2: [ {} ],
 	comments: [
 		{
 			author: String,

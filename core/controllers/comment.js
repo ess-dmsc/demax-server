@@ -2,6 +2,7 @@ const Proposal = require('../models/proposal.js');
 const Comment = require('../models/comment.js');
 
 exports.addComment = async function(request, response) {
+
 	let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
 
 	try {
@@ -11,7 +12,7 @@ exports.addComment = async function(request, response) {
 				createdAt: Date.now(),
 				updated_at: Date.now()
 			},
-			comment: request.body.comment.comment
+			comment: request.body.comment.body
 		};
 
 		await new Comment(comment).save();
