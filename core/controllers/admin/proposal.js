@@ -30,8 +30,13 @@ exports.getByEmail = async function(request, response) {
 
 exports.getComments = async function(request, response) {
 	try {
+		let comments = [];
 		let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-		return response.status(201).json(proposal.comments);
+		for(let comment of proposal.comments) {
+			comments.push(comment);
+		}
+		console.log(comments);
+		return response.status(201).json(comments);
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
@@ -41,9 +46,11 @@ exports.getComments = async function(request, response) {
 };
 exports.addComment = async function(request, response) {
 	try {
+		console.log(request.body);
 		const newComment = {
 			comment: request.body.comment,
-			author: request.body.author
+			author: request.body.author,
+			dateCreated: Date.now()
 		};
 		console.log(request.params.proposalId);
 		await Proposal.findOneAndUpdate(
@@ -52,6 +59,18 @@ exports.addComment = async function(request, response) {
 		);
 		response.status(201).json('Success');
 
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
+
+exports.deleteComment = async function(request, response) {
+	try {
+		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {$pull: {comments: {_id: request.params.commentId}}});
+		response.status(201).json('Success');
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({

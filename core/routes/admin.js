@@ -23,6 +23,7 @@ router.delete('/proposals/:proposalid', proposalController.delete);
 
 router.get('/proposals/comments/:proposalId', proposalController.getComments);
 router.post('/proposals/comment/:proposalId', proposalController.addComment);
+router.delete('/proposals/comments/:proposalId/:commentId', proposalController.deleteComment);
 
 router.get('/files', fileController.getAll);
 router.get('/files/:filename', fileController.get);
