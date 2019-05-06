@@ -79,6 +79,57 @@ exports.deleteComment = async function(request, response) {
 	}
 };
 
+exports.getTsf = async function(request, response) {
+	try {
+		let tsfArray = [];
+		let proposal = await Proposal.findOne({proposalId: request.params.proposalId});
+		for(let tsf of proposal.tsf) {
+			tsfArray.push(tsf);
+		}
+		console.log(tsfArray);
+		return response.status(201).json(tsfArray);
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
+exports.addTsf = async function(request, response) {
+	try {
+		console.log(request.body);
+		const newTsf = {
+			score: request.body.score,
+			author: request.body.author,
+			recommendation: request.body.recommendation
+		};
+		console.log(request.params.proposalId);
+		await Proposal.findOneAndUpdate(
+			{proposalId: request.params.proposalId},
+			{$push: {tsf: newTsf}}
+		);
+		response.status(201).json('Success');
+
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
+
+exports.deleteTsf = async function(request, response) {
+	try {
+		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {$pull: {tsf: {_id: request.params.tsfId}}});
+		response.status(201).json('Success');
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
+
 exports.getMeta = async function(request, response) {
 	try {
 		const proposals = await Proposal.find({});

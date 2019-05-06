@@ -25,6 +25,10 @@ router.get('/proposals/comments/:proposalId', proposalController.getComments);
 router.post('/proposals/comment/:proposalId', proposalController.addComment);
 router.delete('/proposals/comments/:proposalId/:commentId', proposalController.deleteComment);
 
+router.get('/proposals/tsf/:proposalId', proposalController.getTsf);
+router.post('/proposals/tsf/:proposalId', proposalController.addTsf);
+router.delete('/proposals/tsf/:proposalId/:tsfId', proposalController.deleteTsf);
+
 router.get('/files', fileController.getAll);
 router.get('/files/:filename', fileController.get);
 router.post('/files/upload', upload.single('file'), fileController.uploadFile);
