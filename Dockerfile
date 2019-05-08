@@ -9,6 +9,9 @@ RUN npm config set https-proxy  $http_proxy
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set strict-ssl false
 RUN apk --update add openjdk7-jre
+
+RUN npm install pm2 -g
+
 COPY package.json /usr/src/app/package.json
 
 WORKDIR /usr/src/app
@@ -19,4 +22,4 @@ COPY . /usr/src/app
 
 EXPOSE 3000
 
-CMD ["sh", "./CI/scripts/wait.sh"]
+CMD ["sh", "./CI/scripts/pm2.sh"]
