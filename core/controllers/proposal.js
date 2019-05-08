@@ -101,18 +101,6 @@ exports.editProposalByProposalId = async function(request, response) {
 
 };
 
-async function editProposal(proposalId, body) {
-	try {
-		await Proposal.findOneAndUpdate({proposalId: proposalId}, body, function(error) {
-			if(error) {throw error;}
-			else {
-				return;
-			}
-		});
-	} catch(error) {
-		return error;
-	}
-}
 exports.submitProposal = async function(request, response) {
 
 	try {
