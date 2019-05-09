@@ -7,9 +7,7 @@ services:
     volumes:
     - /data/mongodb:/bitnami
   demax-server:
-    build:
-      context: .
-      dockerfile: 'Dockerfile'
+    image: 'essdmscdm/demax-server:latest'
     ports:
     - '3000:3000'
     depends_on:
@@ -17,9 +15,7 @@ services:
     volumes:
     - /data/mongodb/files:/usr/src/app/files
   demax-client:
-    build:
-      context: "./demax-client"
-      dockerfile: 'Dockerfile'
+    image: 'essdmscdm/demax-client:latest'
     ports:
     - '8080:8080'
 volumes:
