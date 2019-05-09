@@ -2,6 +2,7 @@ const Proposal = require('../../models/proposal.js');
 const nanoid = require('nanoid/generate');
 const jwt = require('jsonwebtoken');
 const Comment = require('../../models/comment.js');
+const datefns = require('date-fns');
 
 exports.getAll = async function(request, response) {
 	try {
