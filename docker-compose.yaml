@@ -14,7 +14,7 @@ services:
     - mongodb
     volumes:
     - /data/mongodb/files:/usr/src/app/files
-  demax-client:
+  demax-client:git pu
     image: 'essdmscdm/demax-client:latest'
     ports:
     - '8080:8080'

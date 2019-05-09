@@ -27,6 +27,7 @@ exports.getProposalsByEmail = async function(request, response) {
 		});
 	}
 };
+
 exports.downloadProposal = async function(request, response) {
 	try {
 		console.log("request.params.proposalId: " + request.params.proposalId);
