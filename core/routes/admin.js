@@ -21,6 +21,8 @@ router.get('/proposals/meta',proposalController.getMeta);
 router.get('/proposals/:proposalId', proposalController.get);
 router.delete('/proposals/:proposalid', proposalController.delete);
 
+router.get('/proposals/:startDate/:endDate', proposalController.getByDate);
+
 router.get('/proposals/comments/:proposalId', proposalController.getComments);
 router.post('/proposals/comment/:proposalId', proposalController.addComment);
 router.delete('/proposals/comments/:proposalId/:commentId', proposalController.deleteComment);

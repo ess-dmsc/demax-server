@@ -28,6 +28,19 @@ exports.getByEmail = async function(request, response) {
 	}
 };
 
+exports.getByDate = async function(request, response){
+	try{
+		const docs = await Proposal.find({dateCreated: {$gte: new Date(request.params.startDate), $lt: new Date(request.params.endDate)}})
+		response.status(200).json(docs);
+	}
+	catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+}
+
 exports.getComments = async function(request, response) {
 	try {
 		let comments = [];
