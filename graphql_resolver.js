@@ -8,7 +8,7 @@ export const resolvers = {
         }
     },
      Query: {
-        async allUsers() {
+        async getAllUsers() {
             return await User.find();
         }
     },
