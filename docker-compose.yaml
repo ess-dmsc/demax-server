@@ -7,7 +7,7 @@ services:
     volumes:
     - /data/mongodb:/bitnami
   demax-server:
-    image: 'essdmscdm/demax-server:latest
+    image: 'essdmscdm/demax-server:latest'
     ports:
     - '3000:3000'
     depends_on:
@@ -15,7 +15,7 @@ services:
     volumes:
     - /data/mongodb/files:/usr/src/app/files
   demax-client:
-    image: 'essdmscdm/demax-client:latest
+    image: 'essdmscdm/demax-client:latest'
     ports:
     - '8080:8080'
 volumes:
