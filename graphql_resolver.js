@@ -1,5 +1,5 @@
-const Proposal = require('./core/models/proposal.js';
-const User = require('./core/models/user.js';
+const Proposal = require('./core/models/proposal.js');
+const User = require('./core/models/user.js');
 
 export const resolvers = {
     Mutation: {
