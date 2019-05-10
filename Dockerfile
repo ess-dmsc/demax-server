@@ -1,6 +1,9 @@
 FROM node:11.14.0-alpine
 LABEL maintainer="jeremias.hillerberg@esss.se"
 
+ # make sure root login is disabled
+RUN sed -i -e 's/^root::/root:!:/' /etc/shadow
+
 ENV http_proxy "http://192.168.1.1:8123"
 ENV https_proxy $http_proxy
 ENV no_proxy "localhost, 127.0.0.1"
