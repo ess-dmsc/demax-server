@@ -14,10 +14,10 @@ services:
     - mongodb
     volumes:
     - /data/mongodb/files:/usr/src/app/files
-  demax-client:git pu
+  demax-client:
     image: 'essdmscdm/demax-client:latest'
     ports:
-    - '8080:8080'
+    - '8080:8080'doc
 volumes:
   mongodb_data:
     driver: local
