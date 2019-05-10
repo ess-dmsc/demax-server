@@ -3,11 +3,6 @@ const User = require('./core/models/user.js');
 
 export const resolvers = {
     Mutation: {
-        async createProposal(root, {
-            input
-        }) {
-            return await Proposal.create(input);
-        },
          async editProposal(root, {
             input
         }) {
