@@ -66,8 +66,11 @@ To set up the frontend, simply follow the instructions of the <a href="https://g
 
 This command starts the mocha test runner with variables for local testing. The test files are located in the folder test/ and all end with ".spec.js.".
 
+
 ## Deployment
 This server is configured to be deployed with Docker - there are several different docker-compose files in this repository for different environments.
+
+In the default settings, demax-server is configured to listen to port 3000. The information contained in the file docker-compose.yaml (in the root directory) has all the required information needed to pull the newest image from <a href="https://hub.docker.com/r/essdmscdm/demax-server">Dockerhub</a>
 
 ## Contributing
 Please read CONTRIBUTING.md for details on our code of conduct, and the process for submitting pull requests to us.
