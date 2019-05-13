@@ -12,7 +12,7 @@
 # limitations under the License.
 
 # [START gae_quickstart_yaml]
-runtime: nodejs10
+runtime: custom
 # [END gae_quickstart_yaml]
 
 env: flex
