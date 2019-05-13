@@ -17,7 +17,7 @@ services:
   demax-client:
     image: 'essdmscdm/demax-client:latest'
     ports:
-    - '8080:8080'doc
+    - '8080:8080'
 volumes:
   mongodb_data:
     driver: local
