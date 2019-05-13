@@ -2,7 +2,10 @@ git pull
 cd demax-client
 git pull
 cd ..
-docker-compose -f docker-compose-pm2.yaml up --build -d
+docker pull essdmscdm/demax-server
+docker pull essdmscdm/demax-client
+
+docker-compose up --build -d
 
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
