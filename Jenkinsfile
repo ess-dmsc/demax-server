@@ -7,6 +7,7 @@ node('docker') {
   }
 
   stage('Production build'){
+    if (env.BRANCH_NAME == 'master'){
     withCredentials([ usernamePassword(credentialsId: 'dockerhubess',usernameVariable: 'docker_user',passwordVariable: 'docker_password' )]) {
       sh 'docker login -u essdmscdm -p $docker_password '
       def IMAGE_ID = sh ( script: 'git rev-parse HEAD',returnStdout: true).trim()
@@ -16,5 +17,6 @@ node('docker') {
       sh "docker push essdmscdm/demax-server:latest"
       sh "docker rmi essdmscdm/demax-server:${IMAGE_ID}"
     }
+  }
   }
 }
