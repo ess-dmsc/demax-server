@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.schema;
 
-const proposalRoundSchema = new mongoose.Schema({
+const cycleSchema = new mongoose.Schema({
 	submission: {
 		startDate: Date,
 		endDate: Date
@@ -14,12 +14,11 @@ const proposalRoundSchema = new mongoose.Schema({
 		startDate: Date,
 		endDate: Date
 	},
+	cycleId: String,
 	runCycle: String,
-	wrapUpAndUserSurvey: String,
-	proposalRoundId: String,
-	year: Number,
-	cycleId: Number,
+	wrapUp: String,
+	other: String,
 	isActive: {type: Boolean, default: false}
 });
 
-module.exports = mongoose.model('ProposalRound', proposalRoundSchema);
+module.exports = mongoose.model('Cycle', cycleSchema);

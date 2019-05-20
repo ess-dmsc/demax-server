@@ -1,7 +1,5 @@
-const shortid = require('shortid');
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const Comment = require('./comment.js');
+
 const proposalSchema = new mongoose.Schema({
 	proposalId: {type: String, unique: true},
 	dateCreated: {type: Date, default: Date.now()},

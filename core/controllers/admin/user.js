@@ -1,6 +1,5 @@
 const User = require('../../models/user.js');
 const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
 
 exports.getAll = async function(request, response) {
 	try {

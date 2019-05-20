@@ -1,6 +1,5 @@
 const Proposal = require('../models/proposal.js');
 const nanoid = require('nanoid/generate');
-const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
 exports.getAllProposals = async function(request, response) {

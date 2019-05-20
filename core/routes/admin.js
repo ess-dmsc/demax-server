@@ -6,8 +6,7 @@ global.__basedir = __dirname;
 const fileController = require('../controllers/admin/file.js');
 const proposalController = require('../controllers/admin/proposal.js');
 const userController = require('../controllers/admin/user.js');
-
-const auth = require('../controllers/auth.js');
+const cycleController = require('../controllers/admin/cycle.js');
 
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},
@@ -21,10 +20,11 @@ router.get('/proposals/meta',proposalController.getMeta);
 router.get('/proposals/:proposalId', proposalController.get);
 router.delete('/proposals/:proposalid', proposalController.delete);
 
-router.get('/proposal-round', proposalController.getProposalRounds)
-router.post('/proposal-round', proposalController.createNewProposalRound)
-router.put('/proposal-round/:proposalRoundId', proposalController.editProposalRound)
-router.delete('/proposal-round/:proposalRoundId', proposalController.deleteProposalRound)
+router.get('/cycles', cycleController.getCycles);
+router.get('/cycles/:cycleId', cycleController.getCycleById);
+router.post('/cycles', cycleController.createNewCycle);
+router.put('/cycles/:cycleId', cycleController.editCycle);
+router.delete('/cycles/:cycleId', cycleController.deleteCycle);
 
 router.get('/proposals/:startDate/:endDate', proposalController.getByDate);
 
