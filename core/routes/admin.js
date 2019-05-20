@@ -8,6 +8,7 @@ const proposalController = require('../controllers/admin/proposal.js');
 const userController = require('../controllers/admin/user.js');
 const cycleController = require('../controllers/admin/cycle.js');
 
+
 const storage = multer.diskStorage({
 	destination: (request, file, callback) => {callback(null, './files/uploads/');},
 	filename: (request, file, callback) => {callback(null, file.originalname);}
@@ -21,12 +22,10 @@ router.get('/proposals/:proposalId', proposalController.get);
 router.delete('/proposals/:proposalid', proposalController.delete);
 
 router.get('/cycles', cycleController.getCycles);
-router.get('/cycles/:cycleId', cycleController.getCycleById);
+router.get('/cycles/:cycleId', cycleController.getCycles);
 router.post('/cycles', cycleController.createNewCycle);
 router.put('/cycles/:cycleId', cycleController.editCycle);
 router.delete('/cycles/:cycleId', cycleController.deleteCycle);
-
-router.get('/proposals/:startDate/:endDate', proposalController.getByDate);
 
 router.get('/proposals/comments/:proposalId', proposalController.getComments);
 router.post('/proposals/comment/:proposalId', proposalController.addComment);
@@ -35,6 +34,9 @@ router.delete('/proposals/comments/:proposalId/:commentId', proposalController.d
 router.get('/proposals/tsf/:proposalId', proposalController.getTsf);
 router.post('/proposals/tsf/:proposalId', proposalController.addTsf);
 router.delete('/proposals/tsf/:proposalId/:tsfId', proposalController.deleteTsf);
+
+
+router.get('/proposals/:startDate/:endDate', proposalController.getByDate);
 
 router.get('/files', fileController.getAll);
 router.get('/files/:filename', fileController.get);

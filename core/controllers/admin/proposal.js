@@ -62,7 +62,7 @@ exports.addComment = async function(request, response) {
 		const newComment = {
 			comment: request.body.comment,
 			author: request.body.author,
-			dateCreated: Date.now()
+			created: Date.now()
 		};
 		console.log(request.params.proposalId);
 		await Proposal.findOneAndUpdate(
@@ -91,7 +91,9 @@ exports.deleteComment = async function(request, response) {
 	}
 };
 
+
 exports.getTsf = async function(request, response) {
+
 	try {
 		let tsfArray = [];
 		let proposal = await Proposal.findOne({proposalId: request.params.proposalId});

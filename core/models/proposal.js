@@ -230,7 +230,7 @@ const proposalSchema = new mongoose.Schema({
 		{
 			author: String,
 			comment: String,
-			dateCreated: {type: Date, default: Date.now()}
+			created: Date
 		}
 	]
 });
