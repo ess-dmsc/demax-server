@@ -47,7 +47,6 @@ exports.getComments = async function(request, response) {
 		for(let comment of proposal.comments) {
 			comments.push(comment);
 		}
-		console.log(comments);
 		return response.status(201).json(comments);
 	} catch(error) {
 		console.log(error);
@@ -58,13 +57,11 @@ exports.getComments = async function(request, response) {
 };
 exports.addComment = async function(request, response) {
 	try {
-		console.log(request.body);
 		const newComment = {
 			comment: request.body.comment,
 			author: request.body.author,
 			created: Date.now()
 		};
-		console.log(request.params.proposalId);
 		await Proposal.findOneAndUpdate(
 			{proposalId: request.params.proposalId},
 			{$push: {comments: newComment}}
@@ -79,6 +76,17 @@ exports.addComment = async function(request, response) {
 	}
 };
 
+exports.checkActiveCycle = async function(request,response){
+	try{
+		let activeCycle = await Cycle.findOne({isActive: true});
+		return activeCycle.cycleId;
+	}catch(error){
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+}
 exports.deleteComment = async function(request, response) {
 	try {
 		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {$pull: {comments: {_id: request.params.commentId}}});
@@ -100,7 +108,6 @@ exports.getTsf = async function(request, response) {
 		for(let tsf of proposal.tsf) {
 			tsfArray.push(tsf);
 		}
-		console.log(tsfArray);
 		return response.status(201).json(tsfArray);
 	} catch(error) {
 		console.log(error);
@@ -111,13 +118,11 @@ exports.getTsf = async function(request, response) {
 };
 exports.addTsf = async function(request, response) {
 	try {
-		console.log(request.body);
 		const newTsf = {
 			score: request.body.score,
 			author: request.body.author,
 			recommendation: request.body.recommendation
 		};
-		console.log(request.params.proposalId);
 		await Proposal.findOneAndUpdate(
 			{proposalId: request.params.proposalId},
 			{$push: {tsf: newTsf}}
@@ -165,7 +170,6 @@ exports.post = async function(request, response) {
 		const newProposal = request.body;
 		newProposal.proposalId = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8);
 		await new Proposal(newProposal).save();
-		console.log('Created proposal ' + newProposal.proposalId);
 		response.status(201).json(newProposal);
 	} catch(error) {
 		console.log(error);
@@ -177,9 +181,7 @@ exports.post = async function(request, response) {
 
 exports.get = async function(request, response) {
 	try {
-		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-		console.log(proposal);
 		response.status(201).json(proposal);
 	} catch(error) {
 		console.log(error);
@@ -209,7 +211,6 @@ exports.delete = async function(request, response) {
 		await Proposal.findOneAndDelete({
 			proposalId: request.params.proposalId
 		});
-		console.log(request.params.proposalId);
 		response.status(200).json(request.params.proposalId + ' was successfully deleted.');
 	} catch(error) {
 		console.log(error);

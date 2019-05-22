@@ -57,7 +57,8 @@ exports.createNewCycle = async function(request, response) {
 
 exports.editCycle = async function(request, response) {
 	try {
-		await Cycle.findOneAndUpdate({cycleId: request.params.cycleId}, request.body);
+		console.log(request.body)
+		await Cycle.findOneAndUpdate({_id: request.params.id}, request.body);
 		response.status(200).json(request.params.cycleId + ' was successfully saved.');
 	} catch(error) {
 		console.log(error);

@@ -20,7 +20,6 @@ exports.checkPermission = function(request, response, next) {
 				return response.status(401).json('Unauthorized');
 			}
 			request.decoded = decoded;
-			console.log(request.decoded.user.role);
 
 			if(request.decoded.user.role === 'admin') {
 				next();
@@ -48,9 +47,6 @@ exports.checkToken = async function(request, response, next) {
 				});
 			} else {
 				request.decoded = decoded;
-				console.log('request.decoded: ');
-				console.log(request.decoded);
-				console.log('next()');
 				next();
 			}
 		});

@@ -83,7 +83,6 @@ async function generate(request, response, next) {
 		doc.save();
 		doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
 		let generatedDoc = await doc.pipe(fs.createWriteStream('./files/generated/' + proposal.proposalId + '.pdf'));
-		console.log(generatedDoc.path);
 		doc.end();
 
 		await proposal.update({

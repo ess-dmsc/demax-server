@@ -1,4 +1,5 @@
 const Proposal = require('../models/proposal.js');
+const Cycle = require('../models/cycle.js');
 const nanoid = require('nanoid/generate');
 const nodemailer = require('nodemailer');
 
@@ -29,9 +30,7 @@ exports.getProposalsByEmail = async function(request, response) {
 
 exports.downloadProposal = async function(request, response) {
 	try {
-		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-		console.log(proposal.mergedProposal.path);
 		response.status(201).download('./files/merged/' + proposal.proposalId + '.pdf');
 	} catch(error) {
 		console.log(error);
@@ -60,8 +59,9 @@ exports.submitNewProposal = async function(request, response) {
 	try {
 		const newProposal = request.body;
 		newProposal.proposalId = nanoid('23456789ABCDEFGHJKLMNPQRSTUVXYZ', 8);
+		let cycle = await Cycle.findOne({isActive: true});
+		newProposal.cycle = cycle.cycleId;
 		await new Proposal(newProposal).save();
-		console.log('Created proposal ' + newProposal.proposalId);
 		response.status(201).json(newProposal);
 	} catch(error) {
 		console.log(error);
@@ -74,9 +74,7 @@ exports.submitNewProposal = async function(request, response) {
 
 exports.getProposalByProposalId = async function(request, response) {
 	try {
-		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId}).select("-comments");
-		console.log(proposal);
 		response.status(201).json(proposal);
 	} catch(error) {
 		console.log(error);
@@ -140,7 +138,6 @@ exports.submitProposal = async function(request, response) {
 					throw error;
 				}
 			});
-			console.log('here')
 			await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {submitted: true});
 			return response.status(201).json('Submitted!');
 		}
@@ -154,9 +151,7 @@ exports.submitProposal = async function(request, response) {
 
 exports.syncProposal = async function(request, response) {
 	try {
-		console.log("request.params.proposalId: " + request.params.proposalId);
 		const proposal = await Proposal.findOne({proposalId: request.params.proposalId});
-		console.log(proposal);
 		response.status(201).json(proposal);
 	} catch(error) {
 		console.log(error);
@@ -171,7 +166,6 @@ exports.deleteProposalByProposalId = async function(request, response) {
 		await Proposal.findOneAndDelete({
 			proposalId: request.params.proposalId
 		});
-		console.log(request.params.proposalId);
 		response.status(200).json(request.params.proposalId + ' was successfully deleted.');
 	} catch(error) {
 		console.log(error);
