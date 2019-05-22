@@ -22,7 +22,7 @@ router.get('/proposals/:proposalId', proposalController.get);
 router.delete('/proposals/:proposalid', proposalController.delete);
 
 router.get('/cycles', cycleController.getCycles);
-router.get('/cycles/:cycleId', cycleController.getCycles);
+router.get('/cycles/:cycleId', cycleController.getCycleById);
 router.post('/cycles', cycleController.createNewCycle);
 router.put('/cycles/:cycleId', cycleController.editCycle);
 router.delete('/cycles/:cycleId', cycleController.deleteCycle);
