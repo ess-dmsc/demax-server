@@ -15,6 +15,18 @@ exports.getAllProposals = async function(request, response) {
 	}
 };
 
+exports.getActiveCycle = async function(request, response){
+	try{
+		const activeCycle = await Cycle.findOne({isActive: true});
+		response.status(200).json(activeCycle)
+	}catch(error){
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		})
+	}
+}
+
 exports.getProposalsByEmail = async function(request, response) {
 
 	try {
@@ -70,7 +82,6 @@ exports.submitNewProposal = async function(request, response) {
 		});
 	}
 };
-
 
 exports.getProposalByProposalId = async function(request, response) {
 	try {
