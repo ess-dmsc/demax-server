@@ -61,6 +61,7 @@ exports.editCycle = async function(request, response) {
 		await Cycle.findOneAndUpdate({_id: request.params.id}, request.body);
 		response.status(200).json(request.params.cycleId + ' was successfully saved.');
 	} catch(error) {
+		
 		console.log(error);
 		return response.status(200).json({
 			error: error.message

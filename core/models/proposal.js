@@ -11,7 +11,6 @@ const proposalSchema = new mongoose.Schema({
 		lastName: String,
 		email: String,
 		phone: String,
-		industry: String,
 		employer: String,
 		jobTitle: String
 	},
