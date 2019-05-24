@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const proposalSchema = new mongoose.Schema({
 	proposalId: {type: String, unique: true},
+	cycle: String,
 	dateCreated: {type: Date, default: Date.now()},
 	experimentTitle: String,
 	briefSummary: String,
@@ -10,7 +11,6 @@ const proposalSchema = new mongoose.Schema({
 		lastName: String,
 		email: String,
 		phone: String,
-		industry: String,
 		employer: String,
 		jobTitle: String
 	},

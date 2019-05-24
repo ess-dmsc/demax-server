@@ -44,7 +44,6 @@ exports.getUploadedAttachmentsByProposalId = async function (request, response) 
 exports.getByFileName = async function(request, response) {
 	try {
 		let filename = request.params.filename;
-		console.log(filename);
 		response.download('./files/uploads/' + filename);
 	}
 	catch(error) {
@@ -80,7 +79,6 @@ exports.getAll = async function(request, response) {
 exports.getByFilename = async function(request, response) {
 	try {
 		let filename = request.params.filename;
-		console.log(filename);
 		response.download('./files/uploads/' + filename);
 	}
 	catch(error) {
@@ -119,9 +117,6 @@ exports.deleteFileByProposalIdAndAttachmentType = async function(request, respon
 		let attachment = request.params.attachmentType;
 		let filename = request.params.filename;
 
-		console.log('_______________________________________________')
-		console.log('Proposal ID: ' + id);
-		console.log("Attachment: " + attachment);
 		let path;
 
 		switch(attachment) {
@@ -270,8 +265,6 @@ exports.uploadAttachment = async function (request, response) {
 
 	let attachment = request.params.attachment;
 	let id = request.body.proposalId;
-	console.log(id)
-	console.log(request.file.path)
 	let path = `"./${request.file.path}"`;
 	let name = request.file.originalname;
 	let proposal = await Proposal.findOne({proposalId: id});
@@ -414,7 +407,6 @@ exports.uploadAttachment = async function (request, response) {
 			error: error.message
 		});
 	}
-	console.log(proposal.proposalId + ' - uploaded ' + request.file.originalname);
 	response.status(201).json('Successfully uploaded ' + request.file.originalname + '. The file has been added to proposal ' + proposal.proposalId);
 };
 
@@ -564,6 +556,5 @@ exports.upload = async function(request, response){
 			error: error.message
 		});
 	}
-	console.log(proposal.proposalId + ' - uploaded ' + request.file.originalname);
 	response.status(201).json('Successfully uploaded ' + request.file.originalname + '. The file has been added to proposal ' + proposal.proposalId);
 };

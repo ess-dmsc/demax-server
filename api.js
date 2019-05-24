@@ -21,7 +21,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage: storage});
-
 router.use('/admin', auth.checkPermission, adminRouter);
 
 router.post('/users/register', auth.register);
@@ -35,11 +34,14 @@ router.post('/resend', auth.resendTokenPost);
 router.get('/users/forgot-pw/:email', auth.forgotPassword);
 router.delete('/users/:email', auth.checkToken, userController.deleteUserByEmail);
 
+router.get('/getActiveCycle', auth.checkToken, proposalController.getActiveCycle);
+
 router.get('/proposals/:email', auth.checkToken, auth.checkToken, proposalController.getProposalsByEmail);
 router.post('/proposals', auth.checkToken, proposalController.submitNewProposal);
 router.get('/proposals/getById/:proposalId', proposalController.getProposalByProposalId);
 router.get('/proposals/download/:proposalId', proposalController.downloadProposal);
-router.put('/proposals/:proposalId', auth.checkToken, proposalController.editProposalByProposalId);
+router.put('/proposals/:proposalId', auth.checkToken, proposalController.editProposalByProposalId)
+
 router.put('/proposals/sync/:proposalId', auth.checkToken, proposalController.syncProposal);
 router.put('/proposals/submit/:proposalId', auth.checkToken, proposalController.submitProposal);
 router.delete('/proposals/:proposalId', auth.checkToken, proposalController.deleteProposalByProposalId);
