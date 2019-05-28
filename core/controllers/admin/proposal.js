@@ -13,9 +13,31 @@ exports.getAll = async function(request, response) {
 	}
 };
 
+exports.getByQuery = async function(request, response) {
+	try {
+		console.log(request.params.cycleId);
+		console.log(request.params.startDate);
+		console.log(request.params.endDate);
+		console.log(request.params)
+
+		const proposals = await Proposal.find({
+			cycle: request.params.cycleId,
+			dateCreated: {
+				$gte: new Date(request.params.startDate),
+				$lt: new Date(request.params.endDate)
+			}
+		});
+		response.status(200).json(proposals)
+	} catch(error) {
+		console.log(error);
+		return response.status(400).json({
+			error: error.message
+		});
+	}
+};
+
 
 exports.getByEmail = async function(request, response) {
-
 	try {
 		const docs = await Proposal.find({"mainProposer.email": request.params.email});
 		response.status(200).json(docs);
@@ -27,9 +49,15 @@ exports.getByEmail = async function(request, response) {
 	}
 };
 
-exports.getByDate = async function(request, response){
-	try{
-		const docs = await Proposal.find({dateCreated: {$gte: new Date(request.params.startDate), $lt: new Date(request.params.endDate)}})
+exports.getByDate = async function(request, response) {
+	try {
+		console.log(typeof request.query.params);
+		const docs = await Proposal.find({
+			dateCreated: {
+				$gte: new Date(request.params.startDate),
+				$lt: new Date(request.params.endDate)
+			}
+		});
 		response.status(200).json(docs);
 	}
 	catch(error) {
@@ -38,7 +66,7 @@ exports.getByDate = async function(request, response){
 			error: error.message
 		});
 	}
-}
+};
 
 exports.getComments = async function(request, response) {
 	try {
@@ -47,6 +75,7 @@ exports.getComments = async function(request, response) {
 		for(let comment of proposal.comments) {
 			comments.push(comment);
 		}
+		
 		return response.status(201).json(comments);
 	} catch(error) {
 		console.log(error);
@@ -76,17 +105,17 @@ exports.addComment = async function(request, response) {
 	}
 };
 
-exports.checkActiveCycle = async function(request,response){
-	try{
+exports.checkActiveCycle = async function(request, response) {
+	try {
 		let activeCycle = await Cycle.findOne({isActive: true});
 		return activeCycle.cycleId;
-	}catch(error){
+	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
 			error: error.message
 		});
 	}
-}
+};
 exports.deleteComment = async function(request, response) {
 	try {
 		await Proposal.findOneAndUpdate({proposalId: request.params.proposalId}, {$pull: {comments: {_id: request.params.commentId}}});

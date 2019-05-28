@@ -10,6 +10,16 @@ const travis_test = {
 		name: 'ess'
 	}
 };
+const gcloud_test ={
+	app:{
+		port:3000
+	},
+	db:{
+		host: 'mongodb',
+		port: '27017',
+		name: 'ess'
+	}
+}
 const jenkins_test = {
 	app:{
 		port: 3000
@@ -69,6 +79,7 @@ const config = {
 	jenkins_test,
 	travis_test,
 	local_test,
+	gcloud_test,
 	dev,
 	stage,
 	prod
