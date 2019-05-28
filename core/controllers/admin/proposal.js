@@ -15,16 +15,12 @@ exports.getAll = async function(request, response) {
 
 exports.getByQuery = async function(request, response) {
 	try {
-		console.log(request.params.cycleId);
-		console.log(request.params.startDate);
-		console.log(request.params.endDate);
-		console.log(request.params)
 
 		const proposals = await Proposal.find({
-			cycle: request.params.cycleId,
+			cycle: request.query.cycleId,
 			dateCreated: {
-				$gte: new Date(request.params.startDate),
-				$lt: new Date(request.params.endDate)
+				$gte: new Date(request.query.startDate),
+				$lt: new Date(request.query.endDate)
 			}
 		});
 		response.status(200).json(proposals)

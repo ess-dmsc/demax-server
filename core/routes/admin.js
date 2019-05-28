@@ -38,8 +38,7 @@ router.delete('/proposals/tsf/:proposalId/:tsfId', proposalController.deleteTsf)
 
 router.get('/proposals/:startDate/:endDate', proposalController.getByDate);
 
-router.get('/proposals/q/:cycleId/:startDate/:endDate', proposalController.getByQuery);
-
+router.get('/search', proposalController.getByQuery);
 
 router.get('/files', fileController.getAll);
 router.get('/files/:filename', fileController.get);
