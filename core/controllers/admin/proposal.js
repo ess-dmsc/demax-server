@@ -15,15 +15,18 @@ exports.getAll = async function(request, response) {
 
 exports.getByQuery = async function(request, response) {
 	try {
-
 		const proposals = await Proposal.find({
-			cycle: request.query.cycleId,
-			dateCreated: {
-				$gte: new Date(request.query.startDate),
-				$lt: new Date(request.query.endDate)
-			}
+			$and: [ {
+				cycle: request.query.cycleId,
+			}, {
+				dateCreated: {
+					$gte: new Date(request.query.startDate),
+					$lt: new Date(request.query.endDate)
+				}
+			} ]
+
 		});
-		response.status(200).json(proposals)
+		response.status(200).json(proposals);
 	} catch(error) {
 		console.log(error);
 		return response.status(400).json({
@@ -71,7 +74,7 @@ exports.getComments = async function(request, response) {
 		for(let comment of proposal.comments) {
 			comments.push(comment);
 		}
-		
+
 		return response.status(201).json(comments);
 	} catch(error) {
 		console.log(error);
