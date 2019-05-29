@@ -38,6 +38,7 @@ router.get('/getActiveCycle', auth.checkToken, proposalController.getActiveCycle
 
 router.get('/proposals/:email', auth.checkToken, auth.checkToken, proposalController.getProposalsByEmail);
 router.post('/proposals', auth.checkToken, proposalController.submitNewProposal);
+
 router.get('/proposals/getById/:proposalId', proposalController.getProposalByProposalId);
 router.get('/proposals/download/:proposalId', proposalController.downloadProposal);
 router.put('/proposals/:proposalId', auth.checkToken, proposalController.editProposalByProposalId)

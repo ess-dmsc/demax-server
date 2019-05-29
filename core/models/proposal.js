@@ -225,7 +225,6 @@ const proposalSchema = new mongoose.Schema({
 		}
 	],
 	scienceScore: Number,
-	commentsV2: [ {} ],
 	comments: [
 		{
 			author: String,
